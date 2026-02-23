@@ -17,7 +17,7 @@ const accentColor = TAG_COLORS[tags[0]] ?? DEFAULT_TAG_COLOR;
 <a
   href={`${base}posts/${id}/`}
   class="block rounded-xl p-5 transition-opacity hover:opacity-70 active:opacity-90 overflow-hidden"
-  style={`background-color: var(--bg-secondary); border-top: 3px solid ${accentColor};`}
+  style={`background-color: var(--card-bg); border-top: 3px solid ${accentColor}; box-shadow: var(--card-shadow);`}
 >
   <div class="flex flex-wrap gap-1.5 mb-2">
     {tags.map((tag) => (
