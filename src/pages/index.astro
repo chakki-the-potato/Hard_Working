@@ -1,0 +1,23 @@
+---
+import { getCollection } from 'astro:content';
+import ListLayout from '../layouts/ListLayout.astro';
+import { POSTS_PER_PAGE } from '../consts';
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const sortedPosts = allPosts.sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const page = {
+  data: sortedPosts.slice(0, POSTS_PER_PAGE),
+  currentPage: 1,
+  lastPage: Math.ceil(sortedPosts.length / POSTS_PER_PAGE),
+  url: {
+    prev: undefined,
+    next: sortedPosts.length > POSTS_PER_PAGE ? `${import.meta.env.BASE_URL}page/2/` : undefined,
+    current: import.meta.env.BASE_URL,
+  },
+};
+---
+
+<ListLayout page={page} />

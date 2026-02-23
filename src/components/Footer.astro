@@ -1,0 +1,20 @@
+---
+const currentYear = new Date().getFullYear();
+const base = import.meta.env.BASE_URL;
+---
+
+<footer class="border-t py-8 mt-16" style="border-color: var(--border);">
+  <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <p class="text-sm" style="color: var(--text-secondary);">
+      &copy; {currentYear} Study Blog. All rights reserved.
+    </p>
+    <div class="flex gap-4">
+      <a href={`${base}rss.xml`} class="text-sm transition-opacity hover:opacity-60" style="color: var(--text-secondary);">
+        RSS
+      </a>
+      <a href="https://github.com/chakki-the-potato" target="_blank" rel="noopener" class="text-sm transition-opacity hover:opacity-60" style="color: var(--text-secondary);">
+        GitHub
+      </a>
+    </div>
+  </div>
+</footer>

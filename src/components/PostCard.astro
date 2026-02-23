@@ -1,0 +1,38 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  tags: string[];
+  id: string;
+}
+
+const { title, description, pubDate, tags, id } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<a
+  href={`${base}posts/${id}/`}
+  class="block rounded-2xl p-6 transition-opacity hover:opacity-70 active:opacity-90"
+  style="background-color: var(--bg-secondary);"
+>
+  <h2 class="text-lg font-bold mb-2 line-clamp-2" style="color: var(--text-primary);">
+    {title}
+  </h2>
+  <p class="text-sm line-clamp-4 mb-4" style="color: var(--text-secondary);">
+    {description}
+  </p>
+  <div class="flex flex-wrap gap-1.5 mb-3">
+    {tags.map((tag) => (
+      <span
+        class="text-xs px-2 py-0.5 rounded-full"
+        style="background-color: var(--tag-bg); color: var(--text-secondary);"
+      >
+        {tag}
+      </span>
+    ))}
+  </div>
+  <time class="text-xs" style="color: var(--text-secondary);">
+    {pubDate.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
+  </time>
+</a>

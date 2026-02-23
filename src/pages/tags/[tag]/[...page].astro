@@ -1,0 +1,25 @@
+---
+import { getCollection } from 'astro:content';
+import ListLayout from '../../../layouts/ListLayout.astro';
+import { POSTS_PER_PAGE } from '../../../consts';
+
+export async function getStaticPaths({ paginate }: { paginate: Function }) {
+  const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+  const uniqueTags = [...new Set(allPosts.flatMap((post) => post.data.tags))];
+
+  return uniqueTags.flatMap((tag) => {
+    const filtered = allPosts
+      .filter((post) => post.data.tags.includes(tag))
+      .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+    return paginate(filtered, {
+      params: { tag },
+      pageSize: POSTS_PER_PAGE,
+    });
+  });
+}
+
+const { page } = Astro.props;
+const { tag } = Astro.params;
+---
+
+<ListLayout page={page} activeTag={tag} />

@@ -1,0 +1,17 @@
+---
+import { getCollection } from 'astro:content';
+import ListLayout from '../../layouts/ListLayout.astro';
+import { POSTS_PER_PAGE } from '../../consts';
+
+export async function getStaticPaths({ paginate }: { paginate: Function }) {
+  const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+  const sortedPosts = allPosts.sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+  );
+  return paginate(sortedPosts, { pageSize: POSTS_PER_PAGE });
+}
+
+const { page } = Astro.props;
+---
+
+<ListLayout page={page} />

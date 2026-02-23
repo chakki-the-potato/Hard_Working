@@ -1,0 +1,37 @@
+---
+interface Props {
+  currentPage: number;
+  lastPage: number;
+  baseUrl: string;
+}
+
+const { currentPage, lastPage, baseUrl } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+function getPageUrl(page: number) {
+  if (page === 1) return baseUrl;
+  return `${baseUrl}${baseUrl.endsWith('/') ? '' : '/'}${page}/`;
+}
+---
+
+{lastPage > 1 && (
+  <nav class="flex justify-center gap-2 mt-12 flex-wrap" aria-label="Pagination">
+    {Array.from({ length: lastPage }, (_, i) => i + 1).map((num) => (
+      <a
+        href={getPageUrl(num)}
+        class:list={[
+          'w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-opacity',
+          num !== currentPage && 'hover:opacity-60',
+        ]}
+        style={
+          num === currentPage
+            ? 'background-color: var(--tag-active-bg); color: var(--tag-active-text);'
+            : 'background-color: var(--bg-secondary); color: var(--text-secondary);'
+        }
+        aria-current={num === currentPage ? 'page' : undefined}
+      >
+        {num}
+      </a>
+    ))}
+  </nav>
+)}

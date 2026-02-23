@@ -1,0 +1,46 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Props {
+  activeTag?: string;
+}
+
+const { activeTag } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const tagCounts = new Map<string, number>();
+allPosts.forEach((post) => {
+  post.data.tags.forEach((tag) => {
+    tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1);
+  });
+});
+const sortedTags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]);
+---
+
+<nav class="flex gap-2 overflow-x-auto pb-3 mb-8 scrollbar-hide" aria-label="태그 필터">
+  <a
+    href={base}
+    class="shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-opacity whitespace-nowrap"
+    style={
+      !activeTag
+        ? 'background-color: var(--tag-active-bg); color: var(--tag-active-text);'
+        : 'background-color: var(--tag-bg); color: var(--text-secondary);'
+    }
+  >
+    전체
+  </a>
+  {sortedTags.map(([tag]) => (
+    <a
+      href={`${base}tags/${tag}/`}
+      class="shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-opacity hover:opacity-70 whitespace-nowrap"
+      style={
+        activeTag === tag
+          ? 'background-color: var(--tag-active-bg); color: var(--tag-active-text);'
+          : 'background-color: var(--tag-bg); color: var(--text-secondary);'
+      }
+    >
+      {tag}
+    </a>
+  ))}
+</nav>
