@@ -1,5 +1,6 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import { TAG_COLORS, DEFAULT_TAG_COLOR } from '../consts';
 
 interface Props {
   title: string;
@@ -31,7 +32,7 @@ const base = import.meta.env.BASE_URL;
         {title}
       </h1>
       <div class="flex flex-wrap items-center gap-3 mb-4">
-        <time class="text-sm" style="color: var(--text-secondary);">
+        <time datetime={pubDate.toISOString()} class="text-sm" style="color: var(--text-secondary);">
           {pubDate.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
         </time>
         {updatedDate && (
@@ -44,8 +45,8 @@ const base = import.meta.env.BASE_URL;
         {tags.map((tag) => (
           <a
             href={`${base}tags/${tag}/`}
-            class="text-xs px-2.5 py-1 rounded-full transition-opacity hover:opacity-70"
-            style="background-color: var(--tag-bg); color: var(--text-secondary);"
+            class="text-xs px-2.5 py-1 rounded-full font-medium transition-opacity hover:opacity-70"
+            style={`background-color: ${TAG_COLORS[tag] ?? DEFAULT_TAG_COLOR}20; color: var(--text-primary); border: 1px solid ${TAG_COLORS[tag] ?? DEFAULT_TAG_COLOR}90;`}
           >
             {tag}
           </a>

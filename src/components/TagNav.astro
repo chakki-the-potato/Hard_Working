@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { TAG_COLORS, DEFAULT_TAG_COLOR } from '../consts';
 
 interface Props {
   activeTag?: string;
@@ -30,17 +31,31 @@ const sortedTags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]);
   >
     전체
   </a>
-  {sortedTags.map(([tag]) => (
-    <a
-      href={`${base}tags/${tag}/`}
-      class="shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-opacity hover:opacity-70 whitespace-nowrap"
-      style={
-        activeTag === tag
-          ? 'background-color: var(--tag-active-bg); color: var(--tag-active-text);'
-          : 'background-color: var(--tag-bg); color: var(--text-secondary);'
-      }
-    >
-      {tag}
-    </a>
-  ))}
+  {sortedTags.map(([tag]) => {
+    const color = TAG_COLORS[tag] ?? DEFAULT_TAG_COLOR;
+    return activeTag === tag ? (
+      <a
+        href={`${base}tags/${tag}/`}
+        class="tag-chip shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-opacity hover:opacity-70 whitespace-nowrap"
+        style={`background-color: ${color}; color: #fff;`}
+        aria-current="page"
+      >
+        {tag}
+      </a>
+    ) : (
+      <a
+        href={`${base}tags/${tag}/`}
+        class="tag-chip shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-opacity hover:opacity-70 whitespace-nowrap"
+        style={`--tag-color: ${color}; background-color: ${color}20; border: 1.5px solid ${color}90;`}
+      >
+        {tag}
+      </a>
+    );
+  })}
 </nav>
+
+<style>
+  .tag-chip[style*="--tag-color"] {
+    color: var(--text-primary);
+  }
+</style>
