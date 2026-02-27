@@ -1,53 +1,22 @@
 @import 'tailwindcss';
 
-@theme {
-  --color-bg-primary: #ffffff;
-  --color-bg-secondary: #f5f5f5;
-  --color-text-primary: #1a1a1a;
-  --color-text-secondary: #666666;
-  --color-accent: #3b82f6;
-  --color-accent-hover: #2563eb;
-  --color-border: #e5e5e5;
-  --color-tag-bg: #e5e7eb;
-  --color-tag-active-bg: #3b82f6;
-  --color-tag-active-text: #ffffff;
-}
-
 :root {
   --bg-primary: #ffffff;
-  --bg-secondary: #f5f5f5;
-  --text-primary: #1a1a1a;
-  --text-secondary: #666666;
-  --accent: #3b82f6;
-  --accent-hover: #2563eb;
+  --bg-secondary: #f8f8f8;
+  --text-primary: #141414;
+  --text-secondary: #909090;
+  --accent: #1d4ed8;
+  --accent-hover: #1e40af;
   --border: #e5e5e5;
-  --tag-bg: #e5e7eb;
-  --tag-active-bg: #3b82f6;
-  --tag-active-text: #ffffff;
   --card-bg: #ffffff;
-  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
-}
-
-:root.dark {
-  --bg-primary: #1a1a1a;
-  --bg-secondary: #2a2a2a;
-  --text-primary: #f0f0f0;
-  --text-secondary: #a0a0a0;
-  --accent: #60a5fa;
-  --accent-hover: #93bbfc;
-  --border: #3a3a3a;
-  --tag-bg: #374151;
-  --tag-active-bg: #60a5fa;
-  --tag-active-text: #1a1a1a;
-  --card-bg: #2a2a2a;
-  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --card-shadow: 0 19px 35px -22px rgba(0, 0, 0, 0.18);
+  --card-shadow-hover: 0 24px 40px -18px rgba(0, 0, 0, 0.26);
 }
 
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  transition: background-color 0.2s ease, color 0.2s ease;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Noto Sans KR', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 a {
@@ -64,17 +33,11 @@ a {
   display: none;
 }
 
-/* Shiki dual theme support */
+/* Shiki code highlight */
 .astro-code,
 .astro-code span {
   color: var(--shiki-light) !important;
   background-color: var(--shiki-light-bg) !important;
-}
-
-:root.dark .astro-code,
-:root.dark .astro-code span {
-  color: var(--shiki-dark) !important;
-  background-color: var(--shiki-dark-bg) !important;
 }
 
 .astro-code {
@@ -126,7 +89,7 @@ a {
 }
 
 .prose blockquote {
-  border-left: 4px solid var(--accent);
+  border-left: 4px solid var(--border);
   padding-left: 1em;
   margin: 1.5em 0;
   color: var(--text-secondary);

@@ -1,6 +1,5 @@
 ---
 import { getCollection } from 'astro:content';
-import { TAG_COLORS, DEFAULT_TAG_COLOR } from '../consts';
 
 interface Props {
   activeTag?: string;
@@ -19,43 +18,107 @@ allPosts.forEach((post) => {
 const sortedTags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]);
 ---
 
-<nav class="flex gap-2 overflow-x-auto pb-3 mb-8 scrollbar-hide" aria-label="태그 필터">
-  <a
-    href={base}
-    class="shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-opacity whitespace-nowrap"
-    style={
-      !activeTag
-        ? 'background-color: var(--tag-active-bg); color: var(--tag-active-text);'
-        : 'background-color: var(--tag-bg); color: var(--text-secondary);'
-    }
-  >
-    전체
-  </a>
-  {sortedTags.map(([tag]) => {
-    const color = TAG_COLORS[tag] ?? DEFAULT_TAG_COLOR;
-    return activeTag === tag ? (
+<div class="mb-8">
+  {activeTag && (
+    <div class="flex items-center gap-2 mb-3">
+      <span class="text-xs" style="color: var(--text-secondary);">필터:</span>
+      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium" style="background-color: #141414; color: #fff;">
+        {activeTag}
+        <a href={base} aria-label="필터 해제" style="line-height:1; opacity:0.7;" class="hover:opacity-100">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor">
+            <path d="M8.5 2.207L7.793 1.5 5 4.293 2.207 1.5 1.5 2.207 4.293 5 1.5 7.793l.707.707L5 5.707 7.793 8.5l.707-.707L5.707 5z"/>
+          </svg>
+        </a>
+      </span>
+    </div>
+  )}
+
+  <div class="tag-scroll-wrapper">
+    <nav class="tag-scroll scrollbar-hide" aria-label="태그 필터">
       <a
-        href={`${base}tags/${tag}/`}
-        class="tag-chip shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-opacity hover:opacity-70 whitespace-nowrap"
-        style={`background-color: ${color}; color: #fff;`}
-        aria-current="page"
+        href={base}
+        class={`tag-chip ${!activeTag ? 'tag-active' : 'tag-inactive'}`}
       >
-        {tag}
+        전체
       </a>
-    ) : (
-      <a
-        href={`${base}tags/${tag}/`}
-        class="tag-chip shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-opacity hover:opacity-70 whitespace-nowrap"
-        style={`--tag-color: ${color}; background-color: ${color}20; border: 1.5px solid ${color}90;`}
-      >
-        {tag}
-      </a>
-    );
-  })}
-</nav>
+      {sortedTags.map(([tag, count]) => (
+        <a
+          href={`${base}tags/${tag}/`}
+          class={`tag-chip ${activeTag === tag ? 'tag-active' : 'tag-inactive'}`}
+          aria-current={activeTag === tag ? 'page' : undefined}
+        >
+          {tag} <span class="tag-count">{count}</span>
+        </a>
+      ))}
+    </nav>
+    <div class="fade-right" id="fade-right"></div>
+  </div>
+</div>
+
+<script>
+  const nav = document.querySelector('.tag-scroll') as HTMLElement;
+  const fade = document.getElementById('fade-right');
+
+  function updateFade() {
+    if (!nav || !fade) return;
+    const atEnd = nav.scrollLeft + nav.clientWidth >= nav.scrollWidth - 4;
+    fade.style.opacity = atEnd ? '0' : '1';
+  }
+
+  if (nav) {
+    nav.addEventListener('scroll', updateFade, { passive: true });
+    updateFade();
+  }
+</script>
 
 <style>
-  .tag-chip[style*="--tag-color"] {
-    color: var(--text-primary);
+  .tag-scroll-wrapper {
+    position: relative;
+  }
+
+  .tag-scroll {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .fade-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 64px;
+    height: calc(100% - 4px);
+    background: linear-gradient(to right, transparent, #ffffff);
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .tag-chip {
+    flex-shrink: 0;
+    padding: 6px 16px;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: opacity 0.15s;
+    text-decoration: none;
+  }
+  .tag-chip:hover {
+    opacity: 0.7;
+  }
+
+  .tag-active {
+    background-color: #141414;
+    color: #ffffff;
+  }
+  .tag-inactive {
+    background-color: #f0f0f0;
+    color: #6b7280;
+  }
+
+  .tag-count {
+    opacity: 0.4;
+    font-size: 0.75rem;
   }
 </style>
