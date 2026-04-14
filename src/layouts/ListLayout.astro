@@ -1,6 +1,6 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
-import TagNav from '../components/TagNav.astro';
 import PostCard from '../components/PostCard.astro';
 import PostGrid from '../components/PostGrid.astro';
 import Pagination from '../components/Pagination.astro';
@@ -32,31 +32,276 @@ interface Props {
 const { page, activeTag } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const title = activeTag ? `${activeTag} - ${SITE_TITLE}` : SITE_TITLE;
+
+// 카테고리 계층 구조
+const topCategories = ['Programming', 'Thinking', 'Design'];
+const categoryHierarchy: Record<string, string[]> = {
+  Programming: ['Frontend', 'Backend', 'DevOps'],
+  Thinking:    ['Productivity', 'Startup'],
+  Design:      ['CSS'],
+};
+const subToParent: Record<string, string> = {};
+for (const [parent, subs] of Object.entries(categoryHierarchy)) {
+  subs.forEach((sub) => { subToParent[sub] = parent; });
+}
+
+// 현재 위치 파악
+const isTopCategory   = activeTag ? topCategories.includes(activeTag) : false;
+const isSubCategory   = activeTag ? !!subToParent[activeTag] : false;
+const parentCategory  = isSubCategory ? subToParent[activeTag!] : (isTopCategory ? activeTag : undefined);
+const sidebarSubs     = parentCategory ? (categoryHierarchy[parentCategory] ?? []) : [];
+
+// 전체 태그+카운트 (모바일 칩용)
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const tagCounts = new Map<string, number>();
+allPosts.forEach((p) => p.data.tags.forEach((t) => tagCounts.set(t, (tagCounts.get(t) || 0) + 1)));
+const totalCount = activeTag ? (tagCounts.get(activeTag) ?? 0) : allPosts.length;
+
 const baseUrl = activeTag ? `${base}tags/${activeTag}/` : base;
 ---
 
-<BaseLayout title={title} description={SITE_DESCRIPTION}>
-  <TagNav activeTag={activeTag} />
-  <PostGrid>
-    {page.data.map((post) => (
-      <PostCard
-        id={post.id}
-        title={post.data.title}
-        description={post.data.description}
-        pubDate={post.data.pubDate}
-        tags={post.data.tags}
-        heroImage={post.data.heroImage}
-      />
-    ))}
-  </PostGrid>
-  {page.data.length === 0 && (
-    <p class="text-center py-16" style="color: var(--text-secondary);">
-      아직 작성된 글이 없습니다.
-    </p>
-  )}
-  <Pagination
-    currentPage={page.currentPage}
-    lastPage={page.lastPage}
-    baseUrl={baseUrl}
-  />
+<BaseLayout title={title} description={SITE_DESCRIPTION} noPadding={true}>
+  <div class="list-page">
+
+    <!-- 페이지 헤더 -->
+    {activeTag && (
+      <div class="list-page-header">
+        {isSubCategory && (
+          <a href={`${base}tags/${parentCategory}/`} class="list-breadcrumb">
+            {parentCategory}
+          </a>
+        )}
+        <h1 class="list-page-title">#{activeTag}</h1>
+        <p class="list-page-subtitle">{totalCount}개의 아티클</p>
+      </div>
+    )}
+
+    <!-- 모바일 전용 서브 카테고리 칩 -->
+    {parentCategory && sidebarSubs.length > 0 && (
+      <div class="mobile-tags scrollbar-hide">
+        <a
+          href={`${base}tags/${parentCategory}/`}
+          class={`mobile-tag-chip ${activeTag === parentCategory ? 'mobile-tag-active' : 'mobile-tag-inactive'}`}
+        >
+          전체
+        </a>
+        {sidebarSubs.map((sub) => (
+          <a
+            href={`${base}tags/${sub}/`}
+            class={`mobile-tag-chip ${activeTag === sub ? 'mobile-tag-active' : 'mobile-tag-inactive'}`}
+          >
+            {sub}
+          </a>
+        ))}
+      </div>
+    )}
+
+    <!-- 2컬럼 본문 -->
+    <div class="list-main-row">
+
+      <!-- 좌: 아티클 리스트 -->
+      <div class="list-articles-col">
+        <PostGrid>
+          {page.data.map((post) => (
+            <PostCard
+              id={post.id}
+              title={post.data.title}
+              description={post.data.description}
+              pubDate={post.data.pubDate}
+              tags={post.data.tags}
+              heroImage={post.data.heroImage}
+            />
+          ))}
+        </PostGrid>
+        {page.data.length === 0 && (
+          <p class="list-empty">아직 작성된 글이 없습니다.</p>
+        )}
+        <Pagination
+          currentPage={page.currentPage}
+          lastPage={page.lastPage}
+          baseUrl={baseUrl}
+        />
+      </div>
+
+      <!-- 우: 사이드바 -->
+      {parentCategory && (
+        <aside class="list-sidebar">
+          <!-- 부모 카테고리 헤딩 -->
+          <a
+            href={`${base}tags/${parentCategory}/`}
+            class={`sidebar-parent ${activeTag === parentCategory ? 'sidebar-parent-active' : ''}`}
+          >
+            {parentCategory}
+          </a>
+
+          <!-- 서브 카테고리 목록 -->
+          <div class="sidebar-tag-list">
+            {sidebarSubs.map((sub) => (
+              <a
+                href={`${base}tags/${sub}/`}
+                class={`sidebar-tag-item ${activeTag === sub ? 'sidebar-tag-active' : 'sidebar-tag-inactive'}`}
+              >
+                <span class="sidebar-tag-name">{sub}</span>
+                <span class="sidebar-tag-count">{tagCounts.get(sub) ?? 0}</span>
+              </a>
+            ))}
+          </div>
+        </aside>
+      )}
+
+    </div>
+  </div>
 </BaseLayout>
+
+<style>
+  .list-page {
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+
+  /* 페이지 헤더 */
+  .list-page-header {
+    margin-bottom: 40px;
+  }
+
+  .list-breadcrumb {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-cta);
+    text-decoration: none;
+    margin-bottom: 8px;
+    transition: opacity 0.15s;
+  }
+
+  .list-breadcrumb:hover {
+    opacity: 0.75;
+  }
+
+  .list-page-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--color-heading);
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+
+  .list-page-subtitle {
+    font-size: 17px;
+    color: var(--color-muted);
+    margin: 8px 0 0;
+  }
+
+  /* 모바일 태그 칩 */
+  .mobile-tags {
+    display: none;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    margin-bottom: 24px;
+  }
+
+  .mobile-tag-chip {
+    flex-shrink: 0;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: opacity 0.15s;
+    line-height: 1.4;
+  }
+
+  .mobile-tag-chip:hover { opacity: 0.7; }
+  .mobile-tag-active  { background-color: var(--color-heading); color: #ffffff; }
+  .mobile-tag-inactive { background-color: var(--color-bg-badge); color: var(--color-muted); }
+
+  /* 2컬럼 */
+  .list-main-row {
+    display: flex;
+    gap: 72px;
+    align-items: flex-start;
+  }
+
+  .list-articles-col {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .list-empty {
+    text-align: center;
+    padding: 64px 0;
+    color: var(--color-muted);
+    font-size: 15px;
+  }
+
+  /* 사이드바 */
+  .list-sidebar {
+    flex-shrink: 0;
+    width: 200px;
+  }
+
+  /* 부모 카테고리 헤딩 */
+  .sidebar-parent {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--color-muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 10px;
+    transition: color 0.15s;
+  }
+
+  .sidebar-parent:hover,
+  .sidebar-parent-active {
+    color: var(--color-heading);
+  }
+
+  /* 서브 카테고리 목록 */
+  .sidebar-tag-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .sidebar-tag-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+
+  .sidebar-tag-item:hover { opacity: 0.75; }
+  .sidebar-tag-active  { background-color: var(--color-heading); color: #ffffff; }
+  .sidebar-tag-inactive { background-color: var(--color-bg-badge); color: var(--color-muted); }
+
+  .sidebar-tag-name { flex: 1; }
+
+  .sidebar-tag-count {
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0.6;
+    margin-left: 8px;
+  }
+
+  /* 반응형 */
+  @media (max-width: 900px) {
+    .list-sidebar { display: none; }
+    .list-main-row { gap: 0; }
+    .mobile-tags { display: flex; }
+  }
+
+  @media (max-width: 640px) {
+    .list-page { padding: 24px 16px 60px; }
+    .list-page-title { font-size: 1.75rem; }
+  }
+</style>

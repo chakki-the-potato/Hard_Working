@@ -1,0 +1,335 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e4]:
+      - link "토스테크 로고" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - img "토스테크 로고" [ref=e7]
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - link "Engineering" [ref=e10] [cursor=pointer]:
+            - /url: /category/engineering
+            - button "Engineering" [ref=e11]
+          - link "Design" [ref=e12] [cursor=pointer]:
+            - /url: /category/design
+            - button "Design" [ref=e13]
+          - link "Product" [ref=e14] [cursor=pointer]:
+            - /url: /category/product
+            - button "Product" [ref=e15]
+        - generic [ref=e16]:
+          - link "구독하기" [ref=e17] [cursor=pointer]:
+            - /url: /subscribe
+            - button "구독하기" [ref=e18]
+          - button "채용 바로가기" [ref=e19] [cursor=pointer]
+          - button "검색 아이콘 버튼" [ref=e20] [cursor=pointer]:
+            - img [ref=e21]
+    - generic [ref=e23]:
+      - banner [ref=e24]:
+        - heading "Engineering" [level=1] [ref=e25]
+        - paragraph [ref=e26]: 토스 엔지니어들이 기술로 문제를 정의하고 해결해 가는 여정을 만나보세요
+      - generic [ref=e27]:
+        - generic [ref=e28]:
+          - generic [ref=e29]:
+            - 'link "Frontend 문동욱 97% Smaller, 2x Faster: How es-toolkit Reached 10 Million Weekly Downloads A drop-in lodash replacement built for how JavaScript actually works today — ES Modules, TypeScript, and significantly smaller bundles. Adopted by Microsoft, Storybook, and Yarn. 10M+ weekly npm downloads." [ref=e30] [cursor=pointer]':
+              - /url: /article/es-toolkit
+              - generic [ref=e31]:
+                - generic [ref=e32]:
+                  - generic: Frontend
+                  - generic: 문동욱
+                - generic [ref=e33]: "97% Smaller, 2x Faster: How es-toolkit Reached 10 Million Weekly Downloads"
+                - generic [ref=e34]: A drop-in lodash replacement built for how JavaScript actually works today — ES Modules, TypeScript, and significantly smaller bundles. Adopted by Microsoft, Storybook, and Yarn. 10M+ weekly npm downloads.
+            - link "Data Engineering 박종익 Metric Review, 실행을 이끌다 토스플레이스 데이터 조직이 '좋은 인사이트'를 '실행'으로 연결한 방법 Metric Review, 실행을 이끌다" [ref=e35] [cursor=pointer]:
+              - /url: /article/place-metric-review
+              - generic [ref=e36]:
+                - generic [ref=e37]:
+                  - generic: Data Engineering
+                  - generic: 박종익
+                - generic [ref=e38]: Metric Review, 실행을 이끌다
+                - generic [ref=e39]: 토스플레이스 데이터 조직이 '좋은 인사이트'를 '실행'으로 연결한 방법
+              - img "Metric Review, 실행을 이끌다" [ref=e41]
+            - 'link "Security 표상영 LLM을 이용한 서비스 취약점 분석 자동화 #2 보안 분석가라면 누구나 한 번쯤 상상했을 ‘해줘’로 취약점 찾기. 그 경험을 공유해 드립니다. LLM을 이용한 서비스 취약점 분석 자동화 #2" [ref=e42] [cursor=pointer]':
+              - /url: /article/vulnerability-analysis-automation-2
+              - generic [ref=e43]:
+                - generic [ref=e44]:
+                  - generic: Security
+                  - generic: 표상영
+                - generic [ref=e45]: "LLM을 이용한 서비스 취약점 분석 자동화 #2"
+                - generic [ref=e46]: 보안 분석가라면 누구나 한 번쯤 상상했을 ‘해줘’로 취약점 찾기. 그 경험을 공유해 드립니다.
+              - 'img "LLM을 이용한 서비스 취약점 분석 자동화 #2" [ref=e48]'
+            - link "AI / ML 김용성 Stepping into the Software 3.0 Era How a developer fluent in layered architecture makes sense of Claude Code" [ref=e49] [cursor=pointer]:
+              - /url: /article/harness-for-team-productivity-eng
+              - generic [ref=e50]:
+                - generic [ref=e51]:
+                  - generic: AI / ML
+                  - generic: 김용성
+                - generic [ref=e52]: Stepping into the Software 3.0 Era
+                - generic [ref=e53]: How a developer fluent in layered architecture makes sense of Claude Code
+            - link "Frontend 이주함 쓰기 쉬운 Toss Front SDK SDK의 품질은 어떤 기능들을 제공하는가보다, 사용자가 그 기능을 어떤 형태로 쓰게 되느냐에 따라 갈립니다. 사용 형태를 고민하기 위해, 퍼사드(Facade) 패턴에 기반하여 쓰기 쉽게 SDK 메서드와 인터페이스를 구성하는 것이 중요한 방법론이 됩니다. 쓰기 쉬운 Toss Front SDK" [ref=e54] [cursor=pointer]:
+              - /url: /article/toss-front-sdk
+              - generic [ref=e55]:
+                - generic [ref=e56]:
+                  - generic: Frontend
+                  - generic: 이주함
+                - generic [ref=e57]: 쓰기 쉬운 Toss Front SDK
+                - generic [ref=e58]: SDK의 품질은 어떤 기능들을 제공하는가보다, 사용자가 그 기능을 어떤 형태로 쓰게 되느냐에 따라 갈립니다. 사용 형태를 고민하기 위해, 퍼사드(Facade) 패턴에 기반하여 쓰기 쉽게 SDK 메서드와 인터페이스를 구성하는 것이 중요한 방법론이 됩니다.
+              - img "쓰기 쉬운 Toss Front SDK" [ref=e60]
+          - generic [ref=e62]:
+            - button "이전 페이지" [disabled] [ref=e64]
+            - generic [ref=e68]:
+              - button "1페이지" [ref=e69] [cursor=pointer]: "1"
+              - button "2페이지" [ref=e70] [cursor=pointer]: "2"
+              - button "3페이지" [ref=e71] [cursor=pointer]: "3"
+              - button "4페이지" [ref=e72] [cursor=pointer]: "4"
+              - button "5페이지" [ref=e73] [cursor=pointer]: "5"
+            - button "다음 페이지" [ref=e75] [cursor=pointer]
+        - generic [ref=e80]:
+          - generic [ref=e81]:
+            - generic [ref=e82]: 직무 카테고리
+            - button "초기화 버튼" [disabled]: 초기화
+          - generic [ref=e83]:
+            - generic [ref=e84] [cursor=pointer]:
+              - img "선택 안됨" [ref=e86]
+              - generic [ref=e88]: AI / ML
+            - generic [ref=e89] [cursor=pointer]:
+              - img "선택 안됨" [ref=e91]
+              - generic [ref=e93]: Client (Android)
+            - generic [ref=e94] [cursor=pointer]:
+              - img "선택 안됨" [ref=e96]
+              - generic [ref=e98]: Client (iOS)
+            - generic [ref=e99] [cursor=pointer]:
+              - img "선택 안됨" [ref=e101]
+              - generic [ref=e103]: Data Analytics
+            - generic [ref=e104] [cursor=pointer]:
+              - img "선택 안됨" [ref=e106]
+              - generic [ref=e108]: Data Engineering
+            - generic [ref=e109] [cursor=pointer]:
+              - img "선택 안됨" [ref=e111]
+              - generic [ref=e113]: Developer Relations
+            - generic [ref=e114] [cursor=pointer]:
+              - img "선택 안됨" [ref=e116]
+              - generic [ref=e118]: DevOps / Server Platform
+            - generic [ref=e119] [cursor=pointer]:
+              - img "선택 안됨" [ref=e121]
+              - generic [ref=e123]: Frontend
+            - generic [ref=e124] [cursor=pointer]:
+              - img "선택 안됨" [ref=e126]
+              - generic [ref=e128]: Node.js
+            - generic [ref=e129] [cursor=pointer]:
+              - img "선택 안됨" [ref=e131]
+              - generic [ref=e133]: QA
+            - generic [ref=e134] [cursor=pointer]:
+              - img "선택 안됨" [ref=e136]
+              - generic [ref=e138]: Security
+            - generic [ref=e139] [cursor=pointer]:
+              - img "선택 안됨" [ref=e141]
+              - generic [ref=e143]: Server
+            - generic [ref=e144] [cursor=pointer]:
+              - img "선택 안됨" [ref=e146]
+              - generic [ref=e148]: Technical Writing
+  - contentinfo [ref=e149]:
+    - generic [ref=e150]:
+      - generic [ref=e151]:
+        - list [ref=e152]:
+          - listitem [ref=e153]:
+            - heading "서비스" [level=2] [ref=e154]
+          - listitem [ref=e155]:
+            - link "공지사항" [ref=e156] [cursor=pointer]:
+              - /url: https://toss.im/notice
+          - listitem [ref=e157]:
+            - link "자주 묻는 질문" [ref=e158] [cursor=pointer]:
+              - /url: https://support.toss.im/faq
+          - listitem [ref=e159]:
+            - link "공동인증서 관리" [ref=e160] [cursor=pointer]:
+              - /url: https://toss.im/cert
+          - listitem [ref=e161]:
+            - link "계정 일시잠금" [ref=e162] [cursor=pointer]:
+              - /url: http://support.toss.im/suspend
+          - listitem [ref=e163]:
+            - link "고객센터" [ref=e164] [cursor=pointer]:
+              - /url: https://support.toss.im
+          - listitem [ref=e165]:
+            - link "개인(신용)정보 이용·제공 내역 조회" [ref=e166] [cursor=pointer]:
+              - /url: https://toss.im/user/privacy-history
+          - listitem [ref=e167]:
+            - link "브랜드 리소스센터" [ref=e168] [cursor=pointer]:
+              - /url: https://brand.toss.im/
+          - listitem [ref=e169]:
+            - link "토스의 개인정보 보호" [ref=e170] [cursor=pointer]:
+              - /url: https://privacy.toss.im
+          - listitem [ref=e171]:
+            - link "토스유스카드" [ref=e172] [cursor=pointer]:
+              - /url: https://toss.im/teens/uss-card
+          - listitem [ref=e173]:
+            - link "앱인토스" [ref=e174] [cursor=pointer]:
+              - /url: https://toss.im/apps-in-toss
+          - listitem [ref=e175]:
+            - link "토스 카드라운지" [ref=e176] [cursor=pointer]:
+              - /url: https://card-lounge.toss.im/?utm_source=tossofficial&utm_campaign=traffic_cardpc_footer
+        - list [ref=e177]:
+          - listitem [ref=e178]:
+            - heading "회사" [level=2] [ref=e179]
+          - listitem [ref=e180]:
+            - link "회사 소개" [ref=e181] [cursor=pointer]:
+              - /url: https://toss.im/team
+          - listitem [ref=e182]:
+            - link "토스페이먼츠" [ref=e183] [cursor=pointer]:
+              - /url: https://tosspayments.com/
+          - listitem [ref=e184]:
+            - link "토스인슈어런스" [ref=e185] [cursor=pointer]:
+              - /url: https://toss.im/insurance
+          - listitem [ref=e186]:
+            - link "토스증권" [ref=e187] [cursor=pointer]:
+              - /url: https://corp.tossinvest.com/
+          - listitem [ref=e188]:
+            - link "토스씨엑스" [ref=e189] [cursor=pointer]:
+              - /url: https://tosscx.com
+          - listitem [ref=e190]:
+            - link "토스뱅크" [ref=e191] [cursor=pointer]:
+              - /url: https://www.tossbank.com/
+          - listitem [ref=e192]:
+            - link "토스플레이스" [ref=e193] [cursor=pointer]:
+              - /url: https://tossplace.com/?referrer=toss_recruit_footer
+          - listitem [ref=e194]:
+            - link "토스모바일" [ref=e195] [cursor=pointer]:
+              - /url: https://tossmobile.co.kr
+          - listitem [ref=e196]:
+            - link "토스인컴" [ref=e197] [cursor=pointer]:
+              - /url: https://tossincome.com/?utm_source=tosshomepage_footer
+          - listitem [ref=e198]:
+            - link "토스임팩트" [ref=e199] [cursor=pointer]:
+              - /url: https://toss.im/impact
+          - listitem [ref=e200]:
+            - link "토스인사이트" [ref=e201] [cursor=pointer]:
+              - /url: https://tossinsight.im/
+          - listitem [ref=e202]:
+            - link "채용" [ref=e203] [cursor=pointer]:
+              - /url: https://toss.im/career
+          - listitem [ref=e204]:
+            - link "기술 블로그" [ref=e205] [cursor=pointer]:
+              - /url: https://toss.tech/
+          - listitem [ref=e206]:
+            - link "블로그" [ref=e207] [cursor=pointer]:
+              - /url: https://blog.toss.im/
+          - listitem [ref=e208]:
+            - link "공고" [ref=e209] [cursor=pointer]:
+              - /url: https://toss.im/announcement
+        - list [ref=e210]:
+          - listitem [ref=e211]:
+            - heading "문의" [level=2] [ref=e212]
+          - listitem [ref=e213]:
+            - link "사업 제휴" [ref=e214] [cursor=pointer]:
+              - /url: mailto:partnership@toss.im
+          - listitem [ref=e215]:
+            - link "토스쇼핑 입점문의" [ref=e216] [cursor=pointer]:
+              - /url: https://toss.im/shopping-seller?utm_source=homepage&utm_medium=homepage_lead&utm_campaign=traffic_homepage_performance&utm_content=traffic_homepage_231103
+          - listitem [ref=e217]:
+            - link "광고 문의" [ref=e218] [cursor=pointer]:
+              - /url: https://ads-platform.toss.im/login
+          - listitem [ref=e219]:
+            - link "인증 사업 문의" [ref=e220] [cursor=pointer]:
+              - /url: https://toss.im/tosscert
+          - listitem [ref=e221]:
+            - link "마케팅·PR" [ref=e222] [cursor=pointer]:
+              - /url: mailto:support@toss.im
+          - listitem [ref=e223]:
+            - link "IR" [ref=e224] [cursor=pointer]:
+              - /url: mailto:ir@toss.im
+        - list [ref=e225]:
+          - listitem [ref=e226]:
+            - heading "고객센터" [level=2] [ref=e227]
+          - listitem [ref=e228]:
+            - 'link "전화: 1599-4905 (24시간 연중무휴)" [ref=e229] [cursor=pointer]':
+              - /url: tel:1599-4905
+          - listitem [ref=e230]:
+            - 'link "이메일(고객전용): support@toss.im" [ref=e231] [cursor=pointer]':
+              - /url: mailto:support@toss.im
+          - listitem [ref=e232]:
+            - 'link "이메일(외부기관전용): safe@toss.im" [ref=e233] [cursor=pointer]':
+              - /url: mailto:safe@toss.im
+          - listitem [ref=e234]:
+            - link "민원 접수" [ref=e235] [cursor=pointer]:
+              - /url: https://support.toss.im/customer-complaint
+        - list [ref=e236]:
+          - listitem [ref=e237]:
+            - heading "윤리경영" [level=2] [ref=e238]
+          - listitem [ref=e239]:
+            - link "상담/신고" [ref=e240] [cursor=pointer]:
+              - /url: https://toss.im/ethics
+      - generic [ref=e241]:
+        - heading "㈜비바리퍼블리카" [level=2] [ref=e242]
+        - text: "사업자 등록번호 : 120-88-01280 | 대표 : 이승건"
+        - text: "호스팅 서비스 : 주식회사 비바리퍼블리카 | 통신판매업 신고번호 : 2014-서울강남-03377"
+        - link "사업자정보확인" [ref=e243] [cursor=pointer]:
+          - /url: https://www.ftc.go.kr/bizCommPop.do?wrkr_no=1208801280
+        - text: 06236 서울특별시 강남구 테헤란로 142, 4층, 10층, 11층, 12층, 13층, 22층, 23층 (역삼동, 아크플레이스)
+        - text: "고객센터 : 서울시 구로구 경인로662, 디큐브시티 12층, 13층 토스씨엑스"
+      - list [ref=e244]:
+        - listitem [ref=e245]:
+          - link "서비스 이용약관" [ref=e246] [cursor=pointer]:
+            - /url: https://toss.im/terms
+        - listitem [ref=e247]:
+          - link "통합 금융정보 서비스 약관" [ref=e248] [cursor=pointer]:
+            - /url: https://toss.im/docs/500
+        - listitem [ref=e249]:
+          - link "마이데이터 서비스 이용약관" [ref=e250] [cursor=pointer]:
+            - /url: https://toss.im/docs/11567
+        - listitem [ref=e251]:
+          - link "이용자의 권리 및 유의사항" [ref=e252] [cursor=pointer]:
+            - /url: https://static-docs.toss.im/privacy/safety
+        - listitem [ref=e253]:
+          - link "개인정보 처리방침" [ref=e254] [cursor=pointer]:
+            - /url: https://toss.im/privacy-policy?categoryId=325
+            - strong [ref=e255]: 개인정보 처리방침
+        - listitem [ref=e256]:
+          - link "채용팀 개인정보 처리방침" [ref=e257] [cursor=pointer]:
+            - /url: https://toss.im/privacy-policy?categoryId=2027
+            - strong [ref=e258]: 채용팀 개인정보 처리방침
+        - listitem [ref=e259]:
+          - link "어드민 서비스 개인정보 처리방침" [ref=e260] [cursor=pointer]:
+            - /url: https://toss.im/privacy-policy?categoryId=2025
+            - strong [ref=e261]: 어드민 서비스 개인정보 처리방침
+        - listitem [ref=e262]:
+          - link "위치기반서비스 이용약관" [ref=e263] [cursor=pointer]:
+            - /url: https://toss.im/agreement/locationInfo
+            - strong [ref=e264]: 위치기반서비스 이용약관
+        - listitem [ref=e265]:
+          - link "가맹점 고지사항" [ref=e266] [cursor=pointer]:
+            - /url: https://toss.im/docs/10290
+        - listitem [ref=e267]:
+          - link "토스 전자서명인증업무준칙" [ref=e268] [cursor=pointer]:
+            - /url: https://toss.im/tosscert/cps
+        - listitem [ref=e269]:
+          - link "토스 전자인증서비스 약관" [ref=e270] [cursor=pointer]:
+            - /url: https://toss.im/docs/49
+        - listitem [ref=e271]:
+          - link "금융소비자보호" [ref=e272] [cursor=pointer]:
+            - /url: https://toss.im/financial-consumer-protection
+        - listitem [ref=e273]:
+          - link "토스비즈니스 개인정보 처리방침" [ref=e274] [cursor=pointer]:
+            - /url: https://toss.im/privacy-policy?categoryId=2023
+            - strong [ref=e275]: 토스비즈니스 개인정보 처리방침
+        - listitem [ref=e276]:
+          - link "퀵계좌이체 개인정보 처리방침" [ref=e277] [cursor=pointer]:
+            - /url: https://toss.im/privacy-policy?categoryId=2029
+            - strong [ref=e278]: 퀵계좌이체 개인정보 처리방침
+        - listitem [ref=e279]:
+          - link "정산자금 보호조치" [ref=e280] [cursor=pointer]:
+            - /url: https://service.toss.im/terms/72977
+      - list [ref=e281]:
+        - listitem [ref=e282]:
+          - link "Toss Blog" [ref=e283] [cursor=pointer]:
+            - /url: https://toss.im/tossfeed
+            - img "Toss Blog" [ref=e284]
+        - listitem [ref=e285]:
+          - link "Toss Naver Post" [ref=e286] [cursor=pointer]:
+            - /url: https://blog.naver.com/tossblog
+            - img "Toss Naver Post" [ref=e287]
+        - listitem [ref=e288]:
+          - link "Toss X" [ref=e289] [cursor=pointer]:
+            - /url: https://x.com/toss__official
+            - img "Toss X" [ref=e290]
+        - listitem [ref=e291]:
+          - link "Toss Instagram" [ref=e292] [cursor=pointer]:
+            - /url: https://www.instagram.com/toss.im/
+            - img "Toss Instagram" [ref=e293]
+  - alert [ref=e294]
+  - list

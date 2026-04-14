@@ -2,7 +2,7 @@
 title: "React 상태 관리 라이브러리 비교 — Zustand vs Jotai vs Redux"
 description: "React 프로젝트에서 전역 상태 관리를 어떻게 할지 고민될 때. Zustand, Jotai, Redux Toolkit의 특징과 사용법을 비교해 봅니다."
 pubDate: 2026-02-10
-tags: ["React"]
+tags: ["Programming", "Frontend"]
 ---
 
 ## 왜 상태 관리 라이브러리가 필요한가

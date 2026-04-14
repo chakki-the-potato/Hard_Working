@@ -1,0 +1,615 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e4]:
+      - link "토스테크 로고" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - img "토스테크 로고" [ref=e7]
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - link "Engineering" [ref=e10] [cursor=pointer]:
+            - /url: /category/engineering
+            - button "Engineering" [ref=e11]
+          - link "Design" [ref=e12] [cursor=pointer]:
+            - /url: /category/design
+            - button "Design" [ref=e13]
+          - link "Product" [ref=e14] [cursor=pointer]:
+            - /url: /category/product
+            - button "Product" [ref=e15]
+        - generic [ref=e16]:
+          - link "구독하기" [ref=e17] [cursor=pointer]:
+            - /url: /subscribe
+            - button "구독하기" [ref=e18]
+          - button "채용 바로가기" [ref=e19] [cursor=pointer]
+          - button "검색 아이콘 버튼" [ref=e20] [cursor=pointer]:
+            - img [ref=e21]
+    - article [ref=e23]:
+      - generic [ref=e24]:
+        - img "AI시대의 디자이너" [ref=e26]
+        - heading "AI 시대에 디자이너로 살아남기" [level=1] [ref=e27]
+        - generic [ref=e28]:
+          - generic: "#ai"
+          - generic: "#product designer (tools)"
+          - generic: "#ux system"
+        - generic [ref=e30]:
+          - generic [ref=e31]:
+            - generic [ref=e32]: 이다윗
+            - generic [ref=e33]: · 토스 Product Designer (Tools)
+          - generic [ref=e34]: 2025년 5월 13일
+      - generic [ref=e36]:
+        - heading "AI 시대에 디자이너는 어떤 모습일까요?" [level=2] [ref=e37]:
+          - generic [ref=e39]: AI 시대에 디자이너는 어떤 모습일까요?
+        - paragraph [ref=e40]:
+          - generic [ref=e42]: 한번 쯤 이런 생각 해보지 않으셨나요? UI가 더 이상 필요 없어지거나, 로봇이 모든 일을 대신하는 날이 오면, 디자이너는 어떤 역할을 하게 될까?
+        - paragraph [ref=e43]:
+          - generic [ref=e45]: 저도 같은 고민을 하다가 반대로 생각해 보기로 했어요. 언젠가 사라질 운명이라면, 차라리 그 미래를 앞당겨서 직접 경험해보기로요. “미래를 예측하는 가장 좋은 방법은 미래를 만드는 것이다”라는 말도 있잖아요.
+        - paragraph [ref=e46]:
+          - generic [ref=e48]: 그래서 조금 파격적인 목표를 세웠어요.
+        - paragraph [ref=e49]:
+          - generic [ref=e51]: 바로 ‘디자이너 없애기’
+        - paragraph [ref=e52]:
+          - generic [ref=e54]: 제가 팀에서 빠지더라도 아무 문제 없이 돌아가는 시스템을 만들어보는 실험이었어요.
+        - paragraph [ref=e55]:
+          - generic [ref=e57]: 어떻게 했을까요?
+        - paragraph
+        - paragraph
+        - heading "반복되는 작업을 '규칙'으로 정의하기" [level=2] [ref=e58]:
+          - generic [ref=e60]: 반복되는 작업을 '규칙'으로 정의하기
+        - paragraph [ref=e61]:
+          - generic [ref=e63]: 저는 제휴를 맺은 회사들과 돈을 주고받는 정산 업무를 맡고 있는 팀에 있었어요. 문제는, 회사마다 수수료 계산 방식이 모두 달라서 매번 비슷한 일을 반복해야 했다는 거예요. 팀 인원이 아무리 많아도 일손이 부족한 구조였어요.
+        - paragraph [ref=e64]:
+          - generic [ref=e66]: 그래서 생각했죠. "매번 다른 방법으로 하지 말고, 공통된 규칙을 찾아보면 어떨까?"
+        - paragraph [ref=e67]:
+          - generic [ref=e69]: 예를 들어, 어떤 제휴사는 사용자가 토스를 통해 대출을 많이 받으면 더 많은 수수료를 지급하고, 덜 이용하면 적은 수수료를 주는 구조였어요. 이런 유사한 계약들을 묶어 ‘구간별 수수료율’이라는 하나의 규칙으로 정리했더니, 여러 회사의 정산을 모두 같은 방식으로 처리할 수 있게 됐어요.
+        - paragraph [ref=e70]:
+          - generic [ref=e72]: 이런 식으로 복잡한 계약들을 표 하나로 정리하면서, 매번 새로 디자인하지 않아도 되는 구조 가 만들어졌어요. 이 시스템이 없었다면 지금도 저는 비슷한 화면 수백 장을 계속 만들고 있었을지도 몰라요.
+        - paragraph
+        - paragraph
+        - heading "규칙을 시스템화 하기" [level=2] [ref=e73]:
+          - generic [ref=e75]: 규칙을 시스템화 하기
+        - paragraph [ref=e76]:
+          - generic [ref=e78]: 규칙을 만든지 반년쯤 지난 어느 날, 신기한 광경을 목격했어요. 프론트엔드 개발자가 저 없이도 UI를 만들고 있는 거예요. 디자인에 관심이 있는 개발자이기도 했지만, 디자이너 없이 돌아가는 시스템을 만들었다는 작은 성공의 신호였던 것 같아요. 물론 제가 디자인하는 시간도 매우 줄어들었고요.
+        - paragraph [ref=e79]:
+          - generic [ref=e81]: 제가 생각한 다음 단계는 스펙을 작성하는 것조차 없애는 것이었어요. 보통 디자인하기 전에 제품의 요구조건 문서를 만들잖아요. 이것도 시스템화 할 수 있을 것 같았어요. 정산 서비스를 요청하는 임직원이 몇 가지 설문에만 답하면 그 정보를 토대로 UI가 자동 생성되도록 매핑 시스템을 만들었죠. 완전히 자동화되진 않았지만, 어시스턴트 디자이너 혼자 작업할 수 있을 만큼은 되더라고요.
+        - paragraph [ref=e82]:
+          - generic [ref=e84]: 이쯤 되니 진짜로 ‘디자이너를 없앤다’는 실험이 현실이 되어가고 있다는 느낌이 들었어요.
+        - paragraph
+        - paragraph
+        - heading "시스템을 AI 한테 맡기기" [level=2] [ref=e85]:
+          - generic [ref=e87]: 시스템을 AI 한테 맡기기
+        - paragraph [ref=e88]:
+          - generic [ref=e90]: 누구나 디자인할 수 있는 시스템을 갖추고 나니, ‘이 시스템을 돌리는 주체가 꼭 사람이어야 할까?’ 라는 생각이 들었어요. 지금은 AI가 MCP(Model Context Protocol - AI와 제품이 소통할 수 있는 표준화된 소통 체계)를 통해 디자인 툴을 다루는 시대잖아요. 게다가 토스에서는 직접 디자인툴을 만들어 사용하기 때문에 어떠한 제약도 없이 다양한 시도를 해볼 수 있어요.
+        - paragraph [ref=e91]:
+          - generic [ref=e93]: 아직은 바로 사용할 만한 수준의 화면을 만들지는 못하지만, 괜찮은 시스템이 정의되어 있다면 AI는 꽤 준수한 결과물을 만들어내더라고요. 그래서 앞으로 사람은 모두 시스템을 만들고, AI가 그 시스템을 활용해 제품을 만들게 되는 날이 올 것이라고 생각했어요.
+        - paragraph
+        - paragraph
+        - heading "디자이너, 이제는 시스템을 설계하는 사람" [level=2] [ref=e94]:
+          - generic [ref=e96]: 디자이너, 이제는 시스템을 설계하는 사람
+        - paragraph [ref=e97]:
+          - generic [ref=e99]: 처음엔 내가 필요 없을 정도로 잘 작동하는 시스템을 만든다는 게 두렵기도 했어요. 하지만 역설적으로, 그렇게 해보니까 디자이너가 할 수 있는 더 본질적이고 가치 있는 일들이 보이기 시작했죠.
+        - paragraph [ref=e100]:
+          - generic [ref=e102]: 이제는 누구나 UI를 만들 수 있는 시대예요. 우리가 지금 ‘UX 디자인’이라고 부르는 일도 머지않아 버튼 하나 그리는 것처럼 간단한 작업이 될지도 몰라요. 디자이너가 오랜 시간 고민하던 일들도 더 이상 우리의 고유 영역이 아닐 수 있죠.
+        - paragraph [ref=e103]:
+          - generic [ref=e105]: 그렇기 때문에, 앞으로 디자이너의 역할은 직접 디자인하는 것이 아니라 AI가 나보다 더 뛰어난 결과물을 만들 수 있도록 원칙과 시스템을 설계하는 것이라고 생각해요.
+        - paragraph [ref=e106]:
+          - generic [ref=e108]: 즉, 하나의 일을 잘 해내는 사람보다,누구라도 제품을 만들 수 있게 틀을 만들 수 있게, ‘시스템적 사고’를 갖춘 디자이너가 필요한 시대가 오고 있는 거예요.
+        - paragraph
+        - paragraph
+        - heading "조직의 러닝이 순환되는 구조 만들기" [level=2] [ref=e109]:
+          - generic [ref=e111]: 조직의 러닝이 순환되는 구조 만들기
+        - paragraph [ref=e112]:
+          - generic [ref=e114]: 이건 저의 사례일 뿐이고, 토스엔 이런 경험을 하고 있는 동료들이 많아요. 이런 노하우를 서로 빠르게 공유하고, 챕터 차원에서 러닝이 축적되는 조직을 만들고 싶었어요.
+        - paragraph [ref=e115]:
+          - generic [ref=e117]: 예전에 저는 ‘그룹 권한’ 기능 없이 제품을 설계했다가, 나중에 꼭 필요한 상황이 생기면서 서버 구조까지 갈아엎는 큰 비용을 치른 적이 있어요. 당시엔 초기 제품이라 단순하게 시작하고 싶었고, 필요 없을 거라 판단했었거든요. 돌아보면, 제가 토스 안의 더 고도화된 계정 체계를 알고만 있었더라도 ‘그룹 권한’은 반드시 필요해질 기능이라는 걸 미리 예측할 수 있었을 거예요.
+        - paragraph [ref=e118]:
+          - generic [ref=e120]: 그래서 다른 사람들은 비슷한 실수를 반복하지 않고, 이런 노하우를 더 빠르게 습득할 수 있으면 좋겠다는 생각이 들었어요. 사실 계정 권한 같은 구조를 직접 설계해본 디자이너는 많지 않잖아요. 디자이너는 예상보다 자주, 처음 해보는 구조나 흐름을 직접 정의해야 하는 상황을 마주하게 돼요. 데이터 CRUD(Create, Read, Update, Delete)는 어떤 방식으로 구현하는 게 최선일지, 앱 미리보기는 어디에, 어떻게 노출하는 게 좋을지 등도 그렇죠. 그래서 저는 이런 러닝들이 잘 축적되고 공유되는 조직을 만들고 싶었어요.
+        - paragraph [ref=e121]:
+          - generic [ref=e123]: 이제는 작은 단위의 디자인 시스템을 넘어, 챕터 전체가 중요한 의사결정이나 노하우를 공유할 수 있는 'UX 시스템'이 필요하다고 생각했어요. 이를 통해 우리 각자의 러닝이 단순히 공유되는 것을 넘어서, 계속 누적되어 성장하는 사이클을 만드는 것이 올해의 목표예요.
+        - paragraph
+        - paragraph
+        - heading "토스가 툴을 직접 만드는 이유" [level=2] [ref=e124]:
+          - generic [ref=e126]: 토스가 툴을 직접 만드는 이유
+        - paragraph [ref=e127]:
+          - generic [ref=e129]: 이런 시스템을 잘 구축하려면, 비슷한 고민과 목표를 가진 사람들이 모여 다양한 제품을 함께 만들어갈 수 있는 환경이 꼭 필요해요. 토스는 구성원 모두가 최고의 효율을 낼 수 있도록, 우리가 일하는 방식에 딱 맞는 각종 툴을 직접 만들고 있어요. 어떤 툴을 쓰느냐는 곧 우리의 일하는 방식과 생산성을 좌우하니까요. 게다가 토스는 금융 기업이라 고객 데이터를 외부에 맡길 수 없는 환경적인 제약도 있어요. 이런 이유들로 자연스럽게 내부에서 필요한 툴을 직접 개발하는 문화가 자리 잡았고, 이 툴들은 전담 역할인 Product Designer (Tools)가 만들고 있어요.
+        - paragraph [ref=e130]:
+          - generic [ref=e132]: 만드는 툴의 범위도 정말 상상 이상인데요. 데이터 분석 툴, 디자인 툴 리스크 모니터링 툴, 검토 프로세스 툴, 상담 관리 툴, 광고 관리 툴, 쇼핑 상품 관리 툴, 정산 툴, 컴플라이언스 툴, 업무 자동화 툴, 리서치 자동화 툴 등 생산성 툴만 수십가지가 있으며 계속 늘어나고 있어요.
+        - paragraph [ref=e133]:
+          - generic [ref=e135]: 가끔은 솔직히 ‘다른 회사처럼 SaaS 툴 사서 쓰면 편할텐데’라는 생각도 들어요. 그 많은 기능을 새로 다 만드는 게 엄청 챌린징하거든요. 근데 이런 환경 덕분에 우리가 일하는 방식에 맞게 최적화할 수 있고, 필요한 기능은 빠르게 구현할 수도 있어요. 덕분에 디자이너들은 더 생산성이 높아져 이전엔 한 명이 하지 못했을 더 큰 시스템을 만들어가고 있어요.
+        - paragraph
+        - paragraph
+        - heading "마치며" [level=2] [ref=e136]:
+          - generic [ref=e138]: 마치며
+        - paragraph [ref=e139]:
+          - generic [ref=e141]: 이미 토스에서는 AI가 디자인한 화면이 실제 제품에 쓰이기 시작했어요. 아직은 디자이너의 손길이 필요하지만, 조만간 디자이너 없이도 충분히 좋은 결과물이 나오는 날이 오겠죠.
+        - paragraph [ref=e142]:
+          - generic [ref=e144]: 그렇게 되면 우리의 역할은 분명 달라질 거예요. 디자인을 만드는 사람이 아니라, AI가 더 뛰어난 디자인을 만들도록 원칙과 시스템을 만드는 사람이 되는 거죠.
+        - paragraph
+        - paragraph [ref=e145]:
+          - generic [ref=e147]: 여러분은 ‘디자이너가 디자인을 하지 않는 시대'에 어떻게 가치를 만들 수 있을 것 같나요?
+        - paragraph [ref=e148]:
+          - generic [ref=e150]: AI가 모두 대신할 때, 디자이너로서 당신은 무엇을 하고 있을까요?
+        - paragraph
+        - paragraph
+        - paragraph
+        - paragraph
+        - paragraph
+        - paragraph
+      - button "공유하기 버튼" [ref=e151] [cursor=pointer]:
+        - img "링크 아이콘" [ref=e153]
+        - text: 공유하기
+      - generic [ref=e154]:
+        - generic [ref=e155]:
+          - generic [ref=e156]: 댓글 47
+          - generic [ref=e157]:
+            - text: "댓글 관련 문의:"
+            - link "toss-tech@toss.im" [ref=e158] [cursor=pointer]:
+              - /url: mailto:toss-tech@toss.im
+        - generic [ref=e159]:
+          - generic [ref=e160]:
+            - generic [ref=e161]:
+              - img "프로필 이미지" [ref=e164] [cursor=pointer]
+              - generic [ref=e170]:
+                - textbox [ref=e173]: 씩씩한재규어
+                - button "랜덤 변경" [ref=e175] [cursor=pointer]
+            - textbox "입력한 댓글은 수정하거나 삭제할 수 없어요. 또한 허위사실, 욕설, 사칭 등 댓글은 통보없이 삭제될 수 있습니다." [ref=e182]
+          - button "댓글 남기기" [disabled] [ref=e183]
+        - generic [ref=e184]:
+          - generic [ref=e185]:
+            - generic [ref=e186]:
+              - img "유쾌한도마뱀" [ref=e189]
+              - generic [ref=e190]: 유쾌한도마뱀
+            - generic [ref=e191]: 약간 슬픔
+          - generic [ref=e192]:
+            - generic [ref=e193]:
+              - img "밝은참새" [ref=e196]
+              - generic [ref=e197]: 밝은참새
+            - generic [ref=e198]: 산 서비스를 요청하는 임직원이 몇 가지 설문에만 답하면 그 정보를 토대로 UI가 자동 생성되도록 매핑 시스템을 만들었죠. 가 너무 모호해요 자세하게 알려주면 더 글이 실무에 도움이 될 것 같아요
+          - generic [ref=e199]:
+            - generic [ref=e200]:
+              - img "쾌활한재규어" [ref=e203]
+              - generic [ref=e204]: 쾌활한재규어
+            - generic [ref=e205]: ‘디자이너 없애기‘라고 디자이너들한테 말하면 누가 좋아할까요
+          - generic [ref=e206]:
+            - generic [ref=e207]:
+              - img "다정한강아지" [ref=e210]
+              - generic [ref=e211]: 다정한강아지
+            - generic [ref=e212]: 3살때부터 그림그리고 초중고 미술 외길만을 살아왔습니다. 예술고등학교도 실기1등 입학 / 지인들도 모두 특별한 재능이라며, 칭찬해줬었습니다... 순수미술만이 아닌 디자인과 디자인 프로그램도 마스터했고... bi,ci,삽화,조감도,인물화를 주력으로 하며, 디자인회사 경력15년차를 쌓아왔고... 어느덧 마흔이 되어 개인사업자 운영을 하면서 코로나때까지도 나름 잘 버텼지만, 악재와 이후 금융시장악화 그리고 끝으로는 그놈의 ai도입으로 결정타를 맞아, 수익이 현저히 떨어지는 상태에 이르렀습니다.. 더 이상 버틸 수 없어서 사업자를 접고 회사에 취직하였습니다. 회사에서는 디자인 업무로 채용을 하고 회사에 필요한 디자인을 장비까지 개인 사비를 써서 빠르게 다 작업을 해주었습니다. 주말에도 일을 하였고요.. 그런데 점차 전혀 채용업무와 관련 없는 일을 시키며 성장할 기회를 주는 거라고 하더군요. 이후로 현장일에 건강에 좋지 않은 중금속 일- 나아가 한여름 출하일에 제초작업까지 시켰고, 상당한 자존감 하락과 모욕감을 받았습니다. 그리고 다른 회사를 알아보고 있는데... 살고 있는 지역이 디자인 수요가 없는데다가 채용공고도 실제 채용목적이 없는 회사들의 반복적 채용공고에 한시간 거리 이상의 회사들밖에 없는 상태여서 너무 막막하네요
+          - generic [ref=e213]:
+            - generic [ref=e214]:
+              - img "다정한강아지" [ref=e217]
+              - generic [ref=e218]: 다정한강아지
+            - generic [ref=e219]: 3살때부터 그림그리고 초중고 미술 외길만을 살아왔습니다. 예술고등학교도 실기1등 입학 / 지인들도 모두 특별한 재능이라며, 칭찬해줬었습니다... 순수미술만이 아닌 디자인과 디자인 프로그램도 마스터했고... bi,ci,삽화,조감도,인물화를 주력으로 하며, 디자인회사 경력15년차를 쌓아왔고... 어느덧 마흔이 되어 개인사업자 운영을 하면서 코로나때까지도 나름 잘 버텼지만, 악재와 이후 금융시장악화 그리고 끝으로는 그놈의 ai도입으로 결정타를 맞아, 수익이 현저히 떨어지는 상태에 이르렀습니다.. 더 이상 버틸 수 없어서 사업자를 접고 회사에 취직하였습니다. 회사에서는 디자인 업무로 채용을 하고 회사에 필요한 디자인을 장비까지 개인 사비를 써서 빠르게 다 작업을 해주었습니다. 주말에도 일을 하였고요.. 그런데 점차 전혀 채용업무와 관련 없는 일을 시키며 성장할 기회를 주는 거라고 하더군요. 이후로 현장일에 건강에 좋지 않은 중금속 일- 나아가 한여름 출하일에 제초작업까지 시켰고, 상당한 자존감 하락과 모욕감을 받았습니다. 그리고 다른 회사를 알아보고 있는데... 살고 있는 지역이 디자인 수요가 없는데다가 채용공고도 실제 채용목적이 없는 회사들의 반복적 채용공고에 한시간 거리 이상의 회사들밖에 없는 상태여서 너무 막막하네요
+          - generic [ref=e220]:
+            - generic [ref=e221]:
+              - img "명랑한펭귄" [ref=e224]
+              - generic [ref=e225]: 명랑한펭귄
+            - generic [ref=e226]: 흠 확실히 글의 연결성이 좀 떨어지는 느낌이 드네요.. 문단간 맥락이 이어지지 않는? 하지만 거시적인 시각에서 공감하긴 합니다. 시스템을 만들어야 하는 것도, 그런 요소들을 발굴하는것도 사람의 역할이 되겟죠. 사례가 많앗다면 조금 더 잘 이해되지 않았을까 싶습니다.
+          - generic [ref=e227]:
+            - generic [ref=e228]:
+              - img "명랑한하마" [ref=e231]
+              - generic [ref=e232]: 명랑한하마
+            - generic [ref=e233]: 저는 글에 공감하고 있습니다 좀더 효율적으로 옳바른 디자인을 더 멀리 바라볼 수 있게 되는게 앞으로 디자이너의 방향성이라고 생각이 들어요 그럼 저는 토스에 이것도 물어보고싶네요 과제 전형으로 수많은 디자이너들의 아이디어를 갈취하는건 이 방대한 소스를 공짜로 취득하는 토스는 어떤 방향성으로 디자이너를 바라보고 계신지 궁굼합니다.
+          - generic [ref=e234]:
+            - generic [ref=e235]:
+              - img "씩씩한사자" [ref=e238]
+              - generic [ref=e239]: 씩씩한사자
+            - generic [ref=e240]: AI로 작성한 글인가요?
+          - generic [ref=e241]:
+            - generic [ref=e242]:
+              - img "재치있는수달" [ref=e245]
+              - generic [ref=e246]: 재치있는수달
+            - generic [ref=e247]: 토스 아티클 꾸준히 잘 읽고있습니다. 다만 최근 올라오는 글들을 보면 자극적인 제목을 사용해 사람들의 이목을 끈 뒤 논란이되면 조용히 제목과 내용을 바꾸는 글이 많아지는 것 같아 아쉬움이 큽니다. 같은 디자이너로서 다양한 아이디어를 내고 테스트해보고 공유하는 문화는 굉장히 긍정적으로 생각하나 발행 후 나오는 의견은 전부 묵살한 채 내부적으로 수정하는게 끝이라 너무 아쉽네요. 어그로 댓글도 많지만 인사이트있는 댓글도 많은데 수용하지 않다보니 외부에서 기대하던 토스의 이미지가 실제론 그렇지 않겠구나 싶기도 하구요. 그래도 여전히 사람들의 기대가 큰 업체인만큼 더 좋은 피드백들이 나왔으면 좋겠네요
+          - generic [ref=e248]:
+            - generic [ref=e249]:
+              - img "신나는고래" [ref=e252]
+              - generic [ref=e253]: 신나는고래
+            - generic [ref=e254]: 현업에 있는 탑급 디자이너만 살아 남는다. 신규 자리는 계속해 없어지고..
+          - generic [ref=e255]:
+            - generic [ref=e256]:
+              - img "씩씩한북극곰" [ref=e259]
+              - generic [ref=e260]: 씩씩한북극곰
+            - generic [ref=e261]: 뭐랄까... 디자인을 한다는 느낌보다 코딩을 한다는 느낌이네요. 이런 프로세스로 토스의 모든 디자인이 진행된다면 새로울 건 없겠어요.
+          - generic [ref=e262]:
+            - generic [ref=e263]:
+              - img "다정한돌고래" [ref=e266]
+              - generic [ref=e267]: 다정한돌고래
+            - generic [ref=e268]: 인사이트, 생산성, 효율화 등 겉으로는 자기계발을 외치지만, 정작 사회와 인간에 대한 배려는 결여된 채 형해화된 가치들로 점철된 사례 같네요. 저는 디자이너가 사람과 사회에 실질적인 영향을 줄 수 있는 몇 안 되는 기업 내 직군이라고 믿고 있습니다. 최근 토스 아티클을 보면, 이러한 본질적인 역할에 도전하는 방식으로 차별화를 시도하려는 움직임이 보입니다. 하지만 디자이너가 주장할 수 있는 고유의 영역과 목소리를 스스로 희석시키는 방식의 차별화는, 같은 업계에 몸담은 동료 디자이너들에 대한 배려가 조금 더 필요하다고 느껴집니다.
+          - generic [ref=e269]:
+            - generic [ref=e270]:
+              - img "명랑한펭귄" [ref=e273]
+              - generic [ref=e274]: 명랑한펭귄
+            - generic [ref=e275]: 성공했다고 생각하는 성과 위주로 글이 작성되고, 중간에 반드시 존재하는 애로사항은 간결함이라는 명분하에 스킵되어 버렸군요. 토스가 하는 일이 표준이라고 생각하는 사람들이 많아지고 있는 요즘, 발언에도 무게를 느껴야 하지 않을까요? 점점 본인들이 옳다고 생각하는 방향성을 제시하려고만 하고 이면을 숨기려는것 같습니다.
+          - generic [ref=e276]:
+            - generic [ref=e277]:
+              - img "포근한코알라" [ref=e280]
+              - generic [ref=e281]: 포근한코알라
+            - generic [ref=e282]: 이거 그건가? 서버 잘돌아가니 서버 관리자 다 해고 시켜 ㅋㅋㅋㅋㅋ
+          - generic [ref=e283]:
+            - generic [ref=e284]:
+              - img "쾌활한코끼리" [ref=e287]
+              - generic [ref=e288]: 쾌활한코끼리
+            - generic [ref=e289]: 역할의 변화 같은 뉘앙스의 제목으로 해도 충분 했을 것 같은데 자극적인 제목이네요
+          - generic [ref=e290]:
+            - generic [ref=e291]:
+              - img "재미있는토끼" [ref=e294]
+              - generic [ref=e295]: 재미있는토끼
+            - generic [ref=e296]: 언젠가부터 토스 아티클은 맞는 말만 하는 명언집이 된거 같습니다. 구체적인 예시와 현실적인 한계 등을 명확히 공유하지 않고 실험과 도전 성과를 말로만 때우며 안전하게 기업 브랜딩하고 있는거 같아요. 그렇게 글을 다듬도록 AI에게 시킨 걸까요?
+          - generic [ref=e297]:
+            - generic [ref=e298]:
+              - img "재미있는강아지" [ref=e301]
+              - generic [ref=e302]: 재미있는강아지
+            - generic [ref=e303]: 경력자 입장에서 gpt에게 질문을 던졌더니 " ✅ 결론 AI는 '포토샵의 자동보정'처럼 우리 도구에 불과합니다. 디자인의 중심은 여전히 "사람"입니다. 특히 경험과 판단력, 그리고 브랜드를 시각적으로 풀어내는 해석력은 AI가 대체할 수 없습니다. 따라서, 웹디자인 직업은 사라지지 않습니다. 다만 방향은 바뀝니다. 앞으로는 **AI와 협업하는 ‘하이브리드 디자이너’**로서의 전환을 준비하신다면 지금보다 더 큰 기회를 만나게 되실 겁니다." 라고하는군요.
+          - generic [ref=e304]:
+            - generic [ref=e305]:
+              - img "신나는고래" [ref=e308]
+              - generic [ref=e309]: 신나는고래
+            - generic [ref=e310]: Ai가발달되더라도 전문가들역시 ai가 창의적으로는 한계가 있다고 합니다 어떻게 잘활용해서 동행할수있는가라는 의견도 있는것같습니다ㆍ 해당글 제목만보면 마치 디자이너가 필요없는 시대가 열릴꺼라는 느낌을 받는분들도 다수 계실것같습니다ㆍ
+          - generic [ref=e311]:
+            - generic [ref=e312]:
+              - img "정" [ref=e315]
+              - generic [ref=e316]: 정
+            - generic [ref=e317]: 안녕하세요, 토스 테크블로그를 꾸준히 구독하고 있는 주니어 디자이너입니다. 매번 깊이 있는 인사이트를 얻고 있어, 감사한 마음으로 글을 읽고 있습니다. 이번 글도 흥미로운 주제를 다뤄주셔서 감사드립니다. 다만 최근 몇몇 글들에서 예전보다 다소 덜 정제된 인상을 받은 바 있고, 이번 글에서도 몇 가지 아쉬운 점이 있어 조심스럽게 피드백을 드립니다. 먼저, 사례들이 다소 간결하게 정리되어 있어 작성자님의 맥락이나 경험이 충분히 전달되지 않았던 점이 아쉬웠습니다. 또한 ‘시스템을 만든다’는 핵심 메시지는 흥미로웠지만 다소 추상적으로 느껴졌습니다. 디자이너로서 어떤 문제를 마주했고, 그것을 어떻게 시스템화하거나 AI와 함께 해결했는지에 대한 구체적인 사례가 조금 더 소개되었다면 글의 설득력이 더해졌을 것 같습니다. 또한 글 말미에 토스 조직 소개가 갑작스럽게 등장하면서, 글의 흐름이 끊기는 느낌도 있었습니다. 이 피드백은 토스 블로그를 아끼는 한 독자로서, 더 많은 독자들에게 이 글의 좋은 의도가 더욱 잘 전달되기를 바라는 마음에서 드리는 말씀입니다. 바쁘신 일정 속에서도 정성스럽게 글을 써주신 점, 진심으로 감사드립니다. 🙏
+          - generic [ref=e318]:
+            - generic [ref=e319]:
+              - img "재미있는사슴" [ref=e322]
+              - generic [ref=e323]: 재미있는사슴
+            - generic [ref=e324]: 각자 자기 직업에 대한 자부심과 전문성은 존중합니다. 그런데 글 제대로 읽어보지도 않고 바로 기분 상하신 디자이너 분들은, 조금 더 다양한 시각에서 해석해보는 여유가 있었으면 합니다. 시대는 바뀌고 있고, 그 안에서 ‘나는 어떤 디자이너인가’에 대한 존재론적 질문도 던져볼 때입니다. 너무 쉽게 상처받기엔, 지금 우리가 직면한 변화가 훨씬 더 큽니다.
+          - generic [ref=e325]:
+            - generic [ref=e326]:
+              - img "유쾌한나비" [ref=e329]
+              - generic [ref=e330]: 유쾌한나비
+            - generic [ref=e331]: 이제 제목만 보고 디자이너 이제 필요없다고 인식하는 사람이 늘어나겠네요
+          - generic [ref=e332]:
+            - generic [ref=e333]:
+              - img "활기찬부엉이" [ref=e336]
+              - generic [ref=e337]: 활기찬부엉이
+            - generic [ref=e338]: 다가오는 AI시대에 인사이트 있는 글이라고 생각했는데 제목에 어그로 끌려서 비판이 많아 아쉽네요. 저는 공감했습니다.
+          - generic [ref=e339]:
+            - generic [ref=e340]:
+              - img "쾌활한판다" [ref=e343]
+              - generic [ref=e344]: 쾌활한판다
+            - generic [ref=e345]: 정말 자극적인 제목이네요.. 토스 디자인도 좋아하고 일하는 디자이너들도 존경스런 마음을 가졌는데 정말 실망 가득한 내용입니다. 토스가 어떤 영향력이 있는지 잘 아실텐데 많이 고민하고 올리는 글인지 의심스럽네요. 정말 여러번 생각하고 글 올려주세요.
+          - generic [ref=e346]:
+            - generic [ref=e347]:
+              - img "재미있는사슴" [ref=e350]
+              - generic [ref=e351]: 재미있는사슴
+            - generic [ref=e352]: 그동안은 디자이너들의 '눈'과 '감'에 의존한 것은 사실입니다. 하지만 첨단 AI 시대에는 이러한 업무 방식이 바뀔 수 있는 것도 받아드려야 합니다. 회사에 고용된 디자이너는 제품과 서비스를 위해 일해야 합니다. 제품과 서비스를 사용하는 유저가 AI 디자인에 거부감이 없다면 효율적인 것을 선택하는 것은 당연한 일입니다. 결국 중요한 것은 제품의 디자인은 "유저"를 위한 것이고, 자아실현의 목적이 아니기 때문입니다. AI는 학습이 누적되고 기술이 고도화됨에 따라 폭발적인 속도로 성장할 것입니다. 인간 디자이너는 AI와 경쟁하려고 하면 안되고 그것을 잘 활용할 방법을 찾고 과감히 바뀔 준비를 해야 할 것입니다.
+          - generic [ref=e353]:
+            - generic [ref=e354]:
+              - img "명랑한기린" [ref=e357]
+              - generic [ref=e358]: 명랑한기린
+            - generic [ref=e359]: AI로 소스 1만개, 10만개 뽑아내도 그 중에 가장 심미적으로 아름답고 균형잡힌 최고의 소스를 선택하는 건 결국 디자이너들의 '눈' 입니다. 글 쓰신 분이 정말 디자인을 하는 분이 맞는지 의심이 갈 정도의 글이에요.
+          - generic [ref=e360]:
+            - generic [ref=e361]:
+              - img "명랑한기린" [ref=e364]
+              - generic [ref=e365]: 명랑한기린
+            - generic [ref=e366]: 가뜩이나 현업 디자이너들 입지가 좁아지고 있는데.. 디자이너 없애기라는 자극적인 제목에 놀라 들어왔더니 내용은 거의 '기획 및 설계 디자인' 관련 내용이네요.
+          - generic [ref=e367]:
+            - generic [ref=e368]:
+              - img "재미있는너구리" [ref=e371]
+              - generic [ref=e372]: 재미있는너구리
+            - generic [ref=e373]: 댓글로 여러 반응이 나오는데, 그냥 현실만 이야기하면 생성형 ai 발전으로 모든 직업이 전에 없던 속도로 변화하고 있다는거죠. 내 직업이 사라지고 변한다는건 … 부정하고싶기도, 화나기도, 슬프기도 합니다. 다만 감정에 잠식되어 현재를 버티고 있으면 본인에게 결코 좋지는 않겠죠. 제 업무 플로우를 조각내서 프롬프트 엔지니어링만 하면, ai가 저보다 더 잘 처리합니다. 검토하는 눈은 필요하지만, 그 눈조차도 ai로 만들면 되고요. “어? 그럼 내가 하는 모든 일을 다 ai가 만들고, 검수하고, 그걸 이어붙이면 … api 사용료가 내 월급보다 덜나오면서, 속도는 몇백배 빠르겠는데?” 이런 생각이 드네요 요즘은.
+          - generic [ref=e374]:
+            - generic [ref=e375]:
+              - img "밝은앵무새" [ref=e378]
+              - generic [ref=e379]: 밝은앵무새
+            - generic [ref=e380]: 디자이너가 시스템을 설계하는 사람이 될거라면.. 디자이너와 PM의 차이는 뭘까요? 시대의 흐름을 반영한 실험이었겠지만 수많은 국내 디자이너들이 레퍼런스로 삼고 있는 토스에서 디자이너를 없애는 일을 주도한다는게 좀 씁쓸하네요. 디자인을 강력한 무기로 내세우는 토스인만큼 디자이너들에게 책임감 있는 모습을 보여주면 좋겠어요.
+          - generic [ref=e381]:
+            - generic [ref=e382]:
+              - img "씩씩한재규어" [ref=e385]
+              - generic [ref=e386]: 씩씩한재규어
+            - generic [ref=e387]: Chat GPT에게 한 번 물어봤습니다. "디자이너 없애기"는 수사적 장치라 하더라도, 독자 입장에서 "없앤다고 해놓고 결국 더 중요하다니?"라는 느낌을 줄 수 있으므로 **'역할의 전환 실험'**이라는 서술이 더 적절할 수 있습니다.
+          - generic [ref=e388]:
+            - generic [ref=e389]:
+              - img "쾌활한재규어" [ref=e392]
+              - generic [ref=e393]: 쾌활한재규어
+            - generic [ref=e394]: 그리고 추가로 하나더 디자이너에 대한 영역안에 디쟈이너라고 불리는 그 의미를 토스가 좀 알았으면 합니다. 이번글은 전체적으로 실망스럽네요
+          - generic [ref=e395]:
+            - generic [ref=e396]:
+              - img "쾌활한재규어" [ref=e399]
+              - generic [ref=e400]: 쾌활한재규어
+            - generic [ref=e401]: ai가 편의성을 알아도 심미적관점아나 예술부분에 이르는 ui/ux는 조금 어려울듯 합니다. 애초에 사용자면을 고려한 ux는 디자이너라고 부르기엔 기획 설계자죠. 디자이너는 좀더 별개에 직군인것 같습니다.
+          - generic [ref=e402]:
+            - generic [ref=e403]:
+              - img "씩씩한토마토" [ref=e406]
+              - generic [ref=e407]: 씩씩한토마토
+            - generic [ref=e408]: 동감해요. 결국 시대가 변함에 따라 각 분화되었던 전문성이 융합되고 그럼 결국엔 본질적인 질문을 던지고 명확한 방향성을 제시하는 설계자의 역량이 필요한 순간이 오고 있는 것 같아요. 다만 툴을 통해 만든 결과물을 (각각의 분야에 맞춰) 이해하고 파악하는 날카로운 안목과 지식 베이스가 필요하니 설계자는 더 많은 공부를 해야겠지요! 늘 앞선 고민과 실천을 하는 토스에게 긍정적 영향을 자주 받아요. 화이팅입니다 :)
+          - generic [ref=e409]:
+            - generic [ref=e410]:
+              - img "다정한북극곰" [ref=e413]
+              - generic [ref=e414]: 다정한북극곰
+            - generic [ref=e415]: 툴을 만들고 시스템을 만드는 직군이라면 직군명이 달라야겠네요. 디자인이 결국 설계를 뜻하는 말이니 설계자라고 하는게 더 직관적으로 들립니다. 그래도 툴안에 들어가야 할 요소요소들은 결국 사람이 그려야하니.... 이러나 저러나 디자이너가 생산하는 가치가 여러 범위로 확장됐네요.
+          - generic [ref=e416]:
+            - generic [ref=e417]:
+              - img "신나는캥거루" [ref=e420]
+              - generic [ref=e421]: 신나는캥거루
+            - generic [ref=e422]: 저도 글쓰신 디자이너분과 비슷한 고민을 하고 실천하고 있어서 더욱 공감되는 아티클인 것 같습니다. 시스템적 사고를 기를 수 있는 방법도 토스를 통해서 배워보고 싶네요ㅎㅎ
+          - generic [ref=e423]:
+            - generic [ref=e424]:
+              - img "정자동사는29살민현" [ref=e427]
+              - generic [ref=e428]: 정자동사는29살민현
+            - generic [ref=e429]: GOD스... 보법이 다르다 2 thumbs up
+          - generic [ref=e430]:
+            - generic [ref=e431]:
+              - img "다정한코알라" [ref=e434]
+              - generic [ref=e435]: 다정한코알라
+            - generic [ref=e436]: 댓글이 왜 이런 분위기인지 모르겠네요. 개인적으로 공감하는 부분이 많습니다. 디자이너에게는 시스템적인 사고를 요구하는 바가 더 강해지고 있고, 기획과 시스템 설계에 대해 더 많이 관여하게 되고 있다고 생각해요.
+          - generic [ref=e437]:
+            - generic [ref=e438]:
+              - img "활기찬호랑이" [ref=e441]
+              - generic [ref=e442]: 활기찬호랑이
+            - generic [ref=e443]: 좋은글이네요. 기술발전으로 변화하는 흐름을 앞서갈 필요는 없지만 거부하고 뒤쳐져서는 안된다고 봅니다.
+          - generic [ref=e444]:
+            - generic [ref=e445]:
+              - img "재치있는기린" [ref=e448]
+              - generic [ref=e449]: 재치있는기린
+            - generic [ref=e450]: 흠 글들이 점점 영양가가 없는느낌..
+          - generic [ref=e451]:
+            - generic [ref=e452]:
+              - img "씩씩한물소" [ref=e455]
+              - generic [ref=e456]: 씩씩한물소
+            - generic [ref=e457]: 더 고도화된, 본질에 가까운 디자인을 하려면 많은 시도를 통해 넓어진 관점과 이해, 풍부한 경험이 중요하다 생각해요. 그런 의미에서 반복되고 규칙적인 업무는 AI를 통해 효율화를 하고 디자이너는 본문에 나온 것처럼 '시스템적 사고', 소위 디렉터의 소양을 갖추는 게 앞으로의 디자이너 역할이 아닐까 싶네요.
+          - generic [ref=e458]:
+            - generic [ref=e459]:
+              - img "다정한사슴" [ref=e462]
+              - generic [ref=e463]: 다정한사슴
+            - generic [ref=e464]: 웃음만 ㅋㅋㅋㅋㅋ
+          - generic [ref=e465]:
+            - generic [ref=e466]:
+              - img "다정한북극곰" [ref=e469]
+              - generic [ref=e470]: 다정한북극곰
+            - generic [ref=e471]: ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ
+          - generic [ref=e472]:
+            - generic [ref=e473]:
+              - img "쾌활한판다" [ref=e476]
+              - generic [ref=e477]: 쾌활한판다
+            - generic [ref=e478]: 토스는 그 어느 회사보다도 디자인에 진심인 회사라고 생각했는데, 사소한건 그렇다 쳐도 점점 큼직한 테스크들을 AI에 떠넘기는 모습이 아쉽네요... 디자인의 본질은 효율이라고 생각하시나요?
+          - generic [ref=e479]:
+            - generic [ref=e480]:
+              - img "다정한고양이" [ref=e483]
+              - generic [ref=e484]: 다정한고양이
+            - generic [ref=e485]: 많이 바쁘셨군요
+          - generic [ref=e486]:
+            - generic [ref=e487]:
+              - img "재치있는수달" [ref=e490]
+              - generic [ref=e491]: 재치있는수달
+            - generic [ref=e492]: 이 글도 AI가 작성한건가.....
+          - generic [ref=e493]:
+            - generic [ref=e494]:
+              - img "명랑한하마" [ref=e497]
+              - generic [ref=e498]: 명랑한하마
+            - generic [ref=e499]: 예시 이미지들이 있으면 이해가 쉬울 것 같아요..
+          - generic [ref=e500]:
+            - generic [ref=e501]:
+              - img "유쾌한하마" [ref=e504]
+              - generic [ref=e505]: 유쾌한하마
+            - generic [ref=e506]: 그룹 권한이 뭔가요? 글이 더 친절하면 좋겠어요
+          - generic [ref=e507]:
+            - generic [ref=e508]:
+              - img "쾌활한캥거루" [ref=e511]
+              - generic [ref=e512]: 쾌활한캥거루
+            - generic [ref=e513]: 시스템이나 안정적으로 돌아가게 해라
+      - generic [ref=e514]:
+        - generic [ref=e515]: 이다윗님의 다른 글
+        - list [ref=e516]:
+          - listitem [ref=e517]:
+            - link "토스 송금 화면 송금할 때 은행 이름을 꼭 입력해야 할까요? 2024년 01월 03일" [ref=e518] [cursor=pointer]:
+              - /url: /article/toss-money-transfer-bank-recommendation
+              - img "토스 송금 화면" [ref=e521]
+              - generic [ref=e522]:
+                - heading "송금할 때 은행 이름을 꼭 입력해야 할까요?" [level=4] [ref=e523]
+                - generic [ref=e524]: 2024년 01월 03일
+          - listitem [ref=e525]:
+            - link "뛰는 사람 토스에서 하루 만에 제품 출시하는 법 2023년 12월 11일" [ref=e526] [cursor=pointer]:
+              - /url: /article/launching-product-in-one-day
+              - img "뛰는 사람" [ref=e529]
+              - generic [ref=e530]:
+                - heading "토스에서 하루 만에 제품 출시하는 법" [level=4] [ref=e531]
+                - generic [ref=e532]: 2023년 12월 11일
+  - contentinfo [ref=e533]:
+    - generic [ref=e534]:
+      - generic [ref=e535]:
+        - list [ref=e536]:
+          - listitem [ref=e537]:
+            - heading "서비스" [level=2] [ref=e538]
+          - listitem [ref=e539]:
+            - link "공지사항" [ref=e540] [cursor=pointer]:
+              - /url: https://toss.im/notice
+          - listitem [ref=e541]:
+            - link "자주 묻는 질문" [ref=e542] [cursor=pointer]:
+              - /url: https://support.toss.im/faq
+          - listitem [ref=e543]:
+            - link "공동인증서 관리" [ref=e544] [cursor=pointer]:
+              - /url: https://toss.im/cert
+          - listitem [ref=e545]:
+            - link "계정 일시잠금" [ref=e546] [cursor=pointer]:
+              - /url: http://support.toss.im/suspend
+          - listitem [ref=e547]:
+            - link "고객센터" [ref=e548] [cursor=pointer]:
+              - /url: https://support.toss.im
+          - listitem [ref=e549]:
+            - link "개인(신용)정보 이용·제공 내역 조회" [ref=e550] [cursor=pointer]:
+              - /url: https://toss.im/user/privacy-history
+          - listitem [ref=e551]:
+            - link "브랜드 리소스센터" [ref=e552] [cursor=pointer]:
+              - /url: https://brand.toss.im/
+          - listitem [ref=e553]:
+            - link "토스의 개인정보 보호" [ref=e554] [cursor=pointer]:
+              - /url: https://privacy.toss.im
+          - listitem [ref=e555]:
+            - link "토스유스카드" [ref=e556] [cursor=pointer]:
+              - /url: https://toss.im/teens/uss-card
+          - listitem [ref=e557]:
+            - link "앱인토스" [ref=e558] [cursor=pointer]:
+              - /url: https://toss.im/apps-in-toss
+          - listitem [ref=e559]:
+            - link "토스 카드라운지" [ref=e560] [cursor=pointer]:
+              - /url: https://card-lounge.toss.im/?utm_source=tossofficial&utm_campaign=traffic_cardpc_footer
+        - list [ref=e561]:
+          - listitem [ref=e562]:
+            - heading "회사" [level=2] [ref=e563]
+          - listitem [ref=e564]:
+            - link "회사 소개" [ref=e565] [cursor=pointer]:
+              - /url: https://toss.im/team
+          - listitem [ref=e566]:
+            - link "토스페이먼츠" [ref=e567] [cursor=pointer]:
+              - /url: https://tosspayments.com/
+          - listitem [ref=e568]:
+            - link "토스인슈어런스" [ref=e569] [cursor=pointer]:
+              - /url: https://toss.im/insurance
+          - listitem [ref=e570]:
+            - link "토스증권" [ref=e571] [cursor=pointer]:
+              - /url: https://corp.tossinvest.com/
+          - listitem [ref=e572]:
+            - link "토스씨엑스" [ref=e573] [cursor=pointer]:
+              - /url: https://tosscx.com
+          - listitem [ref=e574]:
+            - link "토스뱅크" [ref=e575] [cursor=pointer]:
+              - /url: https://www.tossbank.com/
+          - listitem [ref=e576]:
+            - link "토스플레이스" [ref=e577] [cursor=pointer]:
+              - /url: https://tossplace.com/?referrer=toss_recruit_footer
+          - listitem [ref=e578]:
+            - link "토스모바일" [ref=e579] [cursor=pointer]:
+              - /url: https://tossmobile.co.kr
+          - listitem [ref=e580]:
+            - link "토스인컴" [ref=e581] [cursor=pointer]:
+              - /url: https://tossincome.com/?utm_source=tosshomepage_footer
+          - listitem [ref=e582]:
+            - link "토스임팩트" [ref=e583] [cursor=pointer]:
+              - /url: https://toss.im/impact
+          - listitem [ref=e584]:
+            - link "토스인사이트" [ref=e585] [cursor=pointer]:
+              - /url: https://tossinsight.im/
+          - listitem [ref=e586]:
+            - link "채용" [ref=e587] [cursor=pointer]:
+              - /url: https://toss.im/career
+          - listitem [ref=e588]:
+            - link "기술 블로그" [ref=e589] [cursor=pointer]:
+              - /url: https://toss.tech/
+          - listitem [ref=e590]:
+            - link "블로그" [ref=e591] [cursor=pointer]:
+              - /url: https://blog.toss.im/
+          - listitem [ref=e592]:
+            - link "공고" [ref=e593] [cursor=pointer]:
+              - /url: https://toss.im/announcement
+        - list [ref=e594]:
+          - listitem [ref=e595]:
+            - heading "문의" [level=2] [ref=e596]
+          - listitem [ref=e597]:
+            - link "사업 제휴" [ref=e598] [cursor=pointer]:
+              - /url: mailto:partnership@toss.im
+          - listitem [ref=e599]:
+            - link "토스쇼핑 입점문의" [ref=e600] [cursor=pointer]:
+              - /url: https://toss.im/shopping-seller?utm_source=homepage&utm_medium=homepage_lead&utm_campaign=traffic_homepage_performance&utm_content=traffic_homepage_231103
+          - listitem [ref=e601]:
+            - link "광고 문의" [ref=e602] [cursor=pointer]:
+              - /url: https://ads-platform.toss.im/login
+          - listitem [ref=e603]:
+            - link "인증 사업 문의" [ref=e604] [cursor=pointer]:
+              - /url: https://toss.im/tosscert
+          - listitem [ref=e605]:
+            - link "마케팅·PR" [ref=e606] [cursor=pointer]:
+              - /url: mailto:support@toss.im
+          - listitem [ref=e607]:
+            - link "IR" [ref=e608] [cursor=pointer]:
+              - /url: mailto:ir@toss.im
+        - list [ref=e609]:
+          - listitem [ref=e610]:
+            - heading "고객센터" [level=2] [ref=e611]
+          - listitem [ref=e612]:
+            - 'link "전화: 1599-4905 (24시간 연중무휴)" [ref=e613] [cursor=pointer]':
+              - /url: tel:1599-4905
+          - listitem [ref=e614]:
+            - 'link "이메일(고객전용): support@toss.im" [ref=e615] [cursor=pointer]':
+              - /url: mailto:support@toss.im
+          - listitem [ref=e616]:
+            - 'link "이메일(외부기관전용): safe@toss.im" [ref=e617] [cursor=pointer]':
+              - /url: mailto:safe@toss.im
+          - listitem [ref=e618]:
+            - link "민원 접수" [ref=e619] [cursor=pointer]:
+              - /url: https://support.toss.im/customer-complaint
+        - list [ref=e620]:
+          - listitem [ref=e621]:
+            - heading "윤리경영" [level=2] [ref=e622]
+          - listitem [ref=e623]:
+            - link "상담/신고" [ref=e624] [cursor=pointer]:
+              - /url: https://toss.im/ethics
+      - generic [ref=e625]:
+        - heading "㈜비바리퍼블리카" [level=2] [ref=e626]
+        - text: "사업자 등록번호 : 120-88-01280 | 대표 : 이승건"
+        - text: "호스팅 서비스 : 주식회사 비바리퍼블리카 | 통신판매업 신고번호 : 2014-서울강남-03377"
+        - link "사업자정보확인" [ref=e627] [cursor=pointer]:
+          - /url: https://www.ftc.go.kr/bizCommPop.do?wrkr_no=1208801280
+        - text: 06236 서울특별시 강남구 테헤란로 142, 4층, 10층, 11층, 12층, 13층, 22층, 23층 (역삼동, 아크플레이스)
+        - text: "고객센터 : 서울시 구로구 경인로662, 디큐브시티 12층, 13층 토스씨엑스"
+      - list [ref=e628]:
+        - listitem [ref=e629]:
+          - link "서비스 이용약관" [ref=e630] [cursor=pointer]:
+            - /url: https://toss.im/terms
+        - listitem [ref=e631]:
+          - link "통합 금융정보 서비스 약관" [ref=e632] [cursor=pointer]:
+            - /url: https://toss.im/docs/500
+        - listitem [ref=e633]:
+          - link "마이데이터 서비스 이용약관" [ref=e634] [cursor=pointer]:
+            - /url: https://toss.im/docs/11567
+        - listitem [ref=e635]:
+          - link "이용자의 권리 및 유의사항" [ref=e636] [cursor=pointer]:
+            - /url: https://static-docs.toss.im/privacy/safety
+        - listitem [ref=e637]:
+          - link "개인정보 처리방침" [ref=e638] [cursor=pointer]:
+            - /url: https://toss.im/privacy-policy?categoryId=325
+            - strong [ref=e639]: 개인정보 처리방침
+        - listitem [ref=e640]:
+          - link "채용팀 개인정보 처리방침" [ref=e641] [cursor=pointer]:
+            - /url: https://toss.im/privacy-policy?categoryId=2027
+            - strong [ref=e642]: 채용팀 개인정보 처리방침
+        - listitem [ref=e643]:
+          - link "어드민 서비스 개인정보 처리방침" [ref=e644] [cursor=pointer]:
+            - /url: https://toss.im/privacy-policy?categoryId=2025
+            - strong [ref=e645]: 어드민 서비스 개인정보 처리방침
+        - listitem [ref=e646]:
+          - link "위치기반서비스 이용약관" [ref=e647] [cursor=pointer]:
+            - /url: https://toss.im/agreement/locationInfo
+            - strong [ref=e648]: 위치기반서비스 이용약관
+        - listitem [ref=e649]:
+          - link "가맹점 고지사항" [ref=e650] [cursor=pointer]:
+            - /url: https://toss.im/docs/10290
+        - listitem [ref=e651]:
+          - link "토스 전자서명인증업무준칙" [ref=e652] [cursor=pointer]:
+            - /url: https://toss.im/tosscert/cps
+        - listitem [ref=e653]:
+          - link "토스 전자인증서비스 약관" [ref=e654] [cursor=pointer]:
+            - /url: https://toss.im/docs/49
+        - listitem [ref=e655]:
+          - link "금융소비자보호" [ref=e656] [cursor=pointer]:
+            - /url: https://toss.im/financial-consumer-protection
+        - listitem [ref=e657]:
+          - link "토스비즈니스 개인정보 처리방침" [ref=e658] [cursor=pointer]:
+            - /url: https://toss.im/privacy-policy?categoryId=2023
+            - strong [ref=e659]: 토스비즈니스 개인정보 처리방침
+        - listitem [ref=e660]:
+          - link "퀵계좌이체 개인정보 처리방침" [ref=e661] [cursor=pointer]:
+            - /url: https://toss.im/privacy-policy?categoryId=2029
+            - strong [ref=e662]: 퀵계좌이체 개인정보 처리방침
+        - listitem [ref=e663]:
+          - link "정산자금 보호조치" [ref=e664] [cursor=pointer]:
+            - /url: https://service.toss.im/terms/72977
+      - list [ref=e665]:
+        - listitem [ref=e666]:
+          - link "Toss Blog" [ref=e667] [cursor=pointer]:
+            - /url: https://toss.im/tossfeed
+            - img "Toss Blog" [ref=e668]
+        - listitem [ref=e669]:
+          - link "Toss Naver Post" [ref=e670] [cursor=pointer]:
+            - /url: https://blog.naver.com/tossblog
+            - img "Toss Naver Post" [ref=e671]
+        - listitem [ref=e672]:
+          - link "Toss X" [ref=e673] [cursor=pointer]:
+            - /url: https://x.com/toss__official
+            - img "Toss X" [ref=e674]
+        - listitem [ref=e675]:
+          - link "Toss Instagram" [ref=e676] [cursor=pointer]:
+            - /url: https://www.instagram.com/toss.im/
+            - img "Toss Instagram" [ref=e677]
+  - alert [ref=e678]
+  - list

@@ -1,23 +1,46 @@
 ---
 import { getCollection } from 'astro:content';
-import ListLayout from '../layouts/ListLayout.astro';
+import HomeLayout from '../layouts/HomeLayout.astro';
 import { POSTS_PER_PAGE } from '../consts';
+
+const base = import.meta.env.BASE_URL;
 
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const sortedPosts = allPosts.sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 
+// 히어로 슬라이더용 (최신 3개)
+const featured = sortedPosts.slice(0, 3).map((p) => ({
+  id: p.id,
+  title: p.data.title,
+  description: p.data.description,
+  tags: p.data.tags,
+  heroImage: p.data.heroImage,
+}));
+
+// 인기 있는 글 (최신 5개)
+const popularPosts = sortedPosts.slice(0, 5).map((p) => ({
+  id: p.id,
+  title: p.data.title,
+  description: p.data.description,
+  tags: p.data.tags,
+  heroImage: p.data.heroImage,
+}));
+
+// 아티클 리스트 (페이지네이션 - 1페이지)
 const page = {
   data: sortedPosts.slice(0, POSTS_PER_PAGE),
   currentPage: 1,
   lastPage: Math.ceil(sortedPosts.length / POSTS_PER_PAGE),
   url: {
     prev: undefined,
-    next: sortedPosts.length > POSTS_PER_PAGE ? `${import.meta.env.BASE_URL}page/2/` : undefined,
-    current: import.meta.env.BASE_URL,
+    next: sortedPosts.length > POSTS_PER_PAGE
+      ? `${base}page/2/`
+      : undefined,
+    current: base,
   },
 };
 ---
 
-<ListLayout page={page} />
+<HomeLayout featured={featured} popularPosts={popularPosts} page={page} />

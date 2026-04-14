@@ -1,0 +1,399 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e4]:
+      - link "토스테크 로고" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - img "토스테크 로고" [ref=e7]
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - link "Engineering" [ref=e10] [cursor=pointer]:
+            - /url: /category/engineering
+            - button "Engineering" [ref=e11]
+          - link "Design" [ref=e12] [cursor=pointer]:
+            - /url: /category/design
+            - button "Design" [ref=e13]
+          - link "Product" [ref=e14] [cursor=pointer]:
+            - /url: /category/product
+            - button "Product" [ref=e15]
+        - generic [ref=e16]:
+          - link "구독하기" [ref=e17] [cursor=pointer]:
+            - /url: /subscribe
+            - button "구독하기" [ref=e18]
+          - button "채용 바로가기" [ref=e19] [cursor=pointer]
+          - button "검색 아이콘 버튼" [ref=e20] [cursor=pointer]:
+            - img [ref=e21]
+    - generic [ref=e22]:
+      - generic [ref=e23]:
+        - link "토스가 디자인 직무를 2개로 줄인 이유" [ref=e24] [cursor=pointer]:
+          - /url: https://toss.tech/article/Designer
+        - generic [ref=e25]:
+          - generic [ref=e26]:
+            - heading "토스가 디자인 직무를 2개로 줄인 이유" [level=3] [ref=e27]
+            - paragraph [ref=e28]: 6개 직무를 Visual Designer, Product Designer 2개로 통합한 이유를 들려드려요.
+          - generic [ref=e29]:
+            - button "이전 아티클" [ref=e30] [cursor=pointer]:
+              - img "이전 버튼" [ref=e32]
+            - button "다음 아티클" [ref=e33] [cursor=pointer]:
+              - img "다음 버튼" [ref=e35]
+        - generic:
+          - generic:
+            - img "토스가 디자인 직무를 2개로 줄인 이유"
+          - generic:
+            - img "Metric Review, 실행을 이끌다"
+          - generic:
+            - 'img "Layers of your time : 토스와 함께한 시간을 기념하기"'
+          - generic:
+            - img "하마터면 못생겨질 뻔했다 - 토스 프론트 2 제작기"
+      - generic [ref=e36]:
+        - generic [ref=e38]:
+          - generic [ref=e39]: 전체 아티클
+          - generic [ref=e40]:
+            - link "Design 류관준 하마터면 못생겨질 뻔했다 - 토스 프론트 2 제작기 아름다우면서 사용성까지 챙긴 토스 프론트 2, 그 뒤에는 “이게 정말 최선일까?”를 끝까지 놓지 않았던 집요한 고민이 있었어요. 하마터면 못생겨질 뻔했다 - 토스 프론트 2 제작기" [ref=e41] [cursor=pointer]:
+              - /url: /article/toss_front
+              - generic [ref=e42]:
+                - generic [ref=e43]:
+                  - generic: Design
+                  - generic: 류관준
+                - generic [ref=e44]: 하마터면 못생겨질 뻔했다 - 토스 프론트 2 제작기
+                - generic [ref=e45]: 아름다우면서 사용성까지 챙긴 토스 프론트 2, 그 뒤에는 “이게 정말 최선일까?”를 끝까지 놓지 않았던 집요한 고민이 있었어요.
+              - img "하마터면 못생겨질 뻔했다 - 토스 프론트 2 제작기" [ref=e47]
+            - 'link "Design 이정현 Layers of your time : 토스와 함께한 시간을 기념하기 팀원의 시간을 진심으로 축하하는 방법을 찾고 싶었어요. 8개월 동안 사내 굿즈를 다시 만들며 고민했던 과정과, 그 안에서 발견한 기준을 들려드려요. Layers of your time : 토스와 함께한 시간을 기념하기" [ref=e48] [cursor=pointer]':
+              - /url: /article/layers-of-your-time
+              - generic [ref=e49]:
+                - generic [ref=e50]:
+                  - generic: Design
+                  - generic: 이정현
+                - generic [ref=e51]: "Layers of your time : 토스와 함께한 시간을 기념하기"
+                - generic [ref=e52]: 팀원의 시간을 진심으로 축하하는 방법을 찾고 싶었어요. 8개월 동안 사내 굿즈를 다시 만들며 고민했던 과정과, 그 안에서 발견한 기준을 들려드려요.
+              - 'img "Layers of your time : 토스와 함께한 시간을 기념하기" [ref=e54]'
+            - link "Design 토스 디자인 챕터 토스가 디자인 직무를 2개로 줄인 이유 6개 직무를 Visual Designer, Product Designer 2개로 통합한 이유를 들려드려요. 토스가 디자인 직무를 2개로 줄인 이유" [ref=e55] [cursor=pointer]:
+              - /url: /article/Designer
+              - generic [ref=e56]:
+                - generic [ref=e57]:
+                  - generic: Design
+                  - generic: 토스 디자인 챕터
+                - generic [ref=e58]: 토스가 디자인 직무를 2개로 줄인 이유
+                - generic [ref=e59]: 6개 직무를 Visual Designer, Product Designer 2개로 통합한 이유를 들려드려요.
+              - img "토스가 디자인 직무를 2개로 줄인 이유" [ref=e61]
+            - 'link "Engineering 문동욱 97% Smaller, 2x Faster: How es-toolkit Reached 10 Million Weekly Downloads A drop-in lodash replacement built for how JavaScript actually works today — ES Modules, TypeScript, and significantly smaller bundles. Adopted by Microsoft, Storybook, and Yarn. 10M+ weekly npm downloads." [ref=e62] [cursor=pointer]':
+              - /url: /article/es-toolkit
+              - generic [ref=e63]:
+                - generic [ref=e64]:
+                  - generic: Engineering
+                  - generic: 문동욱
+                - generic [ref=e65]: "97% Smaller, 2x Faster: How es-toolkit Reached 10 Million Weekly Downloads"
+                - generic [ref=e66]: A drop-in lodash replacement built for how JavaScript actually works today — ES Modules, TypeScript, and significantly smaller bundles. Adopted by Microsoft, Storybook, and Yarn. 10M+ weekly npm downloads.
+            - link "Engineering 박종익 Metric Review, 실행을 이끌다 토스플레이스 데이터 조직이 '좋은 인사이트'를 '실행'으로 연결한 방법 Metric Review, 실행을 이끌다" [ref=e67] [cursor=pointer]:
+              - /url: /article/place-metric-review
+              - generic [ref=e68]:
+                - generic [ref=e69]:
+                  - generic: Engineering
+                  - generic: 박종익
+                - generic [ref=e70]: Metric Review, 실행을 이끌다
+                - generic [ref=e71]: 토스플레이스 데이터 조직이 '좋은 인사이트'를 '실행'으로 연결한 방법
+              - img "Metric Review, 실행을 이끌다" [ref=e73]
+          - generic [ref=e75]:
+            - button "이전 페이지" [disabled] [ref=e77]
+            - generic [ref=e81]:
+              - button "1페이지" [ref=e82] [cursor=pointer]: "1"
+              - button "2페이지" [ref=e83] [cursor=pointer]: "2"
+              - button "3페이지" [ref=e84] [cursor=pointer]: "3"
+              - button "4페이지" [ref=e85] [cursor=pointer]: "4"
+              - button "5페이지" [ref=e86] [cursor=pointer]: "5"
+            - button "다음 페이지" [ref=e88] [cursor=pointer]
+        - generic [ref=e92]:
+          - generic [ref=e93]:
+            - generic [ref=e94]: 인기 있는 글
+            - generic [ref=e95]:
+              - link "1 토스가 디자인 직무를 2개로 줄인 이유 토스 디자인 챕터" [ref=e96] [cursor=pointer]:
+                - /url: /article/Designer
+                - generic [ref=e98]: "1"
+                - generic [ref=e99]:
+                  - generic [ref=e100]: 토스가 디자인 직무를 2개로 줄인 이유
+                  - generic [ref=e101]: 토스 디자인 챕터
+              - link "2 Software 3.0 시대, Harness를 통한 조직 생산성 저점 높이기 김용성" [ref=e102] [cursor=pointer]:
+                - /url: /article/harness-for-team-productivity
+                - generic [ref=e104]: "2"
+                - generic [ref=e105]:
+                  - generic [ref=e106]: Software 3.0 시대, Harness를 통한 조직 생산성 저점 높이기
+                  - generic [ref=e107]: 김용성
+              - link "3 마케팅 문구 클릭률을 올리는 6가지 원칙 유아란" [ref=e108] [cursor=pointer]:
+                - /url: /article/Marketing_Writing
+                - generic [ref=e110]: "3"
+                - generic [ref=e111]:
+                  - generic [ref=e112]: 마케팅 문구 클릭률을 올리는 6가지 원칙
+                  - generic [ref=e113]: 유아란
+          - generic [ref=e114]:
+            - generic [ref=e115]: 최신 댓글
+            - generic [ref=e116]:
+              - link "쾌활한물개 쾌활한물개 문서도 ai로; Software 3.0 시대, Harness를 통한 조직 생산성 저점 높이기" [ref=e117] [cursor=pointer]:
+                - /url: /article/45519
+                - generic [ref=e118]:
+                  - generic [ref=e119]:
+                    - img "쾌활한물개" [ref=e122]
+                    - generic [ref=e123]: 쾌활한물개
+                  - generic [ref=e124]: 문서도 ai로;
+                - generic [ref=e125]: Software 3.0 시대, Harness를 통한 조직 생산성 저점 높이기
+              - link "씩씩한코뿔소 씩씩한코뿔소 AI 딸깍 Software 3.0 시대, Harness를 통한 조직 생산성 저점 높이기" [ref=e126] [cursor=pointer]:
+                - /url: /article/45519
+                - generic [ref=e127]:
+                  - generic [ref=e128]:
+                    - img "씩씩한코뿔소" [ref=e131]
+                    - generic [ref=e132]: 씩씩한코뿔소
+                  - generic [ref=e133]: AI 딸깍
+                - generic [ref=e134]: Software 3.0 시대, Harness를 통한 조직 생산성 저점 높이기
+              - link "다정한사슴 다정한사슴 쉽지 않다... 토스가 디자인 직무를 2개로 줄인 이유" [ref=e135] [cursor=pointer]:
+                - /url: /article/47067
+                - generic [ref=e136]:
+                  - generic [ref=e137]:
+                    - img "다정한사슴" [ref=e140]
+                    - generic [ref=e141]: 다정한사슴
+                  - generic [ref=e142]: 쉽지 않다...
+                - generic [ref=e143]: 토스가 디자인 직무를 2개로 줄인 이유
+              - link "신나는햄스터 신나는햄스터 역시 토스 디자인 조직은 트렌드를 앞서가네여.. 토스가 디자인 직무를 2개로 줄인 이유" [ref=e144] [cursor=pointer]:
+                - /url: /article/47067
+                - generic [ref=e145]:
+                  - generic [ref=e146]:
+                    - img "신나는햄스터" [ref=e149]
+                    - generic [ref=e150]: 신나는햄스터
+                  - generic [ref=e151]: 역시 토스 디자인 조직은 트렌드를 앞서가네여..
+                - generic [ref=e152]: 토스가 디자인 직무를 2개로 줄인 이유
+      - generic [ref=e153]:
+        - generic [ref=e154]: 아티클 시리즈
+        - generic [ref=e155]:
+          - link "Simplicity 4 Simplicity 4 토스 디자인 컨퍼런스 Simplicity 4의 비하인드 스토리 아티클 6개" [ref=e156] [cursor=pointer]:
+            - /url: /series/simiplicity4
+            - img "Simplicity 4" [ref=e158]
+            - generic [ref=e159]:
+              - generic [ref=e160]: Simplicity 4
+              - generic [ref=e161]: 토스 디자인 컨퍼런스 Simplicity 4의 비하인드 스토리
+            - generic [ref=e163]: 아티클 6개
+          - link "접근성 업무일지 접근성 업무일지 토스의 접근성 이야기 아티클 4개" [ref=e164] [cursor=pointer]:
+            - /url: /series/universal_design
+            - img "접근성 업무일지" [ref=e166]
+            - generic [ref=e167]:
+              - generic [ref=e168]: 접근성 업무일지
+              - generic [ref=e169]: 토스의 접근성 이야기
+            - generic [ref=e171]: 아티클 4개
+          - link "토스페이먼츠 레거시 개편 이야기 토스페이먼츠 레거시 개편 이야기 멈춰있던 PG 시스템의 시간을 다시 흐르게 한 스토리 아티클 11개" [ref=e172] [cursor=pointer]:
+            - /url: /series/payments-legacy
+            - img "토스페이먼츠 레거시 개편 이야기" [ref=e174]
+            - generic [ref=e175]:
+              - generic [ref=e176]: 토스페이먼츠 레거시 개편 이야기
+              - generic [ref=e177]: 멈춰있던 PG 시스템의 시간을 다시 흐르게 한 스토리
+            - generic [ref=e179]: 아티클 11개
+          - link "토스 피플 토스 피플 토스 팀원들의 커리어 스토리 아티클 10개" [ref=e180] [cursor=pointer]:
+            - /url: /series/toss-people
+            - img "토스 피플" [ref=e182]
+            - generic [ref=e183]:
+              - generic [ref=e184]: 토스 피플
+              - generic [ref=e185]: 토스 팀원들의 커리어 스토리
+            - generic [ref=e187]: 아티클 10개
+  - contentinfo [ref=e188]:
+    - generic [ref=e189]:
+      - generic [ref=e190]:
+        - list [ref=e191]:
+          - listitem [ref=e192]:
+            - heading "서비스" [level=2] [ref=e193]
+          - listitem [ref=e194]:
+            - link "공지사항" [ref=e195] [cursor=pointer]:
+              - /url: https://toss.im/notice
+          - listitem [ref=e196]:
+            - link "자주 묻는 질문" [ref=e197] [cursor=pointer]:
+              - /url: https://support.toss.im/faq
+          - listitem [ref=e198]:
+            - link "공동인증서 관리" [ref=e199] [cursor=pointer]:
+              - /url: https://toss.im/cert
+          - listitem [ref=e200]:
+            - link "계정 일시잠금" [ref=e201] [cursor=pointer]:
+              - /url: http://support.toss.im/suspend
+          - listitem [ref=e202]:
+            - link "고객센터" [ref=e203] [cursor=pointer]:
+              - /url: https://support.toss.im
+          - listitem [ref=e204]:
+            - link "개인(신용)정보 이용·제공 내역 조회" [ref=e205] [cursor=pointer]:
+              - /url: https://toss.im/user/privacy-history
+          - listitem [ref=e206]:
+            - link "브랜드 리소스센터" [ref=e207] [cursor=pointer]:
+              - /url: https://brand.toss.im/
+          - listitem [ref=e208]:
+            - link "토스의 개인정보 보호" [ref=e209] [cursor=pointer]:
+              - /url: https://privacy.toss.im
+          - listitem [ref=e210]:
+            - link "토스유스카드" [ref=e211] [cursor=pointer]:
+              - /url: https://toss.im/teens/uss-card
+          - listitem [ref=e212]:
+            - link "앱인토스" [ref=e213] [cursor=pointer]:
+              - /url: https://toss.im/apps-in-toss
+          - listitem [ref=e214]:
+            - link "토스 카드라운지" [ref=e215] [cursor=pointer]:
+              - /url: https://card-lounge.toss.im/?utm_source=tossofficial&utm_campaign=traffic_cardpc_footer
+        - list [ref=e216]:
+          - listitem [ref=e217]:
+            - heading "회사" [level=2] [ref=e218]
+          - listitem [ref=e219]:
+            - link "회사 소개" [ref=e220] [cursor=pointer]:
+              - /url: https://toss.im/team
+          - listitem [ref=e221]:
+            - link "토스페이먼츠" [ref=e222] [cursor=pointer]:
+              - /url: https://tosspayments.com/
+          - listitem [ref=e223]:
+            - link "토스인슈어런스" [ref=e224] [cursor=pointer]:
+              - /url: https://toss.im/insurance
+          - listitem [ref=e225]:
+            - link "토스증권" [ref=e226] [cursor=pointer]:
+              - /url: https://corp.tossinvest.com/
+          - listitem [ref=e227]:
+            - link "토스씨엑스" [ref=e228] [cursor=pointer]:
+              - /url: https://tosscx.com
+          - listitem [ref=e229]:
+            - link "토스뱅크" [ref=e230] [cursor=pointer]:
+              - /url: https://www.tossbank.com/
+          - listitem [ref=e231]:
+            - link "토스플레이스" [ref=e232] [cursor=pointer]:
+              - /url: https://tossplace.com/?referrer=toss_recruit_footer
+          - listitem [ref=e233]:
+            - link "토스모바일" [ref=e234] [cursor=pointer]:
+              - /url: https://tossmobile.co.kr
+          - listitem [ref=e235]:
+            - link "토스인컴" [ref=e236] [cursor=pointer]:
+              - /url: https://tossincome.com/?utm_source=tosshomepage_footer
+          - listitem [ref=e237]:
+            - link "토스임팩트" [ref=e238] [cursor=pointer]:
+              - /url: https://toss.im/impact
+          - listitem [ref=e239]:
+            - link "토스인사이트" [ref=e240] [cursor=pointer]:
+              - /url: https://tossinsight.im/
+          - listitem [ref=e241]:
+            - link "채용" [ref=e242] [cursor=pointer]:
+              - /url: https://toss.im/career
+          - listitem [ref=e243]:
+            - link "기술 블로그" [ref=e244] [cursor=pointer]:
+              - /url: https://toss.tech/
+          - listitem [ref=e245]:
+            - link "블로그" [ref=e246] [cursor=pointer]:
+              - /url: https://blog.toss.im/
+          - listitem [ref=e247]:
+            - link "공고" [ref=e248] [cursor=pointer]:
+              - /url: https://toss.im/announcement
+        - list [ref=e249]:
+          - listitem [ref=e250]:
+            - heading "문의" [level=2] [ref=e251]
+          - listitem [ref=e252]:
+            - link "사업 제휴" [ref=e253] [cursor=pointer]:
+              - /url: mailto:partnership@toss.im
+          - listitem [ref=e254]:
+            - link "토스쇼핑 입점문의" [ref=e255] [cursor=pointer]:
+              - /url: https://toss.im/shopping-seller?utm_source=homepage&utm_medium=homepage_lead&utm_campaign=traffic_homepage_performance&utm_content=traffic_homepage_231103
+          - listitem [ref=e256]:
+            - link "광고 문의" [ref=e257] [cursor=pointer]:
+              - /url: https://ads-platform.toss.im/login
+          - listitem [ref=e258]:
+            - link "인증 사업 문의" [ref=e259] [cursor=pointer]:
+              - /url: https://toss.im/tosscert
+          - listitem [ref=e260]:
+            - link "마케팅·PR" [ref=e261] [cursor=pointer]:
+              - /url: mailto:support@toss.im
+          - listitem [ref=e262]:
+            - link "IR" [ref=e263] [cursor=pointer]:
+              - /url: mailto:ir@toss.im
+        - list [ref=e264]:
+          - listitem [ref=e265]:
+            - heading "고객센터" [level=2] [ref=e266]
+          - listitem [ref=e267]:
+            - 'link "전화: 1599-4905 (24시간 연중무휴)" [ref=e268] [cursor=pointer]':
+              - /url: tel:1599-4905
+          - listitem [ref=e269]:
+            - 'link "이메일(고객전용): support@toss.im" [ref=e270] [cursor=pointer]':
+              - /url: mailto:support@toss.im
+          - listitem [ref=e271]:
+            - 'link "이메일(외부기관전용): safe@toss.im" [ref=e272] [cursor=pointer]':
+              - /url: mailto:safe@toss.im
+          - listitem [ref=e273]:
+            - link "민원 접수" [ref=e274] [cursor=pointer]:
+              - /url: https://support.toss.im/customer-complaint
+        - list [ref=e275]:
+          - listitem [ref=e276]:
+            - heading "윤리경영" [level=2] [ref=e277]
+          - listitem [ref=e278]:
+            - link "상담/신고" [ref=e279] [cursor=pointer]:
+              - /url: https://toss.im/ethics
+      - generic [ref=e280]:
+        - heading "㈜비바리퍼블리카" [level=2] [ref=e281]
+        - text: "사업자 등록번호 : 120-88-01280 | 대표 : 이승건"
+        - text: "호스팅 서비스 : 주식회사 비바리퍼블리카 | 통신판매업 신고번호 : 2014-서울강남-03377"
+        - link "사업자정보확인" [ref=e282] [cursor=pointer]:
+          - /url: https://www.ftc.go.kr/bizCommPop.do?wrkr_no=1208801280
+        - text: 06236 서울특별시 강남구 테헤란로 142, 4층, 10층, 11층, 12층, 13층, 22층, 23층 (역삼동, 아크플레이스)
+        - text: "고객센터 : 서울시 구로구 경인로662, 디큐브시티 12층, 13층 토스씨엑스"
+      - list [ref=e283]:
+        - listitem [ref=e284]:
+          - link "서비스 이용약관" [ref=e285] [cursor=pointer]:
+            - /url: https://toss.im/terms
+        - listitem [ref=e286]:
+          - link "통합 금융정보 서비스 약관" [ref=e287] [cursor=pointer]:
+            - /url: https://toss.im/docs/500
+        - listitem [ref=e288]:
+          - link "마이데이터 서비스 이용약관" [ref=e289] [cursor=pointer]:
+            - /url: https://toss.im/docs/11567
+        - listitem [ref=e290]:
+          - link "이용자의 권리 및 유의사항" [ref=e291] [cursor=pointer]:
+            - /url: https://static-docs.toss.im/privacy/safety
+        - listitem [ref=e292]:
+          - link "개인정보 처리방침" [ref=e293] [cursor=pointer]:
+            - /url: https://toss.im/privacy-policy?categoryId=325
+            - strong [ref=e294]: 개인정보 처리방침
+        - listitem [ref=e295]:
+          - link "채용팀 개인정보 처리방침" [ref=e296] [cursor=pointer]:
+            - /url: https://toss.im/privacy-policy?categoryId=2027
+            - strong [ref=e297]: 채용팀 개인정보 처리방침
+        - listitem [ref=e298]:
+          - link "어드민 서비스 개인정보 처리방침" [ref=e299] [cursor=pointer]:
+            - /url: https://toss.im/privacy-policy?categoryId=2025
+            - strong [ref=e300]: 어드민 서비스 개인정보 처리방침
+        - listitem [ref=e301]:
+          - link "위치기반서비스 이용약관" [ref=e302] [cursor=pointer]:
+            - /url: https://toss.im/agreement/locationInfo
+            - strong [ref=e303]: 위치기반서비스 이용약관
+        - listitem [ref=e304]:
+          - link "가맹점 고지사항" [ref=e305] [cursor=pointer]:
+            - /url: https://toss.im/docs/10290
+        - listitem [ref=e306]:
+          - link "토스 전자서명인증업무준칙" [ref=e307] [cursor=pointer]:
+            - /url: https://toss.im/tosscert/cps
+        - listitem [ref=e308]:
+          - link "토스 전자인증서비스 약관" [ref=e309] [cursor=pointer]:
+            - /url: https://toss.im/docs/49
+        - listitem [ref=e310]:
+          - link "금융소비자보호" [ref=e311] [cursor=pointer]:
+            - /url: https://toss.im/financial-consumer-protection
+        - listitem [ref=e312]:
+          - link "토스비즈니스 개인정보 처리방침" [ref=e313] [cursor=pointer]:
+            - /url: https://toss.im/privacy-policy?categoryId=2023
+            - strong [ref=e314]: 토스비즈니스 개인정보 처리방침
+        - listitem [ref=e315]:
+          - link "퀵계좌이체 개인정보 처리방침" [ref=e316] [cursor=pointer]:
+            - /url: https://toss.im/privacy-policy?categoryId=2029
+            - strong [ref=e317]: 퀵계좌이체 개인정보 처리방침
+        - listitem [ref=e318]:
+          - link "정산자금 보호조치" [ref=e319] [cursor=pointer]:
+            - /url: https://service.toss.im/terms/72977
+      - list [ref=e320]:
+        - listitem [ref=e321]:
+          - link "Toss Blog" [ref=e322] [cursor=pointer]:
+            - /url: https://toss.im/tossfeed
+            - img "Toss Blog" [ref=e323]
+        - listitem [ref=e324]:
+          - link "Toss Naver Post" [ref=e325] [cursor=pointer]:
+            - /url: https://blog.naver.com/tossblog
+            - img "Toss Naver Post" [ref=e326]
+        - listitem [ref=e327]:
+          - link "Toss X" [ref=e328] [cursor=pointer]:
+            - /url: https://x.com/toss__official
+            - img "Toss X" [ref=e329]
+        - listitem [ref=e330]:
+          - link "Toss Instagram" [ref=e331] [cursor=pointer]:
+            - /url: https://www.instagram.com/toss.im/
+            - img "Toss Instagram" [ref=e332]
+  - alert [ref=e333]
+  - list

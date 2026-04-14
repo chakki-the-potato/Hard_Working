@@ -1,0 +1,230 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - link "logo Study Blog" [ref=e5] [cursor=pointer]:
+          - /url: /Hard_Working/
+          - img "logo" [ref=e6]
+          - text: Study Blog
+        - link "소개" [ref=e7] [cursor=pointer]:
+          - /url: /Hard_Working/about/
+      - link "검색" [ref=e8] [cursor=pointer]:
+        - /url: /Hard_Working/search/
+        - img [ref=e9]
+  - main [ref=e11]:
+    - generic [ref=e13]:
+      - generic [ref=e15]:
+        - generic [ref=e16]: Python
+        - heading "Python 기초 — 데이터 다루기와 실용 문법 정리" [level=2] [ref=e17]:
+          - link "Python 기초 — 데이터 다루기와 실용 문법 정리" [ref=e18] [cursor=pointer]:
+            - /url: /Hard_Working/posts/python-basics/
+        - paragraph [ref=e19]: Python의 핵심 문법과 데이터 처리에 자주 쓰이는 패턴을 정리합니다. 리스트 컴프리헨션, 딕셔너리, 함수, 클래스까지 실용 예제 중심으로 다룹니다.
+      - generic [ref=e23]:
+        - button "이전" [ref=e24] [cursor=pointer]:
+          - img [ref=e25]
+        - generic [ref=e27]:
+          - button "슬라이드 1" [ref=e28] [cursor=pointer]
+          - button "슬라이드 2" [ref=e29] [cursor=pointer]
+          - button "슬라이드 3" [ref=e30] [cursor=pointer]
+        - button "다음" [ref=e31] [cursor=pointer]:
+          - img [ref=e32]
+    - generic [ref=e35]:
+      - generic [ref=e36]:
+        - heading "전체 아티클" [level=2] [ref=e37]
+        - navigation "태그 필터" [ref=e39]:
+          - link "전체" [ref=e40] [cursor=pointer]:
+            - /url: /Hard_Working/
+          - link "JavaScript" [ref=e41] [cursor=pointer]:
+            - /url: /Hard_Working/tags/JavaScript/
+          - link "React" [ref=e42] [cursor=pointer]:
+            - /url: /Hard_Working/tags/React/
+          - link "Startup" [ref=e43] [cursor=pointer]:
+            - /url: /Hard_Working/tags/Startup/
+          - link "AWS" [ref=e44] [cursor=pointer]:
+            - /url: /Hard_Working/tags/AWS/
+          - link "Python" [ref=e45] [cursor=pointer]:
+            - /url: /Hard_Working/tags/Python/
+          - link "Git" [ref=e46] [cursor=pointer]:
+            - /url: /Hard_Working/tags/Git/
+          - link "Node.js" [ref=e47] [cursor=pointer]:
+            - /url: /Hard_Working/tags/Node.js/
+          - link "Docker" [ref=e48] [cursor=pointer]:
+            - /url: /Hard_Working/tags/Docker/
+          - link "SQL" [ref=e49] [cursor=pointer]:
+            - /url: /Hard_Working/tags/SQL/
+          - link "CSS" [ref=e50] [cursor=pointer]:
+            - /url: /Hard_Working/tags/CSS/
+          - link "Linux" [ref=e51] [cursor=pointer]:
+            - /url: /Hard_Working/tags/Linux/
+          - link "Notion" [ref=e52] [cursor=pointer]:
+            - /url: /Hard_Working/tags/Notion/
+        - generic [ref=e53]:
+          - link "Python 2026년 2월 25일 Python 기초 — 데이터 다루기와 실용 문법 정리 Python의 핵심 문법과 데이터 처리에 자주 쓰이는 패턴을 정리합니다. 리스트 컴프리헨션, 딕셔너리, 함수, 클래스까지 실용 예제 중심으로 다룹니다." [ref=e54] [cursor=pointer]:
+            - /url: /Hard_Working/posts/python-basics/
+            - generic [ref=e55]:
+              - generic [ref=e56]:
+                - generic [ref=e58]: Python
+                - time [ref=e59]: 2026년 2월 25일
+              - heading "Python 기초 — 데이터 다루기와 실용 문법 정리" [level=2] [ref=e60]
+              - paragraph [ref=e61]: Python의 핵심 문법과 데이터 처리에 자주 쓰이는 패턴을 정리합니다. 리스트 컴프리헨션, 딕셔너리, 함수, 클래스까지 실용 예제 중심으로 다룹니다.
+            - img [ref=e63]
+          - link "AWS 2026년 2월 22일 AWS 핵심 서비스 입문 — 개발자가 알아야 할 클라우드 기초 EC2, S3, RDS, Lambda까지 개발자가 실무에서 자주 쓰는 AWS 핵심 서비스를 정리합니다. 아키텍처 설계 패턴도 함께 다룹니다." [ref=e67] [cursor=pointer]:
+            - /url: /Hard_Working/posts/aws-basics/
+            - generic [ref=e68]:
+              - generic [ref=e69]:
+                - generic [ref=e71]: AWS
+                - time [ref=e72]: 2026년 2월 22일
+              - heading "AWS 핵심 서비스 입문 — 개발자가 알아야 할 클라우드 기초" [level=2] [ref=e73]
+              - paragraph [ref=e74]: EC2, S3, RDS, Lambda까지 개발자가 실무에서 자주 쓰는 AWS 핵심 서비스를 정리합니다. 아키텍처 설계 패턴도 함께 다룹니다.
+            - img [ref=e76]
+          - 'link "JavaScript 2026년 2월 20일 JavaScript 배열 메서드 정리: map, filter, reduce 자주 사용하는 JavaScript 배열 메서드의 동작 원리와 실전 활용법을 정리합니다. map, filter, reduce를 중심으로 예제와 함께 알아봅니다." [ref=e80] [cursor=pointer]':
+            - /url: /Hard_Working/posts/javascript-array-methods/
+            - generic [ref=e81]:
+              - generic [ref=e82]:
+                - generic [ref=e84]: JavaScript
+                - time [ref=e85]: 2026년 2월 20일
+              - 'heading "JavaScript 배열 메서드 정리: map, filter, reduce" [level=2] [ref=e86]'
+              - paragraph [ref=e87]: 자주 사용하는 JavaScript 배열 메서드의 동작 원리와 실전 활용법을 정리합니다. map, filter, reduce를 중심으로 예제와 함께 알아봅니다.
+            - img [ref=e89]
+          - link "Startup 2026년 2월 20일 스타트업 생존 가이드 — 초기 창업자가 알아야 할 것들 아이디어에서 MVP까지, 스타트업 초기 단계에서 반드시 고민해야 할 핵심 원칙들을 정리합니다. 린 스타트업 방법론부터 PMF 찾기까지." [ref=e93] [cursor=pointer]:
+            - /url: /Hard_Working/posts/startup-basics/
+            - generic [ref=e94]:
+              - generic [ref=e95]:
+                - generic [ref=e97]: Startup
+                - time [ref=e98]: 2026년 2월 20일
+              - heading "스타트업 생존 가이드 — 초기 창업자가 알아야 할 것들" [level=2] [ref=e99]
+              - paragraph [ref=e100]: 아이디어에서 MVP까지, 스타트업 초기 단계에서 반드시 고민해야 할 핵심 원칙들을 정리합니다. 린 스타트업 방법론부터 PMF 찾기까지.
+            - img [ref=e102]
+          - 'link "React JavaScript 2026년 2월 18일 React Hooks 기초: useState와 useEffect 완벽 가이드 React의 가장 기본적인 Hook인 useState와 useEffect의 사용법과 주의사항을 예제와 함께 정리합니다." [ref=e106] [cursor=pointer]':
+            - /url: /Hard_Working/posts/react-hooks-basics/
+            - generic [ref=e107]:
+              - generic [ref=e108]:
+                - generic [ref=e109]:
+                  - generic [ref=e110]: React
+                  - generic [ref=e111]: JavaScript
+                - time [ref=e112]: 2026년 2월 18일
+              - 'heading "React Hooks 기초: useState와 useEffect 완벽 가이드" [level=2] [ref=e113]'
+              - paragraph [ref=e114]: React의 가장 기본적인 Hook인 useState와 useEffect의 사용법과 주의사항을 예제와 함께 정리합니다.
+            - img [ref=e116]
+          - link "Node.js 2026년 2월 18일 Node.js 입문 — 비동기와 이벤트 루프 이해하기 Node.js의 핵심인 비동기 처리와 이벤트 루프 동작 방식을 이해하고, Express로 간단한 서버를 만드는 방법을 다룹니다." [ref=e120] [cursor=pointer]:
+            - /url: /Hard_Working/posts/nodejs-basics/
+            - generic [ref=e121]:
+              - generic [ref=e122]:
+                - generic [ref=e124]: Node.js
+                - time [ref=e125]: 2026년 2월 18일
+              - heading "Node.js 입문 — 비동기와 이벤트 루프 이해하기" [level=2] [ref=e126]
+              - paragraph [ref=e127]: Node.js의 핵심인 비동기 처리와 이벤트 루프 동작 방식을 이해하고, Express로 간단한 서버를 만드는 방법을 다룹니다.
+            - img [ref=e129]
+          - link "Git 2026년 2월 15일 Git 기초 명령어 정리 개발자라면 반드시 알아야 할 Git 기본 명령어와 워크플로우를 정리합니다. init, add, commit, branch, merge 등 핵심 명령어를 다룹니다." [ref=e133] [cursor=pointer]:
+            - /url: /Hard_Working/posts/git-basics/
+            - generic [ref=e134]:
+              - generic [ref=e135]:
+                - generic [ref=e137]: Git
+                - time [ref=e138]: 2026년 2월 15일
+              - heading "Git 기초 명령어 정리" [level=2] [ref=e139]
+              - paragraph [ref=e140]: 개발자라면 반드시 알아야 할 Git 기본 명령어와 워크플로우를 정리합니다. init, add, commit, branch, merge 등 핵심 명령어를 다룹니다.
+            - img [ref=e142]
+          - link "React 2026년 2월 10일 React 상태 관리 라이브러리 비교 — Zustand vs Jotai vs Redux React 프로젝트에서 전역 상태 관리를 어떻게 할지 고민될 때. Zustand, Jotai, Redux Toolkit의 특징과 사용법을 비교해 봅니다." [ref=e146] [cursor=pointer]:
+            - /url: /Hard_Working/posts/react-state-management/
+            - generic [ref=e147]:
+              - generic [ref=e148]:
+                - generic [ref=e150]: React
+                - time [ref=e151]: 2026년 2월 10일
+              - heading "React 상태 관리 라이브러리 비교 — Zustand vs Jotai vs Redux" [level=2] [ref=e152]
+              - paragraph [ref=e153]: React 프로젝트에서 전역 상태 관리를 어떻게 할지 고민될 때. Zustand, Jotai, Redux Toolkit의 특징과 사용법을 비교해 봅니다.
+            - img [ref=e155]
+          - link "JavaScript 2026년 2월 8일 TypeScript 실전 팁 — 타입을 제대로 쓰는 방법 any를 남발하지 않고 TypeScript를 제대로 활용하는 실전 패턴들. 제네릭, 유틸리티 타입, 타입 가드까지 실무에서 바로 쓸 수 있는 예제로 정리합니다." [ref=e159] [cursor=pointer]:
+            - /url: /Hard_Working/posts/typescript-tips/
+            - generic [ref=e160]:
+              - generic [ref=e161]:
+                - generic [ref=e163]: JavaScript
+                - time [ref=e164]: 2026년 2월 8일
+              - heading "TypeScript 실전 팁 — 타입을 제대로 쓰는 방법" [level=2] [ref=e165]
+              - paragraph [ref=e166]: any를 남발하지 않고 TypeScript를 제대로 활용하는 실전 패턴들. 제네릭, 유틸리티 타입, 타입 가드까지 실무에서 바로 쓸 수 있는 예제로 정리합니다.
+            - img [ref=e168]
+          - link "Python 2026년 2월 5일 pandas로 데이터 분석 시작하기 — 실전 예제 모음 Python 데이터 분석의 핵심 라이브러리 pandas를 활용해 데이터를 불러오고, 정제하고, 집계하는 방법을 실전 예제와 함께 정리합니다." [ref=e172] [cursor=pointer]:
+            - /url: /Hard_Working/posts/python-data-analysis/
+            - generic [ref=e173]:
+              - generic [ref=e174]:
+                - generic [ref=e176]: Python
+                - time [ref=e177]: 2026년 2월 5일
+              - heading "pandas로 데이터 분석 시작하기 — 실전 예제 모음" [level=2] [ref=e178]
+              - paragraph [ref=e179]: Python 데이터 분석의 핵심 라이브러리 pandas를 활용해 데이터를 불러오고, 정제하고, 집계하는 방법을 실전 예제와 함께 정리합니다.
+            - img [ref=e181]
+          - link "Startup 2026년 2월 1일 사이드 프로젝트를 끝까지 완성하는 방법 시작은 하지만 완성을 못하는 사이드 프로젝트의 저주. 기획, 개발, 런칭까지 실제로 완주한 경험에서 얻은 교훈을 공유합니다." [ref=e185] [cursor=pointer]:
+            - /url: /Hard_Working/posts/side-project-launch/
+            - generic [ref=e186]:
+              - generic [ref=e187]:
+                - generic [ref=e189]: Startup
+                - time [ref=e190]: 2026년 2월 1일
+              - heading "사이드 프로젝트를 끝까지 완성하는 방법" [level=2] [ref=e191]
+              - paragraph [ref=e192]: 시작은 하지만 완성을 못하는 사이드 프로젝트의 저주. 기획, 개발, 런칭까지 실제로 완주한 경험에서 얻은 교훈을 공유합니다.
+            - img [ref=e194]
+          - link "AWS 2026년 1월 28일 서버리스 아키텍처 실전 — AWS Lambda + API Gateway 서버 없이 API를 만드는 서버리스 아키텍처. AWS Lambda와 API Gateway로 확장 가능한 백엔드를 구축하는 방법을 실제 예제로 설명합니다." [ref=e198] [cursor=pointer]:
+            - /url: /Hard_Working/posts/aws-serverless/
+            - generic [ref=e199]:
+              - generic [ref=e200]:
+                - generic [ref=e202]: AWS
+                - time [ref=e203]: 2026년 1월 28일
+              - heading "서버리스 아키텍처 실전 — AWS Lambda + API Gateway" [level=2] [ref=e204]
+              - paragraph [ref=e205]: 서버 없이 API를 만드는 서버리스 아키텍처. AWS Lambda와 API Gateway로 확장 가능한 백엔드를 구축하는 방법을 실제 예제로 설명합니다.
+            - img [ref=e207]
+        - navigation "Pagination" [ref=e211]:
+          - link "1" [ref=e212] [cursor=pointer]:
+            - /url: /Hard_Working/
+          - link "2" [ref=e213] [cursor=pointer]:
+            - /url: /Hard_Working/2/
+      - complementary [ref=e214]:
+        - heading "인기 있는 글" [level=3] [ref=e215]
+        - generic [ref=e216]:
+          - link "1 Python 기초 — 데이터 다루기와 실용 문법 정리 Python" [ref=e217] [cursor=pointer]:
+            - /url: /Hard_Working/posts/python-basics/
+            - generic [ref=e218]: "1"
+            - generic [ref=e219]:
+              - generic [ref=e220]: Python 기초 — 데이터 다루기와 실용 문법 정리
+              - generic [ref=e221]: Python
+          - link "2 AWS 핵심 서비스 입문 — 개발자가 알아야 할 클라우드 기초 AWS" [ref=e222] [cursor=pointer]:
+            - /url: /Hard_Working/posts/aws-basics/
+            - generic [ref=e223]: "2"
+            - generic [ref=e224]:
+              - generic [ref=e225]: AWS 핵심 서비스 입문 — 개발자가 알아야 할 클라우드 기초
+              - generic [ref=e226]: AWS
+          - 'link "3 JavaScript 배열 메서드 정리: map, filter, reduce JavaScript" [ref=e227] [cursor=pointer]':
+            - /url: /Hard_Working/posts/javascript-array-methods/
+            - generic [ref=e228]: "3"
+            - generic [ref=e229]:
+              - generic [ref=e230]: "JavaScript 배열 메서드 정리: map, filter, reduce"
+              - generic [ref=e231]: JavaScript
+          - link "4 스타트업 생존 가이드 — 초기 창업자가 알아야 할 것들 Startup" [ref=e232] [cursor=pointer]:
+            - /url: /Hard_Working/posts/startup-basics/
+            - generic [ref=e233]: "4"
+            - generic [ref=e234]:
+              - generic [ref=e235]: 스타트업 생존 가이드 — 초기 창업자가 알아야 할 것들
+              - generic [ref=e236]: Startup
+          - 'link "5 React Hooks 기초: useState와 useEffect 완벽 가이드 React" [ref=e237] [cursor=pointer]':
+            - /url: /Hard_Working/posts/react-hooks-basics/
+            - generic [ref=e238]: "5"
+            - generic [ref=e239]:
+              - generic [ref=e240]: "React Hooks 기초: useState와 useEffect 완벽 가이드"
+              - generic [ref=e241]: React
+  - contentinfo [ref=e242]:
+    - generic [ref=e243]:
+      - paragraph [ref=e244]: © 2026 Study Blog. All rights reserved.
+      - generic [ref=e245]:
+        - link "RSS" [ref=e246] [cursor=pointer]:
+          - /url: /Hard_Working/rss.xml
+        - link "GitHub" [ref=e247] [cursor=pointer]:
+          - /url: https://github.com/chakki-the-potato
+  - generic [ref=e250]:
+    - button "Menu" [ref=e251]:
+      - img [ref=e253]
+      - generic: Menu
+    - button "Inspect" [ref=e257]:
+      - img [ref=e259]
+      - generic: Inspect
+    - button "Audit" [ref=e261]:
+      - img [ref=e263]
+      - generic: Audit
+    - button "Settings" [ref=e266]:
+      - img [ref=e268]
+      - generic: Settings

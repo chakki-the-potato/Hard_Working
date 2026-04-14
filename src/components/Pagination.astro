@@ -25,8 +25,8 @@ function getPageUrl(page: number) {
         ]}
         style={
           num === currentPage
-            ? 'background-color: var(--tag-active-bg); color: var(--tag-active-text);'
-            : 'background-color: var(--bg-secondary); color: var(--text-secondary);'
+            ? 'background-color: var(--color-heading); color: #ffffff;'
+            : 'background-color: var(--color-bg-badge); color: var(--color-muted);'
         }
         aria-current={num === currentPage ? 'page' : undefined}
       >

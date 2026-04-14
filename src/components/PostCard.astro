@@ -12,44 +12,160 @@ const { title, description, pubDate, tags, id, heroImage } = Astro.props;
 const base = import.meta.env.BASE_URL;
 ---
 
-<a href={`${base}posts/${id}/`} class="post-card block rounded-xl overflow-hidden bg-white" style="border: 1px solid var(--border); box-shadow: var(--card-shadow);">
-  <div class="img-wrap" style="height: 160px; overflow: hidden;">
-    {heroImage
-      ? <img src={heroImage} alt={title} style="width: 100%; height: 100%; object-fit: cover;" loading="lazy" />
-      : <div class="placeholder" style="width: 100%; height: 100%; background-color: #f0f0f0; display: flex; align-items: center; justify-content: center;">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d0d0d0" stroke-width="1.5">
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-            <circle cx="8.5" cy="8.5" r="1.5"/>
-            <polyline points="21 15 16 10 5 21"/>
-          </svg>
-        </div>
-    }
-  </div>
-  <div class="p-4">
-    <div class="flex flex-wrap gap-1.5 mb-3">
-      {tags.map((tag) => (
-        <span class="text-xs px-2.5 py-1 rounded-full font-medium" style="background-color: #f0f0f0; color: var(--text-secondary);">
-          {tag}
-        </span>
-      ))}
+<a href={`${base}posts/${id}/`} class="post-card">
+  <div class="post-card-content">
+    <!-- 태그 + 날짜 -->
+    <div class="post-card-meta">
+      <div class="post-card-tags">
+        {tags.slice(0, 2).map((tag) => (
+          <span class="tag-badge">{tag}</span>
+        ))}
+      </div>
+      <time datetime={pubDate.toISOString()} class="post-card-date">
+        {pubDate.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
+      </time>
     </div>
-    <h2 class="text-base font-bold mb-2 line-clamp-2" style="color: var(--text-primary); line-height: 1.5;">
-      {title}
-    </h2>
-    <p class="text-sm line-clamp-3 mb-4" style="color: var(--text-secondary); line-height: 1.6;">
-      {description}
-    </p>
-    <time datetime={pubDate.toISOString()} class="text-xs" style="color: #afafaf;">
-      {pubDate.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
-    </time>
+
+    <!-- 제목 -->
+    <h2 class="post-card-title">{title}</h2>
+
+    <!-- 설명 -->
+    <p class="post-card-desc">{description}</p>
   </div>
+
+  <!-- 썸네일 이미지 -->
+  {heroImage
+    ? (
+      <div class="post-card-thumb">
+        <img src={heroImage} alt={title} loading="lazy" />
+      </div>
+    )
+    : (
+      <div class="post-card-thumb post-card-thumb--empty">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: #D1D5DB;">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+      </div>
+    )
+  }
 </a>
 
 <style>
   .post-card {
-    transition: box-shadow 0.2s ease;
+    display: flex;
+    align-items: flex-start;
+    gap: 40px;
+    padding: 32px 0;
+    border-bottom: 1px solid var(--color-border);
+    text-decoration: none;
+    transition: opacity 0.15s ease;
   }
+
+  .post-card:last-child {
+    border-bottom: none;
+  }
+
   .post-card:hover {
-    box-shadow: var(--card-shadow-hover);
+    opacity: 0.72;
+  }
+
+  .post-card-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .post-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .post-card-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .tag-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 600;
+    background-color: var(--color-bg-badge);
+    color: var(--color-muted);
+    border-radius: 8px;
+    padding: 2px 10px;
+    white-space: nowrap;
+  }
+
+  .post-card-date {
+    font-size: 13px;
+    color: var(--color-subtle);
+  }
+
+  .post-card-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-heading);
+    line-height: 1.4;
+    margin: 0;
+    letter-spacing: -0.01em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .post-card-desc {
+    font-size: 15px;
+    color: var(--color-muted);
+    line-height: 1.65;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .post-card-thumb {
+    flex-shrink: 0;
+    width: 160px;
+    height: 110px;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .post-card-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .post-card-thumb--empty {
+    background-color: var(--color-bg-badge);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (max-width: 600px) {
+    .post-card {
+      gap: 20px;
+    }
+
+    .post-card-thumb {
+      width: 96px;
+      height: 72px;
+    }
+
+    .post-card-title {
+      font-size: 17px;
+    }
   }
 </style>

@@ -2,7 +2,7 @@
 title: "SQL 핵심 문법 정리 — 실무에서 자주 쓰는 쿼리 모음"
 description: "SELECT부터 JOIN, 서브쿼리, 윈도우 함수까지. 실무에서 반복적으로 쓰이는 SQL 패턴을 예제 중심으로 정리합니다."
 pubDate: 2026-01-22
-tags: ["SQL"]
+tags: ["Programming", "Backend"]
 ---
 
 ## 기본 SELECT

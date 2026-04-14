@@ -2,7 +2,7 @@
 title: "서버리스 아키텍처 실전 — AWS Lambda + API Gateway"
 description: "서버 없이 API를 만드는 서버리스 아키텍처. AWS Lambda와 API Gateway로 확장 가능한 백엔드를 구축하는 방법을 실제 예제로 설명합니다."
 pubDate: 2026-01-28
-tags: ["AWS"]
+tags: ["Programming", "Backend"]
 ---
 
 ## 서버리스의 장단점

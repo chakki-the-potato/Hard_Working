@@ -2,7 +2,7 @@
 title: "Git 기초 명령어 정리"
 description: "개발자라면 반드시 알아야 할 Git 기본 명령어와 워크플로우를 정리합니다. init, add, commit, branch, merge 등 핵심 명령어를 다룹니다."
 pubDate: 2026-02-15
-tags: ["Git"]
+tags: ["Programming", "DevOps"]
 ---
 
 ## Git이란?

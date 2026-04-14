@@ -2,7 +2,7 @@
 title: "개발자를 위한 Linux 명령어 치트시트"
 description: "서버 작업할 때마다 검색하는 Linux 명령어를 한 곳에 정리했습니다. 파일 관리, 프로세스, 네트워크, 권한까지 실무에서 자주 쓰는 명령어 모음."
 pubDate: 2026-01-18
-tags: ["Linux"]
+tags: ["Programming", "DevOps"]
 ---
 
 ## 파일 & 디렉토리

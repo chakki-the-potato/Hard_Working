@@ -2,7 +2,7 @@
 title: "React Hooks 기초: useState와 useEffect 완벽 가이드"
 description: "React의 가장 기본적인 Hook인 useState와 useEffect의 사용법과 주의사항을 예제와 함께 정리합니다."
 pubDate: 2026-02-18
-tags: ["React", "JavaScript"]
+tags: ["Programming", "Frontend"]
 ---
 
 ## React Hooks란?

@@ -2,7 +2,7 @@
 title: "Python 기초 — 데이터 다루기와 실용 문법 정리"
 description: "Python의 핵심 문법과 데이터 처리에 자주 쓰이는 패턴을 정리합니다. 리스트 컴프리헨션, 딕셔너리, 함수, 클래스까지 실용 예제 중심으로 다룹니다."
 pubDate: 2026-02-25
-tags: ["Python"]
+tags: ["Programming", "Backend"]
 ---
 
 ## Python을 배워야 하는 이유

@@ -18,46 +18,30 @@ allPosts.forEach((post) => {
 const sortedTags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]);
 ---
 
-<div class="mb-8">
-  {activeTag && (
-    <div class="flex items-center gap-2 mb-3">
-      <span class="text-xs" style="color: var(--text-secondary);">필터:</span>
-      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium" style="background-color: #141414; color: #fff;">
-        {activeTag}
-        <a href={base} aria-label="필터 해제" style="line-height:1; opacity:0.7;" class="hover:opacity-100">
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor">
-            <path d="M8.5 2.207L7.793 1.5 5 4.293 2.207 1.5 1.5 2.207 4.293 5 1.5 7.793l.707.707L5 5.707 7.793 8.5l.707-.707L5.707 5z"/>
-          </svg>
-        </a>
-      </span>
-    </div>
-  )}
-
-  <div class="tag-scroll-wrapper">
-    <nav class="tag-scroll scrollbar-hide" aria-label="태그 필터">
+<div class="tagnav-wrap">
+  <nav class="tagnav scrollbar-hide" aria-label="태그 필터">
+    <a
+      href={base}
+      class={`tagnav-chip ${!activeTag ? 'tagnav-active' : 'tagnav-inactive'}`}
+    >
+      전체
+    </a>
+    {sortedTags.map(([tag, count]) => (
       <a
-        href={base}
-        class={`tag-chip ${!activeTag ? 'tag-active' : 'tag-inactive'}`}
+        href={`${base}tags/${tag}/`}
+        class={`tagnav-chip ${activeTag === tag ? 'tagnav-active' : 'tagnav-inactive'}`}
+        aria-current={activeTag === tag ? 'page' : undefined}
       >
-        전체
+        {tag}
       </a>
-      {sortedTags.map(([tag, count]) => (
-        <a
-          href={`${base}tags/${tag}/`}
-          class={`tag-chip ${activeTag === tag ? 'tag-active' : 'tag-inactive'}`}
-          aria-current={activeTag === tag ? 'page' : undefined}
-        >
-          {tag} <span class="tag-count">{count}</span>
-        </a>
-      ))}
-    </nav>
-    <div class="fade-right" id="fade-right"></div>
-  </div>
+    ))}
+  </nav>
+  <div class="tagnav-fade" id="tagnav-fade"></div>
 </div>
 
 <script>
-  const nav = document.querySelector('.tag-scroll') as HTMLElement;
-  const fade = document.getElementById('fade-right');
+  const nav = document.querySelector('.tagnav') as HTMLElement;
+  const fade = document.getElementById('tagnav-fade');
 
   function updateFade() {
     if (!nav || !fade) return;
@@ -72,53 +56,52 @@ const sortedTags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]);
 </script>
 
 <style>
-  .tag-scroll-wrapper {
+  .tagnav-wrap {
     position: relative;
+    margin-bottom: 2rem;
   }
 
-  .tag-scroll {
+  .tagnav {
     display: flex;
     gap: 8px;
     overflow-x: auto;
-    padding-bottom: 4px;
+    padding-bottom: 2px;
   }
 
-  .fade-right {
+  .tagnav-fade {
     position: absolute;
     top: 0;
     right: 0;
-    width: 64px;
-    height: calc(100% - 4px);
+    width: 60px;
+    height: calc(100% - 2px);
     background: linear-gradient(to right, transparent, #ffffff);
     pointer-events: none;
     transition: opacity 0.2s ease;
   }
 
-  .tag-chip {
+  .tagnav-chip {
     flex-shrink: 0;
-    padding: 6px 16px;
-    border-radius: 9999px;
-    font-size: 0.875rem;
-    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
     white-space: nowrap;
     transition: opacity 0.15s;
     text-decoration: none;
+    line-height: 1.4;
   }
-  .tag-chip:hover {
+
+  .tagnav-chip:hover {
     opacity: 0.7;
   }
 
-  .tag-active {
-    background-color: #141414;
+  .tagnav-active {
+    background-color: var(--color-heading);
     color: #ffffff;
   }
-  .tag-inactive {
-    background-color: #f0f0f0;
-    color: #6b7280;
-  }
 
-  .tag-count {
-    opacity: 0.4;
-    font-size: 0.75rem;
+  .tagnav-inactive {
+    background-color: var(--color-bg-badge);
+    color: var(--color-muted);
   }
 </style>

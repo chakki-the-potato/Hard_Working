@@ -1,0 +1,482 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import TagNav from '../components/TagNav.astro';
+import PostCard from '../components/PostCard.astro';
+import PostGrid from '../components/PostGrid.astro';
+import Pagination from '../components/Pagination.astro';
+import { SITE_TITLE, SITE_DESCRIPTION, POSTS_PER_PAGE } from '../consts';
+
+interface FeaturedPost {
+  id: string;
+  title: string;
+  description: string;
+  tags: string[];
+  heroImage?: string;
+}
+
+interface ArticlePost {
+  id: string;
+  data: {
+    title: string;
+    description: string;
+    pubDate: Date;
+    tags: string[];
+    heroImage?: string;
+  };
+}
+
+interface Props {
+  featured: FeaturedPost[];
+  popularPosts: FeaturedPost[];
+  page: {
+    data: ArticlePost[];
+    currentPage: number;
+    lastPage: number;
+    url: {
+      prev: string | undefined;
+      next: string | undefined;
+      current: string;
+    };
+  };
+}
+
+const { featured, popularPosts, page } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+// 히어로 슬라이더 표시용 (최대 3개)
+const slides = featured.slice(0, 3);
+---
+
+<BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION} noPadding={true}>
+
+  <!-- ── Hero 슬라이더 ── -->
+  <section class="hero-section" id="hero-section">
+    <div class="hero-inner">
+      <!-- 슬라이드들 -->
+      {slides.map((post, i) => (
+        <div class={`hero-slide${i === 0 ? ' active' : ''}`} data-index={i}>
+          <!-- 좌: 텍스트 -->
+          <div class="hero-text">
+            {post.tags[0] && (
+              <span class="hero-tag">{post.tags[0]}</span>
+            )}
+            <h2 class="hero-title">
+              <a href={`${base}posts/${post.id}/`}>{post.title}</a>
+            </h2>
+            <p class="hero-desc">{post.description}</p>
+          </div>
+
+          <!-- 우: 이미지 -->
+          <div class="hero-image">
+            {post.heroImage
+              ? <img src={post.heroImage} alt={post.title} loading={i === 0 ? 'eager' : 'lazy'} />
+              : <div class="hero-image-placeholder">
+                  <div class="hero-placeholder-inner" style={`background: ${['linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'][i % 3]};`}></div>
+                </div>
+            }
+          </div>
+        </div>
+      ))}
+
+      <!-- 이전/다음 버튼 + 도트 -->
+      {slides.length > 1 && (
+        <div class="hero-controls">
+          <button class="hero-arrow" id="hero-prev" aria-label="이전">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <div class="hero-dots">
+            {slides.map((_, i) => (
+              <button class={`hero-dot${i === 0 ? ' active' : ''}`} data-index={i} aria-label={`슬라이드 ${i + 1}`}></button>
+            ))}
+          </div>
+          <button class="hero-arrow" id="hero-next" aria-label="다음">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- ── 메인 콘텐츠 ── -->
+  <div class="home-content">
+    <div class="home-main-row">
+
+      <!-- 좌: 아티클 리스트 -->
+      <div class="articles-col">
+        <h2 class="section-heading">전체 아티클</h2>
+        <TagNav />
+        <PostGrid>
+          {page.data.map((post) => (
+            <PostCard
+              id={post.id}
+              title={post.data.title}
+              description={post.data.description}
+              pubDate={post.data.pubDate}
+              tags={post.data.tags}
+              heroImage={post.data.heroImage}
+            />
+          ))}
+        </PostGrid>
+        {page.data.length === 0 && (
+          <p class="empty-msg">아직 작성된 글이 없습니다.</p>
+        )}
+        <Pagination
+          currentPage={page.currentPage}
+          lastPage={page.lastPage}
+          baseUrl={base}
+        />
+      </div>
+
+      <!-- 우: 인기 있는 글 사이드바 -->
+      <aside class="popular-sidebar">
+        <h3 class="sidebar-heading">인기 있는 글</h3>
+        <div class="popular-list">
+          {popularPosts.map((post, i) => (
+            <a href={`${base}posts/${post.id}/`} class="popular-item">
+              <span class="popular-num">{i + 1}</span>
+              <div class="popular-info">
+                <div class="popular-title">{post.title}</div>
+                {post.tags[0] && (
+                  <span class="popular-tag">{post.tags[0]}</span>
+                )}
+              </div>
+            </a>
+          ))}
+        </div>
+      </aside>
+
+    </div>
+  </div>
+</BaseLayout>
+
+<!-- 슬라이더 JS -->
+<script>
+  const section = document.getElementById('hero-section');
+  if (section) {
+    const slides = section.querySelectorAll<HTMLElement>('.hero-slide');
+    const dots = section.querySelectorAll<HTMLElement>('.hero-dot');
+    const prevBtn = document.getElementById('hero-prev');
+    const nextBtn = document.getElementById('hero-next');
+    let current = 0;
+    let timer: ReturnType<typeof setInterval>;
+
+    function goTo(idx: number) {
+      slides[current].classList.remove('active');
+      dots[current]?.classList.remove('active');
+      current = (idx + slides.length) % slides.length;
+      slides[current].classList.add('active');
+      dots[current]?.classList.add('active');
+    }
+
+    function startTimer() {
+      timer = setInterval(() => goTo(current + 1), 4000);
+    }
+
+    function resetTimer() {
+      clearInterval(timer);
+      startTimer();
+    }
+
+    prevBtn?.addEventListener('click', () => { goTo(current - 1); resetTimer(); });
+    nextBtn?.addEventListener('click', () => { goTo(current + 1); resetTimer(); });
+    dots.forEach((dot, i) => dot.addEventListener('click', () => { goTo(i); resetTimer(); }));
+
+    if (slides.length > 1) startTimer();
+  }
+</script>
+
+<style>
+  /* ── Hero ── */
+  .hero-section {
+    width: 100%;
+    padding: 0 0 48px;
+  }
+
+  .hero-inner {
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 40px 20px 0;
+    position: relative;
+  }
+
+  .hero-slide {
+    display: none;
+    align-items: center;
+    gap: 48px;
+  }
+
+  .hero-slide.active {
+    display: flex;
+  }
+
+  /* 좌: 텍스트 */
+  .hero-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-badge-blue-text);
+    background-color: var(--color-badge-blue);
+    border-radius: 8px;
+    padding: 2px 10px;
+    align-self: flex-start;
+  }
+
+  .hero-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--color-heading);
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+
+  .hero-title a {
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+
+  .hero-title a:hover {
+    opacity: 0.75;
+  }
+
+  .hero-desc {
+    font-size: 17px;
+    color: var(--color-muted);
+    line-height: 1.6;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* 우: 이미지 */
+  .hero-image {
+    flex-shrink: 0;
+    width: 440px;
+    height: 260px;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .hero-image-placeholder {
+    width: 100%;
+    height: 100%;
+  }
+
+  .hero-placeholder-inner {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* 컨트롤 */
+  .hero-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .hero-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background-color: var(--color-bg-badge);
+    color: var(--color-heading);
+    cursor: pointer;
+    transition: background-color 0.15s;
+    flex-shrink: 0;
+  }
+
+  .hero-arrow:hover {
+    background-color: #E5E8EB;
+  }
+
+  .hero-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .hero-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    border: none;
+    background-color: var(--color-bg-badge);
+    cursor: pointer;
+    padding: 0;
+    transition: background-color 0.2s, transform 0.2s;
+  }
+
+  .hero-dot.active {
+    background-color: var(--color-heading);
+    transform: scale(1.3);
+  }
+
+  /* ── 메인 콘텐츠 ── */
+  .home-content {
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  .home-main-row {
+    display: flex;
+    gap: 72px;
+    align-items: flex-start;
+  }
+
+  /* 좌: 아티클 리스트 */
+  .articles-col {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .section-heading {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-body);
+    letter-spacing: -0.02em;
+    margin: 0 0 24px;
+  }
+
+  .empty-msg {
+    text-align: center;
+    padding: 64px 0;
+    color: var(--color-muted);
+    font-size: 15px;
+  }
+
+  /* 우: 사이드바 */
+  .popular-sidebar {
+    flex-shrink: 0;
+    width: 280px;
+    padding-top: 76px; /* "전체 아티클" 헤딩 + TagNav 높이만큼 내림 */
+  }
+
+  .sidebar-heading {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--color-muted);
+    margin: 0 0 16px;
+  }
+
+  .popular-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .popular-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+
+  .popular-item:hover {
+    opacity: 0.7;
+  }
+
+  .popular-num {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--color-cta);
+    background-color: #fff;
+    border-radius: 8px;
+    border: 1.5px solid var(--color-badge-blue);
+    margin-top: 1px;
+  }
+
+  .popular-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .popular-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-heading);
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .popular-tag {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-muted);
+  }
+
+  /* ── 반응형 ── */
+  @media (max-width: 900px) {
+    .hero-image {
+      width: 320px;
+      height: 200px;
+    }
+    .hero-title {
+      font-size: 1.75rem;
+    }
+    .popular-sidebar {
+      display: none;
+    }
+    .home-main-row {
+      gap: 0;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero-slide.active {
+      flex-direction: column-reverse;
+      gap: 24px;
+    }
+    .hero-image {
+      width: 100%;
+      height: 200px;
+    }
+    .hero-title {
+      font-size: 1.5rem;
+    }
+    .hero-inner {
+      padding: 24px 16px 0;
+    }
+    .home-content {
+      padding: 0 16px 60px;
+    }
+  }
+</style>

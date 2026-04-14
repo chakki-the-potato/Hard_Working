@@ -2,7 +2,7 @@
 title: "Notion으로 공부 시스템 만들기 — 개발자 버전"
 description: "Notion을 단순 메모장이 아닌 체계적인 지식 관리 시스템으로 활용하는 방법. 데이터베이스, 템플릿, 자동화까지 개발자에게 맞는 세팅을 공유합니다."
 pubDate: 2026-01-15
-tags: ["Notion"]
+tags: ["Thinking", "Productivity"]
 ---
 
 ## Notion을 제대로 쓰는 핵심: 데이터베이스

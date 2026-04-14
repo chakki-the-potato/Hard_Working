@@ -1,22 +1,37 @@
 @import 'tailwindcss';
 
 :root {
+  --color-heading: #191F28;
+  --color-body: #333D4B;
+  --color-muted: #6B7684;
+  --color-subtle: #8B95A1;
+  --color-bg: #FFFFFF;
+  --color-bg-footer: #F9FAFB;
+  --color-bg-badge: #F2F4F6;
+  --color-badge-blue: #E8F3FF;
+  --color-badge-blue-text: #3182F6;
+  --color-cta: #3182F6;
+  --color-border: #E5E8EB;
+
+  /* Legacy aliases */
   --bg-primary: #ffffff;
-  --bg-secondary: #f8f8f8;
-  --text-primary: #141414;
-  --text-secondary: #909090;
-  --accent: #1d4ed8;
-  --accent-hover: #1e40af;
-  --border: #e5e5e5;
+  --bg-secondary: #F2F4F6;
+  --text-primary: #191F28;
+  --text-secondary: #6B7684;
+  --accent: #3182F6;
+  --accent-hover: #1B6FE8;
+  --border: #E5E8EB;
   --card-bg: #ffffff;
-  --card-shadow: 0 19px 35px -22px rgba(0, 0, 0, 0.18);
-  --card-shadow-hover: 0 24px 40px -18px rgba(0, 0, 0, 0.26);
+  --card-shadow: none;
+  --card-shadow-hover: none;
 }
 
 body {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: 'Noto Sans KR', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-body);
+  font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {
@@ -41,91 +56,167 @@ a {
 }
 
 .astro-code {
-  padding: 1.25rem;
-  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border-radius: 12px;
   overflow-x: auto;
   font-size: 0.875rem;
-  line-height: 1.7;
+  line-height: 1.75;
 }
 
-/* Prose styling for blog posts */
+/* ─── PROSE — 아티클 본문 스타일 (토스 테크 기준) ─── */
 .prose {
-  max-width: 72ch;
-  line-height: 1.8;
+  max-width: 100%;
+  color: var(--color-body);
+  font-size: 17px;
+  line-height: 1.75;
 }
 
-.prose h1, .prose h2, .prose h3, .prose h4 {
-  color: var(--text-primary);
+.prose h1 {
+  font-size: 2.25rem;
   font-weight: 700;
-  margin-top: 2em;
-  margin-bottom: 0.75em;
+  color: var(--color-heading);
+  line-height: 1.3;
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
 }
 
-.prose h1 { font-size: 2rem; }
-.prose h2 { font-size: 1.5rem; }
-.prose h3 { font-size: 1.25rem; }
+.prose h2 {
+  font-size: 1.625rem;
+  font-weight: 700;
+  color: var(--color-heading);
+  line-height: 1.4;
+  margin-top: 3rem;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.01em;
+}
+
+.prose h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-heading);
+  line-height: 1.4;
+  margin-top: 2.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.prose h4 {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--color-heading);
+  margin-top: 1.75rem;
+  margin-bottom: 0.5rem;
+}
 
 .prose p {
-  margin-bottom: 1.25em;
-  color: var(--text-primary);
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: var(--color-body);
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+.prose strong {
+  font-weight: 700;
+  color: var(--color-heading);
+}
+
+.prose em {
+  font-style: italic;
 }
 
 .prose a {
-  color: var(--accent);
+  color: var(--color-cta);
   text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .prose a:hover {
   color: var(--accent-hover);
 }
 
-.prose ul, .prose ol {
-  padding-left: 1.5em;
-  margin-bottom: 1.25em;
+.prose ul,
+.prose ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .prose li {
-  margin-bottom: 0.5em;
+  margin-bottom: 0.5rem;
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+.prose li > ul,
+.prose li > ol {
+  margin-top: 0.5rem;
+  margin-bottom: 0;
 }
 
 .prose blockquote {
-  border-left: 4px solid var(--border);
-  padding-left: 1em;
-  margin: 1.5em 0;
-  color: var(--text-secondary);
-  font-style: italic;
+  border-left: 3px solid var(--color-border);
+  padding: 0.25rem 0 0.25rem 1.25rem;
+  margin: 2rem 0;
+  color: var(--color-muted);
+  font-style: normal;
+}
+
+.prose blockquote p {
+  font-size: 17px;
+  color: var(--color-muted);
+  margin-bottom: 0;
 }
 
 .prose img {
-  border-radius: 0.75rem;
-  margin: 1.5em 0;
+  border-radius: 12px;
+  margin: 2rem 0;
+  width: 100%;
 }
 
 .prose code:not(pre code) {
-  background-color: var(--bg-secondary);
-  padding: 0.2em 0.4em;
-  border-radius: 0.25rem;
+  background-color: var(--color-bg-badge);
+  color: var(--color-heading);
+  padding: 0.15em 0.45em;
+  border-radius: 5px;
   font-size: 0.875em;
+  font-weight: 500;
+}
+
+.prose pre {
+  margin: 2rem 0;
 }
 
 .prose hr {
-  border-color: var(--border);
-  margin: 2em 0;
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 3rem 0;
 }
 
 .prose table {
   width: 100%;
   border-collapse: collapse;
-  margin: 1.5em 0;
+  margin: 2rem 0;
+  font-size: 15px;
 }
 
-.prose th, .prose td {
-  border: 1px solid var(--border);
-  padding: 0.75em 1em;
+.prose th,
+.prose td {
+  border: 1px solid var(--color-border);
+  padding: 0.75rem 1rem;
   text-align: left;
 }
 
 .prose th {
-  background-color: var(--bg-secondary);
+  background-color: var(--color-bg-badge);
   font-weight: 600;
+  color: var(--color-heading);
+}
+
+.prose td {
+  color: var(--color-body);
+}
+
+/* 첫 번째 자식 p 의 margin-top 제거 */
+.prose > :first-child {
+  margin-top: 0;
 }
