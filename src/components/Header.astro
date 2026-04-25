@@ -78,15 +78,16 @@ const currentPath = Astro.url.pathname;
 
   /* 로고 */
   .header-logo {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--color-heading);
-    text-decoration: none;
-    letter-spacing: -0.01em;
-    flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);  /* ← 추가 */
+  font-size: 18px;                    /* ← 15px → 18px */
+  font-weight: 400;                   /* ← 700 → 400 (한나체는 굵기 안 들어감) */
+  color: var(--color-heading);
+  text-decoration: none;
+  letter-spacing: 0;                  /* ← -0.01em → 0 (한나체에 letter-spacing 어색함) */
+  flex-shrink: 0;
   }
 
   .header-logo img {

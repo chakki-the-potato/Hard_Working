@@ -1,6 +1,18 @@
 @import 'tailwindcss';
 
+/* === 폰트 === */
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/500.css";
+
+@font-face {
+  font-family: "BMHanna";
+  src: url("/Hard_Working/fonts/BMHANNA_11yrs_ttf.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
 :root {
+  /* === 핵심 색상 (딥 그린 베이스) === */
   --color-heading: #191F28;
   --color-body: #333D4B;
   --color-muted: #6B7684;
@@ -8,28 +20,34 @@
   --color-bg: #FFFFFF;
   --color-bg-footer: #F9FAFB;
   --color-bg-badge: #F2F4F6;
-  --color-badge-blue: #E8F3FF;
-  --color-badge-blue-text: #3182F6;
-  --color-cta: #3182F6;
+  --color-badge-green: #EAF3DE;
+  --color-badge-green-text: #15803D;
+  --color-cta: #15803D;
+  --color-cta-hover: #166534;
   --color-border: #E5E8EB;
 
-  /* Legacy aliases */
+  /* === Legacy aliases (기존 컴포넌트 호환용) === */
   --bg-primary: #ffffff;
   --bg-secondary: #F2F4F6;
   --text-primary: #191F28;
   --text-secondary: #6B7684;
-  --accent: #3182F6;
-  --accent-hover: #1B6FE8;
+  --accent: #15803D;
+  --accent-hover: #166534;
   --border: #E5E8EB;
   --card-bg: #ffffff;
   --card-shadow: none;
   --card-shadow-hover: none;
+
+  /* === 폰트 변수 === */
+  --font-sans: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'BMHanna', 'Pretendard', sans-serif;
+  --font-mono: 'JetBrains Mono', 'D2Coding', ui-monospace, SFMono-Regular, monospace;
 }
 
 body {
   background-color: var(--color-bg);
   color: var(--color-body);
-  font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -37,6 +55,11 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+/* 사이트 로고 전용 클래스 */
+.font-display {
+  font-family: var(--font-display);
 }
 
 /* Scrollbar hide for tag nav */
@@ -61,9 +84,10 @@ a {
   overflow-x: auto;
   font-size: 0.875rem;
   line-height: 1.75;
+  font-family: var(--font-mono);
 }
 
-/* ─── PROSE — 아티클 본문 스타일 (토스 테크 기준) ─── */
+/* ─── PROSE — 아티클 본문 스타일 ─── */
 .prose {
   max-width: 100%;
   color: var(--color-body);
@@ -132,7 +156,7 @@ a {
 }
 
 .prose a:hover {
-  color: var(--accent-hover);
+  color: var(--color-cta-hover);
 }
 
 .prose ul,
@@ -154,7 +178,7 @@ a {
 }
 
 .prose blockquote {
-  border-left: 3px solid var(--color-border);
+  border-left: 3px solid var(--color-cta);
   padding: 0.25rem 0 0.25rem 1.25rem;
   margin: 2rem 0;
   color: var(--color-muted);
@@ -180,10 +204,15 @@ a {
   border-radius: 5px;
   font-size: 0.875em;
   font-weight: 500;
+  font-family: var(--font-mono);
 }
 
 .prose pre {
   margin: 2rem 0;
+}
+
+.prose pre code {
+  font-family: var(--font-mono);
 }
 
 .prose hr {
@@ -216,7 +245,7 @@ a {
   color: var(--color-body);
 }
 
-/* 첫 번째 자식 p 의 margin-top 제거 */
+/* 첫 번째 자식 p의 margin-top 제거 */
 .prose > :first-child {
   margin-top: 0;
 }
