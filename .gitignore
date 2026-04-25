@@ -3,3 +3,18 @@ dist/
 .astro/
 .DS_Store
 screenshots/
+
+# Local Claude settings
+.claude/settings.local.json
+
+# Unused display fonts (only BMHANNA_11yrs_ttf.woff2 is referenced)
+public/fonts/BMDOHYEON_ttf.woff2
+public/fonts/BMEULJIROTTF.woff2
+public/fonts/BMEuljiro10yearslater.woff2
+public/fonts/BMEuljirooraeorae.woff2
+public/fonts/BMHANNAAir_ttf.woff2
+public/fonts/BMHANNAPro.woff2
+public/fonts/BMJUA_ttf.woff2
+public/fonts/BMKIRANGHAERANG-TTF.woff2
+public/fonts/BMKkubulimTTF.woff2
+public/fonts/BMYEONSUNG_ttf.woff2
