@@ -3,9 +3,10 @@ import { getCollection } from 'astro:content';
 
 interface Props {
   activeTag?: string;
+  showCount?: boolean;
 }
 
-const { activeTag } = Astro.props;
+const { activeTag, showCount = false } = Astro.props;
 const base = import.meta.env.BASE_URL;
 
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
@@ -18,90 +19,62 @@ allPosts.forEach((post) => {
 const sortedTags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]);
 ---
 
-<div class="tagnav-wrap">
-  <nav class="tagnav scrollbar-hide" aria-label="태그 필터">
+<div class="qt-tag-chips" role="navigation" aria-label="태그 필터">
+  <a
+    href={base}
+    class:list={['qt-chip', { 'is-active': !activeTag }]}
+  >
+    전체{showCount && <span class="qt-chip-count">{allPosts.length}</span>}
+  </a>
+  {sortedTags.map(([tag, count]) => (
     <a
-      href={base}
-      class={`tagnav-chip ${!activeTag ? 'tagnav-active' : 'tagnav-inactive'}`}
+      href={`${base}tags/${tag}/`}
+      class:list={['qt-chip', { 'is-active': activeTag === tag }]}
+      aria-current={activeTag === tag ? 'page' : undefined}
     >
-      전체
+      {tag}{showCount && <span class="qt-chip-count">{count}</span>}
     </a>
-    {sortedTags.map(([tag, count]) => (
-      <a
-        href={`${base}tags/${tag}/`}
-        class={`tagnav-chip ${activeTag === tag ? 'tagnav-active' : 'tagnav-inactive'}`}
-        aria-current={activeTag === tag ? 'page' : undefined}
-      >
-        {tag}
-      </a>
-    ))}
-  </nav>
-  <div class="tagnav-fade" id="tagnav-fade"></div>
+  ))}
 </div>
 
-<script>
-  const nav = document.querySelector('.tagnav') as HTMLElement;
-  const fade = document.getElementById('tagnav-fade');
-
-  function updateFade() {
-    if (!nav || !fade) return;
-    const atEnd = nav.scrollLeft + nav.clientWidth >= nav.scrollWidth - 4;
-    fade.style.opacity = atEnd ? '0' : '1';
-  }
-
-  if (nav) {
-    nav.addEventListener('scroll', updateFade, { passive: true });
-    updateFade();
-  }
-</script>
-
 <style>
-  .tagnav-wrap {
-    position: relative;
-    margin-bottom: 2rem;
-  }
-
-  .tagnav {
+  .qt-tag-chips {
     display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 2px;
+    flex-wrap: wrap;
+    gap: 6px;
   }
 
-  .tagnav-fade {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 60px;
-    height: calc(100% - 2px);
-    background: linear-gradient(to right, transparent, #ffffff);
-    pointer-events: none;
-    transition: opacity 0.2s ease;
-  }
-
-  .tagnav-chip {
-    flex-shrink: 0;
-    padding: 6px 14px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    white-space: nowrap;
-    transition: opacity 0.15s;
+  .qt-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 11px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    border-radius: 4px;
+    color: var(--muted);
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
     text-decoration: none;
-    line-height: 1.4;
+    transition: opacity 0.15s;
+    white-space: nowrap;
   }
 
-  .tagnav-chip:hover {
+  .qt-chip:hover {
+    opacity: 0.78;
+  }
+
+  .qt-chip.is-active {
+    color: var(--bg-elev);
+    background: var(--ink);
+    border-color: var(--ink);
+    font-weight: 600;
+  }
+
+  .qt-chip-count {
+    font-size: 10.5px;
     opacity: 0.7;
-  }
-
-  .tagnav-active {
-    background-color: var(--color-heading);
-    color: #ffffff;
-  }
-
-  .tagnav-inactive {
-    background-color: var(--color-bg-badge);
-    color: var(--color-muted);
   }
 </style>

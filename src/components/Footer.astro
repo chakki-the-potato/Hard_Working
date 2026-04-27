@@ -3,18 +3,136 @@ const currentYear = new Date().getFullYear();
 const base = import.meta.env.BASE_URL;
 ---
 
-<footer class="mt-20" style="background-color: var(--color-bg-footer);">
-  <div class="max-w-5xl mx-auto px-10 py-16 flex flex-col sm:flex-row items-center justify-between gap-4">
-    <p class="text-sm" style="color: var(--color-muted);">
-      &copy; {currentYear} Study Blog. All rights reserved.
-    </p>
-    <div class="flex gap-6">
-      <a href={`${base}rss.xml`} class="text-sm transition-opacity hover:opacity-60" style="color: var(--color-muted);">
-        RSS
-      </a>
-      <a href="https://github.com/chakki-the-potato" target="_blank" rel="noopener" class="text-sm transition-opacity hover:opacity-60" style="color: var(--color-muted);">
-        GitHub
-      </a>
+<footer class="qt-footer">
+  <div class="qt-footer-inner">
+    <div class="qt-footer-top">
+      <div class="qt-footer-brand">
+        <a href={base} class="qt-footer-logo" aria-label="Hard_Working">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+            <rect x="1.25" y="1.25" width="19.5" height="19.5" rx="4" stroke="currentColor" stroke-width="1.4"/>
+            <path d="M5.5 14.5L9 8L12 12L16.5 5.5" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+          <span>Hard_Working</span>
+        </a>
+        <p class="qt-footer-tagline">매일 한 편씩, 천천히 쌓아 올리는 개발 노트.</p>
+      </div>
+
+      <div class="qt-footer-cols">
+        <div class="qt-footer-col">
+          <span class="qt-footer-label">SECTIONS</span>
+          <a href={`${base}tags/Programming/`}>Programming</a>
+          <a href={`${base}tags/Thinking/`}>Thinking</a>
+          <a href={`${base}tags/Design/`}>Design</a>
+          <a href={`${base}ideas/`}>Ideas</a>
+        </div>
+        <div class="qt-footer-col">
+          <span class="qt-footer-label">META</span>
+          <a href={`${base}about/`}>About</a>
+          <a href={`${base}rss.xml`}>RSS</a>
+          <a href="https://github.com/chakki-the-potato" target="_blank" rel="noopener">GitHub</a>
+          <a href={`${base}search/`}>Search</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="qt-footer-bottom">
+      <span>© {currentYear} HARD_WORKING. ALL NOTES, NO NOISE.</span>
+      <span>BUILT WITH ASTRO ─ DEPLOYED ON GITHUB PAGES</span>
     </div>
   </div>
 </footer>
+
+<style>
+  .qt-footer {
+    border-top: 1px solid var(--border);
+    margin-top: 64px;
+    background: var(--bg);
+  }
+
+  .qt-footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 36px 36px 28px;
+  }
+
+  .qt-footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .qt-footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .qt-footer-tagline {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin: 14px 0 0;
+    max-width: 380px;
+    line-height: 1.65;
+  }
+
+  .qt-footer-cols {
+    display: flex;
+    gap: 48px;
+    font-size: 12.5px;
+  }
+
+  .qt-footer-col {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .qt-footer-label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--subtle);
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+
+  .qt-footer-col a {
+    color: var(--muted);
+    text-decoration: none;
+    padding: 3px 0;
+    transition: color 0.15s;
+  }
+
+  .qt-footer-col a:hover {
+    color: var(--ink);
+  }
+
+  .qt-footer-bottom {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-hair);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--subtle);
+    letter-spacing: 0.06em;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  @media (max-width: 720px) {
+    .qt-footer-inner {
+      padding: 32px 20px 24px;
+    }
+    .qt-footer-cols {
+      gap: 32px;
+    }
+  }
+</style>

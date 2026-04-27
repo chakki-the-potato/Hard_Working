@@ -2,6 +2,7 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import CmdK from '../components/CmdK.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -26,5 +27,6 @@ const { title, description, image, noPadding = false } = Astro.props;
       : <main class="flex-1 w-full max-w-5xl mx-auto px-5 py-10"><slot /></main>
     }
     <Footer />
+    <CmdK />
   </body>
 </html>

@@ -1,0 +1,93 @@
+---
+interface Props {
+  strength?: 0 | 1 | 2;
+}
+
+const { strength = 1 } = Astro.props;
+const opacity = strength === 2 ? 0.9 : strength === 0 ? 0 : 0.55;
+const dur = strength === 2 ? '14s' : '22s';
+
+const lines = Array.from({ length: 18 }).map((_, i) => ({
+  x: 40 + i * 65,
+  delay: ((i * 0.7) % parseInt(dur)).toFixed(2),
+  height: 120 + ((i * 37) % 280),
+}));
+
+const particles = Array.from({ length: 14 }).map((_, i) => ({
+  cx: (i * 137) % 1200,
+  cy: 60 + ((i * 47) % 380),
+  r: 1 + (i % 3) * 0.6,
+  d: 8 + (i % 6) * 1.5,
+  delay: (i * 0.4).toFixed(2),
+}));
+
+const floatLow = (0.10 * opacity).toFixed(3);
+const floatHigh = (0.42 * opacity).toFixed(3);
+---
+
+{strength > 0 && (
+  <div class="qt-hero-bg" aria-hidden="true">
+    <svg width="100%" height="100%" viewBox="0 0 1200 520" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="qt-fade" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stop-color="var(--accent)" stop-opacity="0"/>
+          <stop offset="40%" stop-color="var(--accent)" stop-opacity={(0.6 * opacity).toFixed(3)}/>
+          <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      {lines.map((l) => (
+        <line
+          x1={l.x}
+          x2={l.x}
+          y1={-l.height}
+          y2={0}
+          stroke="url(#qt-fade)"
+          stroke-width="1"
+          style={`animation: qt-drift ${dur} linear infinite; animation-delay: -${l.delay}s; transform-box: fill-box;`}
+        />
+      ))}
+      {particles.map((p) => (
+        <circle
+          cx={p.cx}
+          cy={p.cy}
+          r={p.r}
+          fill="var(--accent)"
+          opacity={(0.18 * opacity).toFixed(3)}
+          style={`animation: qt-float ${p.d}s ease-in-out infinite; animation-delay: -${p.delay}s; transform-box: fill-box; transform-origin: center;`}
+        />
+      ))}
+    </svg>
+  </div>
+)}
+
+<style is:global define:vars={{ floatLow, floatHigh }}>
+  .qt-hero-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .qt-hero-bg svg {
+    position: absolute;
+    inset: 0;
+  }
+
+  @keyframes qt-drift {
+    0%   { transform: translateY(0); opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { transform: translateY(620px); opacity: 0; }
+  }
+
+  @keyframes qt-float {
+    0%, 100% { transform: translateY(0); opacity: var(--floatLow); }
+    50%      { transform: translateY(-14px); opacity: var(--floatHigh); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .qt-hero-bg * {
+      animation: none !important;
+    }
+  }
+</style>

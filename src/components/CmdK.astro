@@ -1,0 +1,373 @@
+---
+const base = import.meta.env.BASE_URL;
+---
+
+<div id="qt-cmdk" class="qt-cmdk" data-base={base} hidden>
+  <div class="qt-cmdk-backdrop" data-cmdk-backdrop></div>
+  <div class="qt-cmdk-modal" role="dialog" aria-modal="true" aria-label="검색 팔레트">
+    <div class="qt-cmdk-header">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"/>
+        <path d="M21 21l-4.3-4.3"/>
+      </svg>
+      <input
+        id="qt-cmdk-input"
+        type="text"
+        placeholder="제목, 카테고리, 태그…"
+        autocomplete="off"
+        aria-label="검색어"
+      />
+      <span class="qt-cmdk-key">ESC</span>
+    </div>
+    <div class="qt-cmdk-results" id="qt-cmdk-results"></div>
+    <div class="qt-cmdk-footer">
+      <span id="qt-cmdk-count">— RESULTS</span>
+      <span>↵ TO OPEN ─ ↑↓ NAVIGATE</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .qt-cmdk {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 14vh;
+  }
+
+  .qt-cmdk[hidden] {
+    display: none;
+  }
+
+  .qt-cmdk-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(11, 18, 32, 0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+
+  .qt-cmdk-modal {
+    position: relative;
+    width: min(640px, 92vw);
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    font-family: var(--font-sans);
+  }
+
+  .qt-cmdk-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  #qt-cmdk-input {
+    flex: 1;
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--ink);
+    background: transparent;
+    border: none;
+    outline: none;
+    letter-spacing: -0.015em;
+  }
+
+  #qt-cmdk-input::placeholder {
+    color: var(--subtle);
+  }
+
+  .qt-cmdk-key {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    padding: 2px 6px;
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  .qt-cmdk-results {
+    max-height: 380px;
+    overflow-y: auto;
+    padding: 6px;
+  }
+
+  .qt-cmdk-results :global(.qt-cmdk-empty) {
+    padding: 32px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .qt-cmdk-results :global(.qt-cmdk-empty-mark) {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--subtle);
+    letter-spacing: 0.12em;
+    margin-bottom: 6px;
+  }
+
+  .qt-cmdk-results :global(.qt-cmdk-item) {
+    display: grid;
+    grid-template-columns: 50px 1fr 90px;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 7px;
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.12s;
+  }
+
+  .qt-cmdk-results :global(.qt-cmdk-item:hover),
+  .qt-cmdk-results :global(.qt-cmdk-item.is-active) {
+    background: var(--accent-soft);
+  }
+
+  .qt-cmdk-results :global(.qt-cmdk-num) {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    font-weight: 600;
+  }
+
+  .qt-cmdk-results :global(.qt-cmdk-title) {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+    margin-bottom: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .qt-cmdk-results :global(.qt-cmdk-meta) {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .qt-cmdk-results :global(.qt-cmdk-cat) {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .qt-cmdk-results :global(.qt-cmdk-date) {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--subtle);
+    text-align: right;
+    letter-spacing: 0.04em;
+  }
+
+  .qt-cmdk-footer {
+    padding: 10px 18px;
+    border-top: 1px solid var(--border-hair);
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--subtle);
+    letter-spacing: 0.06em;
+  }
+
+  body.qt-cmdk-open {
+    overflow: hidden;
+  }
+</style>
+
+<script>
+  import Fuse from 'fuse.js';
+
+  interface SearchItem {
+    id: string;
+    title: string;
+    description: string;
+    tags: string[];
+    pubDate: string;
+  }
+
+  type Indexed = SearchItem & { num: number };
+
+  const root = document.getElementById('qt-cmdk');
+  if (!root) {
+    // 페이지에 마운트되지 않음
+  } else {
+    const baseUrl = root.dataset.base ?? '/';
+    const input = document.getElementById('qt-cmdk-input') as HTMLInputElement;
+    const resultsEl = document.getElementById('qt-cmdk-results') as HTMLElement;
+    const countEl = document.getElementById('qt-cmdk-count') as HTMLElement;
+    const backdrop = root.querySelector('[data-cmdk-backdrop]') as HTMLElement;
+
+    let fuse: Fuse<Indexed> | null = null;
+    let posts: Indexed[] = [];
+    let activeIndex = 0;
+    let loaded = false;
+    let loading = false;
+
+    async function ensureIndex() {
+      if (loaded || loading) return;
+      loading = true;
+      try {
+        const res = await fetch(`${baseUrl}api/search.json`);
+        if (!res.ok) throw new Error('failed');
+        const raw: SearchItem[] = await res.json();
+        posts = raw.map((p, i) => ({ ...p, num: i + 1 }));
+        fuse = new Fuse(posts, {
+          keys: [
+            { name: 'title', weight: 0.4 },
+            { name: 'description', weight: 0.25 },
+            { name: 'tags', weight: 0.35 },
+          ],
+          threshold: 0.35,
+        });
+        loaded = true;
+      } catch {
+        resultsEl.innerHTML = '<div class="qt-cmdk-empty"><span class="qt-cmdk-empty-mark">// LOAD_ERROR</span>검색 데이터를 불러오지 못했어요.</div>';
+      } finally {
+        loading = false;
+      }
+    }
+
+    function formatDate(iso: string) {
+      const d = new Date(iso);
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}.${m}.${day}`;
+    }
+
+    function render(query: string) {
+      if (!loaded) {
+        resultsEl.innerHTML = '<div class="qt-cmdk-empty"><span class="qt-cmdk-empty-mark">// LOADING</span>인덱스를 불러오는 중…</div>';
+        countEl.textContent = '— RESULTS';
+        return;
+      }
+      const q = query.trim();
+      const matches: Indexed[] = q
+        ? (fuse?.search(q).map((r) => r.item) ?? [])
+        : posts.slice(0, 8);
+      const list = matches.slice(0, 8);
+      activeIndex = 0;
+
+      if (list.length === 0) {
+        resultsEl.innerHTML = `<div class="qt-cmdk-empty"><span class="qt-cmdk-empty-mark">// NO_RESULTS</span>"${escapeHtml(q)}"에 대한 결과가 없어요.</div>`;
+        countEl.textContent = '0 RESULTS';
+        return;
+      }
+
+      resultsEl.innerHTML = list
+        .map((p, i) => {
+          const num = String(p.num).padStart(3, '0');
+          const cat = p.tags[0] ?? '';
+          const sub = p.tags[1] ?? '';
+          return `
+            <a href="${baseUrl}posts/${p.id}/" class="qt-cmdk-item${i === 0 ? ' is-active' : ''}" data-index="${i}">
+              <span class="qt-cmdk-num">№${num}</span>
+              <span>
+                <span class="qt-cmdk-title">${escapeHtml(p.title)}</span>
+                <span class="qt-cmdk-meta">${cat ? `<span class="qt-cmdk-cat">[${escapeHtml(cat.toUpperCase())}]</span>` : ''}${sub ? ` ${escapeHtml(sub)}` : ''}</span>
+              </span>
+              <span class="qt-cmdk-date">${formatDate(p.pubDate)}</span>
+            </a>
+          `;
+        })
+        .join('');
+      countEl.textContent = `${list.length} RESULTS`;
+    }
+
+    function escapeHtml(s: string) {
+      return s
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function setActive(idx: number) {
+      const items = resultsEl.querySelectorAll<HTMLElement>('.qt-cmdk-item');
+      if (items.length === 0) return;
+      const next = (idx + items.length) % items.length;
+      items.forEach((el, i) => el.classList.toggle('is-active', i === next));
+      items[next].scrollIntoView({ block: 'nearest' });
+      activeIndex = next;
+    }
+
+    function open() {
+      root!.hidden = false;
+      document.body.classList.add('qt-cmdk-open');
+      input.value = '';
+      ensureIndex().then(() => render(''));
+      setTimeout(() => input.focus(), 0);
+    }
+
+    function close() {
+      root!.hidden = true;
+      document.body.classList.remove('qt-cmdk-open');
+    }
+
+    function isOpen() {
+      return !root!.hidden;
+    }
+
+    input.addEventListener('input', () => render(input.value));
+
+    document.addEventListener('keydown', (e) => {
+      const isMeta = e.metaKey || e.ctrlKey;
+      if (isMeta && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        isOpen() ? close() : open();
+        return;
+      }
+      if (!isOpen()) return;
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        close();
+        return;
+      }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setActive(activeIndex + 1);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setActive(activeIndex - 1);
+      } else if (e.key === 'Enter') {
+        const items = resultsEl.querySelectorAll<HTMLAnchorElement>('.qt-cmdk-item');
+        const target = items[activeIndex];
+        if (target) {
+          e.preventDefault();
+          window.location.href = target.href;
+        }
+      }
+    });
+
+    backdrop.addEventListener('click', close);
+
+    document.querySelectorAll<HTMLElement>('[data-cmdk-trigger]').forEach((el) => {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        open();
+      });
+    });
+  }
+</script>

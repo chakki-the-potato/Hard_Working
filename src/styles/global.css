@@ -3,51 +3,67 @@
 /* === 폰트 === */
 @import "@fontsource/jetbrains-mono/400.css";
 @import "@fontsource/jetbrains-mono/500.css";
-
-@font-face {
-  font-family: "BMHanna";
-  src: url("/Hard_Working/fonts/BMHANNA_11yrs_ttf.woff2") format("woff2");
-  font-weight: 400;
-  font-display: swap;
-}
+@import "@fontsource/jetbrains-mono/600.css";
+@import "@fontsource/jetbrains-mono/700.css";
 
 :root {
-  /* === 핵심 색상 (딥 그린 베이스) === */
-  --color-heading: #191F28;
-  --color-body: #333D4B;
-  --color-muted: #6B7684;
-  --color-subtle: #8B95A1;
-  --color-bg: #FFFFFF;
-  --color-bg-footer: #F9FAFB;
-  --color-bg-badge: #F2F4F6;
-  --color-badge-green: #EAF3DE;
-  --color-badge-green-text: #15803D;
-  --color-cta: #15803D;
-  --color-cta-hover: #166534;
-  --color-border: #E5E8EB;
+  /* === Quiet Tech v3 (라이트) === */
+  --bg: #F4F6FA;
+  --bg-elev: #FFFFFF;
+  --bg-alt: #EAEEF4;
+  --bg-code: #EEF1F6;
+  --border: #D9DFE7;
+  --border-strong: #0B1220;
+  --border-hair: rgba(11, 18, 32, 0.08);
+  --ink: #0B1220;
+  --body: #1F2937;
+  --muted: #5B6773;
+  --subtle: #8B95A1;
+  --accent: #6366F1;
+  --accent-soft: rgba(99, 102, 241, 0.10);
+  --accent-ink: #4F46E5;
 
-  /* === Legacy aliases (기존 컴포넌트 호환용) === */
-  --bg-primary: #ffffff;
-  --bg-secondary: #F2F4F6;
-  --text-primary: #191F28;
-  --text-secondary: #6B7684;
-  --accent: #15803D;
-  --accent-hover: #166534;
-  --border: #E5E8EB;
-  --card-bg: #ffffff;
-  --card-shadow: none;
-  --card-shadow-hover: none;
+  /* === 콘텐츠 폭 / 헤딩 스케일 === */
+  --content-w: 720px;
+  --h-scale: 1;
 
   /* === 폰트 변수 === */
   --font-sans: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-display: 'BMHanna', 'Pretendard', sans-serif;
   --font-mono: 'JetBrains Mono', 'D2Coding', ui-monospace, SFMono-Regular, monospace;
+
+  /* === Legacy aliases (기존 컴포넌트 호환) === */
+  --color-heading: var(--ink);
+  --color-body: var(--body);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-bg: var(--bg);
+  --color-bg-footer: var(--bg-elev);
+  --color-bg-badge: var(--bg-alt);
+  --color-cta: var(--ink);
+  --color-cta-hover: #1f2937;
+  --color-border: var(--border);
+  --color-badge-blue: var(--accent-soft);
+  --color-badge-blue-text: var(--accent-ink);
+  --color-badge-green: var(--accent-soft);
+  --color-badge-green-text: var(--accent-ink);
+  --bg-primary: var(--bg);
+  --bg-secondary: var(--bg-alt);
+  --text-primary: var(--ink);
+  --text-secondary: var(--muted);
+  --accent-hover: var(--accent-ink);
+  --border-color: var(--border);
+  --card-bg: var(--bg-elev);
+  --card-shadow: none;
+  --card-shadow-hover: none;
 }
 
 body {
-  background-color: var(--color-bg);
-  color: var(--color-body);
+  background-color: var(--bg);
+  color: var(--body);
   font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.6;
+  letter-spacing: -0.005em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -57,9 +73,9 @@ a {
   text-decoration: none;
 }
 
-/* 사이트 로고 전용 클래스 */
-.font-display {
-  font-family: var(--font-display);
+::selection {
+  background: var(--accent-soft);
+  color: var(--ink);
 }
 
 /* Scrollbar hide for tag nav */
@@ -71,7 +87,7 @@ a {
   display: none;
 }
 
-/* Shiki code highlight */
+/* Shiki code highlight (라이트 테마 고정) */
 .astro-code,
 .astro-code span {
   color: var(--shiki-light) !important;
@@ -79,70 +95,85 @@ a {
 }
 
 .astro-code {
-  padding: 1.5rem;
-  border-radius: 12px;
+  padding: 18px 20px;
+  border-radius: 8px;
   overflow-x: auto;
-  font-size: 0.875rem;
-  line-height: 1.75;
+  font-size: 13px;
+  line-height: 1.7;
   font-family: var(--font-mono);
+  border: 1px solid var(--border);
 }
 
 /* ─── PROSE — 아티클 본문 스타일 ─── */
 .prose {
   max-width: 100%;
-  color: var(--color-body);
-  font-size: 17px;
-  line-height: 1.75;
+  color: var(--body);
+  font-size: 16px;
+  line-height: 1.85;
+  font-weight: 500;
 }
 
 .prose h1 {
-  font-size: 2.25rem;
-  font-weight: 700;
-  color: var(--color-heading);
-  line-height: 1.3;
+  font-size: calc(2.25rem * var(--h-scale));
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1.18;
   margin-top: 3rem;
   margin-bottom: 1rem;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.04em;
 }
 
 .prose h2 {
-  font-size: 1.625rem;
+  font-size: calc(1.5rem * var(--h-scale));
   font-weight: 700;
-  color: var(--color-heading);
-  line-height: 1.4;
-  margin-top: 3rem;
-  margin-bottom: 0.75rem;
-  letter-spacing: -0.01em;
+  color: var(--ink);
+  line-height: 1.35;
+  margin-top: 2.5rem;
+  margin-bottom: 0.875rem;
+  letter-spacing: -0.03em;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.prose h2::before {
+  content: "§";
+  font-family: var(--font-mono);
+  font-size: 0.55em;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0;
 }
 
 .prose h3 {
-  font-size: 1.25rem;
+  font-size: calc(1.25rem * var(--h-scale));
   font-weight: 700;
-  color: var(--color-heading);
+  color: var(--ink);
   line-height: 1.4;
   margin-top: 2.25rem;
   margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
 }
 
 .prose h4 {
   font-size: 1.0625rem;
   font-weight: 600;
-  color: var(--color-heading);
+  color: var(--ink);
   margin-top: 1.75rem;
   margin-bottom: 0.5rem;
 }
 
 .prose p {
   margin-top: 0;
-  margin-bottom: 1.5rem;
-  color: var(--color-body);
-  font-size: 17px;
-  line-height: 1.75;
+  margin-bottom: 1.125rem;
+  color: var(--body);
+  font-size: 16px;
+  line-height: 1.85;
 }
 
 .prose strong {
   font-weight: 700;
-  color: var(--color-heading);
+  color: var(--ink);
 }
 
 .prose em {
@@ -150,13 +181,14 @@ a {
 }
 
 .prose a {
-  color: var(--color-cta);
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  color: var(--accent-ink);
+  border-bottom: 1px solid var(--accent-soft);
+  text-decoration: none;
+  transition: border-color 0.15s;
 }
 
 .prose a:hover {
-  color: var(--color-cta-hover);
+  border-bottom-color: var(--accent);
 }
 
 .prose ul,
@@ -167,8 +199,8 @@ a {
 
 .prose li {
   margin-bottom: 0.5rem;
-  font-size: 17px;
-  line-height: 1.75;
+  font-size: 16px;
+  line-height: 1.85;
 }
 
 .prose li > ul,
@@ -178,46 +210,60 @@ a {
 }
 
 .prose blockquote {
-  border-left: 3px solid var(--color-cta);
-  padding: 0.25rem 0 0.25rem 1.25rem;
-  margin: 2rem 0;
-  color: var(--color-muted);
+  border-left: 3px solid var(--accent);
+  padding: 0 0 0 20px;
+  margin: 1.75rem 0;
+  color: var(--ink);
   font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.55;
+  letter-spacing: -0.015em;
 }
 
 .prose blockquote p {
-  font-size: 17px;
-  color: var(--color-muted);
+  font-size: 18px;
+  color: var(--ink);
   margin-bottom: 0;
+  font-weight: 600;
 }
 
 .prose img {
-  border-radius: 12px;
+  border-radius: 8px;
   margin: 2rem 0;
   width: 100%;
 }
 
 .prose code:not(pre code) {
-  background-color: var(--color-bg-badge);
-  color: var(--color-heading);
+  background-color: var(--bg-alt);
+  color: var(--ink);
   padding: 0.15em 0.45em;
-  border-radius: 5px;
+  border-radius: 4px;
   font-size: 0.875em;
   font-weight: 500;
   font-family: var(--font-mono);
+  border: 1px solid var(--border-hair);
 }
 
 .prose pre {
-  margin: 2rem 0;
+  margin: 1.25rem 0;
+  background-color: var(--bg-code) !important;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 18px 20px;
+  overflow-x: auto;
 }
 
 .prose pre code {
   font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  background: transparent !important;
 }
 
 .prose hr {
   border: none;
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid var(--border);
   margin: 3rem 0;
 }
 
@@ -225,27 +271,31 @@ a {
   width: 100%;
   border-collapse: collapse;
   margin: 2rem 0;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .prose th,
 .prose td {
-  border: 1px solid var(--color-border);
-  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  padding: 0.625rem 0.875rem;
   text-align: left;
 }
 
 .prose th {
-  background-color: var(--color-bg-badge);
+  background-color: var(--bg-alt);
   font-weight: 600;
-  color: var(--color-heading);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .prose td {
-  color: var(--color-body);
+  color: var(--body);
 }
 
-/* 첫 번째 자식 p의 margin-top 제거 */
+/* 첫 번째 자식 margin-top 제거 */
 .prose > :first-child {
   margin-top: 0;
 }

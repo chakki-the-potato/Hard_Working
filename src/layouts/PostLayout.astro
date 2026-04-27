@@ -1,7 +1,10 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
+import PostListRow from '../components/PostListRow.astro';
 
 interface Props {
+  id: string;
   title: string;
   description: string;
   pubDate: Date;
@@ -10,175 +13,189 @@ interface Props {
   heroImage?: string;
 }
 
-const { title, description, pubDate, updatedDate, tags, heroImage } = Astro.props;
+const { id, title, description, pubDate, updatedDate, tags } = Astro.props;
 const base = import.meta.env.BASE_URL;
+
+const cat = tags[0] ?? '';
+const sub = tags[1] ?? '';
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const sortedAll = [...allPosts].sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const numberMap = new Map<string, number>();
+sortedAll.forEach((p, i) => numberMap.set(p.id, i + 1));
+const num = numberMap.get(id);
+const numLabel = num != null ? String(num).padStart(3, '0') : '';
+
+const dateLabel = `${pubDate.getFullYear()}.${String(pubDate.getMonth() + 1).padStart(2, '0')}.${String(pubDate.getDate()).padStart(2, '0')}`;
+const updatedLabel = updatedDate
+  ? `${updatedDate.getFullYear()}.${String(updatedDate.getMonth() + 1).padStart(2, '0')}.${String(updatedDate.getDate()).padStart(2, '0')}`
+  : '';
+
+// 읽기 시간 추정 (대략 — 한글 600자/분 기준은 본문이 없으니 대략 5분 고정)
+const readLabel = '5분';
+
+// 관련 글 — 같은 카테고리 최근 3개 (현재 글 제외)
+const related = sortedAll
+  .filter((p) => p.id !== id && p.data.tags[0] === cat)
+  .slice(0, 3);
 ---
 
 <BaseLayout title={title} description={description}>
-  <div class="post-wrapper">
-    <article class="post-article">
+  <div class="qt-post-wrap">
+    <section class="qt-post-crumb">
+      <span>HOME / {cat ? cat.toUpperCase() : 'NOTE'}{numLabel ? ` / №${numLabel}` : ''}</span>
+      <span>{dateLabel}{updatedLabel ? ` / UPD ${updatedLabel}` : ''}</span>
+    </section>
 
-      <!-- 뒤로 가기 -->
-      <a href={base} class="post-back">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <article class="qt-post">
+      <span class="qt-post-mono">// {numLabel || '—'} · {(cat || 'NOTE').toUpperCase()}{sub ? ` / ${sub.toUpperCase()}` : ''}</span>
+      <h1 class="qt-post-title">{title}</h1>
+      <div class="qt-post-meta">
+        {dateLabel} ─ {readLabel}
+      </div>
+      <p class="qt-post-lede">{description}</p>
+
+      <div class="prose">
+        <slot />
+      </div>
+
+      <a href={base} class="qt-post-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
         </svg>
         목록으로
       </a>
 
-      <!-- 히어로 이미지 -->
-      {heroImage && (
-        <div class="post-hero">
-          <img src={heroImage} alt={title} />
-        </div>
+      {related.length > 0 && (
+        <section class="qt-post-related">
+          <span class="qt-post-related-mono">// RELATED</span>
+          {related.map((p) => (
+            <PostListRow
+              id={p.id}
+              title={p.data.title}
+              pubDate={p.data.pubDate}
+              tags={p.data.tags}
+              num={numberMap.get(p.id)}
+            />
+          ))}
+        </section>
       )}
-
-      <!-- 헤더 -->
-      <header class="post-header">
-        <h1 class="post-title">{title}</h1>
-
-        <!-- 태그 뱃지 -->
-        {tags.length > 0 && (
-          <div class="post-tags">
-            {tags.map((tag) => (
-              <a href={`${base}tags/${tag}/`} class="post-tag">#{tag}</a>
-            ))}
-          </div>
-        )}
-
-        <!-- 메타 정보 -->
-        <div class="post-meta">
-          <time datetime={pubDate.toISOString()}>
-            {pubDate.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
-          </time>
-          {updatedDate && (
-            <span class="post-meta-updated">
-              (수정: {updatedDate.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })})
-            </span>
-          )}
-        </div>
-      </header>
-
-      <!-- 본문 -->
-      <div class="prose">
-        <slot />
-      </div>
-
     </article>
   </div>
 </BaseLayout>
 
 <style>
-  .post-wrapper {
+  .qt-post-wrap {
+    min-height: 100%;
+  }
+
+  .qt-post-crumb {
+    padding: 10px 36px;
+    border-bottom: 1px solid var(--border-hair);
+    background: var(--bg-alt);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
     display: flex;
-    justify-content: center;
-    padding: 0 20px;
-  }
-
-  .post-article {
-    width: 100%;
-    max-width: 740px;
-    padding-bottom: 80px;
-  }
-
-  /* 뒤로 가기 링크 */
-  .post-back {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--color-muted);
-    text-decoration: none;
-    margin-bottom: 32px;
-    transition: opacity 0.15s;
-  }
-  .post-back:hover {
-    opacity: 0.6;
-  }
-
-  /* 히어로 이미지 */
-  .post-hero {
-    margin-bottom: 32px;
-    border-radius: 12px;
-    overflow: hidden;
-  }
-  .post-hero img {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-
-  /* 헤더 */
-  .post-header {
-    margin-bottom: 48px;
-  }
-
-  .post-title {
-    font-size: 2.75rem;
-    font-weight: 700;
-    color: var(--color-heading);
-    line-height: 1.25;
-    letter-spacing: -0.03em;
-    margin: 0 0 20px 0;
-  }
-
-  /* 태그 */
-  .post-tags {
-    display: flex;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
     flex-wrap: wrap;
     gap: 8px;
-    margin-bottom: 16px;
   }
 
-  .post-tag {
+  .qt-post {
+    max-width: var(--content-w);
+    margin: 0 auto;
+    padding: 64px 28px 0;
+  }
+
+  .qt-post-mono {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    margin-bottom: 18px;
+  }
+
+  .qt-post-title {
+    font-size: calc(42px * var(--h-scale));
+    font-weight: 800;
+    line-height: 1.18;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .qt-post-meta {
+    margin-top: 20px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border-strong);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  .qt-post-lede {
+    font-size: 19px;
+    line-height: 1.65;
+    color: var(--ink);
+    margin: 32px 0;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+
+  .qt-post-back {
     display: inline-flex;
     align-items: center;
+    gap: 6px;
+    margin-top: 56px;
+    padding: 8px 14px;
     font-size: 13px;
-    font-weight: 600;
-    background-color: var(--color-bg-badge);
-    color: var(--color-muted);
-    border-radius: 8px;
-    padding: 3px 10px;
+    font-weight: 500;
+    color: var(--muted);
     text-decoration: none;
-    transition: opacity 0.15s;
-  }
-  .post-tag:hover {
-    opacity: 0.7;
-  }
-
-  /* 메타 */
-  .post-meta {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 14px;
-    color: var(--color-muted);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    transition: color 0.15s, border-color 0.15s;
   }
 
-  .post-meta-updated {
-    color: var(--color-subtle);
+  .qt-post-back:hover {
+    color: var(--ink);
+    border-color: var(--border-strong);
   }
 
-  /* prose 내부 첫 요소 margin 제거 */
-  .prose > :first-child {
-    margin-top: 0 !important;
+  .qt-post-related {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
   }
 
-  /* 반응형 */
-  @media (max-width: 768px) {
-    .post-wrapper {
-      padding: 0 4px;
+  .qt-post-related-mono {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--subtle);
+    letter-spacing: 0.12em;
+    margin-bottom: 14px;
+  }
+
+  @media (max-width: 720px) {
+    .qt-post-crumb {
+      padding: 10px 20px;
+      font-size: 10px;
     }
-
-    .post-title {
-      font-size: 2rem;
+    .qt-post {
+      padding: 40px 20px 0;
     }
-  }
-
-  @media (max-width: 480px) {
-    .post-title {
-      font-size: 1.625rem;
+    .qt-post-title {
+      font-size: calc(28px * var(--h-scale));
+    }
+    .qt-post-lede {
+      font-size: 17px;
     }
   }
 </style>

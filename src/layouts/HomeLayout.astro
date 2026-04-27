@@ -1,18 +1,9 @@
 ---
 import BaseLayout from './BaseLayout.astro';
-import TagNav from '../components/TagNav.astro';
 import PostCard from '../components/PostCard.astro';
-import PostGrid from '../components/PostGrid.astro';
-import Pagination from '../components/Pagination.astro';
-import { SITE_TITLE, SITE_DESCRIPTION, POSTS_PER_PAGE } from '../consts';
-
-interface FeaturedPost {
-  id: string;
-  title: string;
-  description: string;
-  tags: string[];
-  heroImage?: string;
-}
+import PostListRow from '../components/PostListRow.astro';
+import HeroDriftBg from '../components/HeroDriftBg.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 interface ArticlePost {
   id: string;
@@ -26,457 +17,399 @@ interface ArticlePost {
 }
 
 interface Props {
-  featured: FeaturedPost[];
-  popularPosts: FeaturedPost[];
-  page: {
-    data: ArticlePost[];
-    currentPage: number;
-    lastPage: number;
-    url: {
-      prev: string | undefined;
-      next: string | undefined;
-      current: string;
-    };
-  };
+  allPosts: ArticlePost[];
+  totalTags: number;
+  pageSize?: number;
 }
 
-const { featured, popularPosts, page } = Astro.props;
-const base = import.meta.env.BASE_URL;
+const { allPosts, totalTags, pageSize = 8 } = Astro.props;
 
-// 히어로 슬라이더 표시용 (최대 3개)
-const slides = featured.slice(0, 3);
+const featuredCount = 3;
+const featured = allPosts.slice(0, featuredCount);
+const archive = allPosts.slice(featuredCount);
+
+const totalArticles = allPosts.length;
+const featuredCountLabel = String(Math.min(featuredCount, totalArticles)).padStart(2, '0');
+const totalLabel = String(totalArticles).padStart(2, '0');
+
+const lastUpdate = allPosts[0]?.data.pubDate
+  ? `${allPosts[0].data.pubDate.getFullYear()}.${String(allPosts[0].data.pubDate.getMonth() + 1).padStart(2, '0')}.${String(allPosts[0].data.pubDate.getDate()).padStart(2, '0')}`
+  : '';
 ---
 
 <BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION} noPadding={true}>
-
-  <!-- ── Hero 슬라이더 ── -->
-  <section class="hero-section" id="hero-section">
-    <div class="hero-inner">
-      <!-- 슬라이드들 -->
-      {slides.map((post, i) => (
-        <div class={`hero-slide${i === 0 ? ' active' : ''}`} data-index={i}>
-          <!-- 좌: 텍스트 -->
-          <div class="hero-text">
-            {post.tags[0] && (
-              <span class="hero-tag">{post.tags[0]}</span>
-            )}
-            <h2 class="hero-title">
-              <a href={`${base}posts/${post.id}/`}>{post.title}</a>
-            </h2>
-            <p class="hero-desc">{post.description}</p>
-          </div>
-
-          <!-- 우: 이미지 -->
-          <div class="hero-image">
-            {post.heroImage
-              ? <img src={post.heroImage} alt={post.title} loading={i === 0 ? 'eager' : 'lazy'} />
-              : <div class="hero-image-placeholder">
-                  <div class="hero-placeholder-inner" style={`background: ${['linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'][i % 3]};`}></div>
-                </div>
-            }
-          </div>
-        </div>
-      ))}
-
-      <!-- 이전/다음 버튼 + 도트 -->
-      {slides.length > 1 && (
-        <div class="hero-controls">
-          <button class="hero-arrow" id="hero-prev" aria-label="이전">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <div class="hero-dots">
-            {slides.map((_, i) => (
-              <button class={`hero-dot${i === 0 ? ' active' : ''}`} data-index={i} aria-label={`슬라이드 ${i + 1}`}></button>
-            ))}
-          </div>
-          <button class="hero-arrow" id="hero-next" aria-label="다음">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
-      )}
+  <section class="qt-hero" id="qt-hero">
+    <div class="qt-hero-bg-wrap" id="qt-hero-bg-wrap">
+      <HeroDriftBg strength={1} />
+    </div>
+    <div class="qt-hero-inner">
+      <div class="qt-hero-syslog">
+        SYS_LOG<br />
+        <span class="qt-hero-syslog-time" id="qt-syslog-time">{lastUpdate}</span><br />
+        <span class="qt-hero-online">● ONLINE</span>
+      </div>
+      <span class="qt-hero-mono">╱╱  HARD_WORKING / V.02</span>
+      <h1 class="qt-hero-title">
+        공부의 결을<br />
+        한 편씩 <span class="qt-hero-accent">기록</span>합니다.
+      </h1>
+      <p class="qt-hero-desc">
+        Programming · Thinking · Design — 매일의 학습 기록.
+      </p>
+      <div class="qt-hero-stats">
+        <span><strong>{totalArticles}</strong> articles</span>
+        <span><strong>{totalTags}</strong> tags</span>
+        <span>updated <strong>daily</strong></span>
+      </div>
     </div>
   </section>
 
-  <!-- ── 메인 콘텐츠 ── -->
-  <div class="home-content">
-    <div class="home-main-row">
-
-      <!-- 좌: 아티클 리스트 -->
-      <div class="articles-col">
-        <h2 class="section-heading">전체 아티클</h2>
-        <TagNav />
-        <PostGrid>
-          {page.data.map((post) => (
+  <main class="qt-home-main">
+    {featured.length > 0 && (
+      <>
+        <div class="qt-section-head">
+          <h2 class="qt-section-mono">// FEATURED</h2>
+          <span class="qt-section-count">{featuredCountLabel} OF {totalLabel}</span>
+        </div>
+        <div class="qt-feat-list">
+          {featured.map((post, i) => (
             <PostCard
               id={post.id}
               title={post.data.title}
               description={post.data.description}
               pubDate={post.data.pubDate}
               tags={post.data.tags}
-              heroImage={post.data.heroImage}
+              num={i + 1}
             />
           ))}
-        </PostGrid>
-        {page.data.length === 0 && (
-          <p class="empty-msg">아직 작성된 글이 없습니다.</p>
-        )}
-        <Pagination
-          currentPage={page.currentPage}
-          lastPage={page.lastPage}
-          baseUrl={base}
-        />
-      </div>
+        </div>
+      </>
+    )}
 
-      <!-- 우: 인기 있는 글 사이드바 -->
-      <aside class="popular-sidebar">
-        <h3 class="sidebar-heading">인기 있는 글</h3>
-        <div class="popular-list">
-          {popularPosts.map((post, i) => (
-            <a href={`${base}posts/${post.id}/`} class="popular-item">
-              <span class="popular-num">{i + 1}</span>
-              <div class="popular-info">
-                <div class="popular-title">{post.title}</div>
-                {post.tags[0] && (
-                  <span class="popular-tag">{post.tags[0]}</span>
-                )}
-              </div>
-            </a>
+    {archive.length > 0 && (
+      <>
+        <div class="qt-section-head qt-section-archive">
+          <h2 class="qt-section-mono">// ARCHIVE</h2>
+          <span class="qt-section-count" id="qt-archive-count">
+            {String(Math.min(pageSize, archive.length)).padStart(2, '0')} / {String(archive.length).padStart(2, '0')}
+          </span>
+        </div>
+        <div class="qt-archive-list" id="qt-archive-list" data-page-size={pageSize}>
+          {archive.map((post, i) => (
+            <div
+              class="qt-archive-item"
+              data-index={i}
+              data-visible={i < pageSize ? 'true' : 'false'}
+              hidden={i >= pageSize}
+            >
+              <PostListRow
+                id={post.id}
+                title={post.data.title}
+                pubDate={post.data.pubDate}
+                tags={post.data.tags}
+                num={featuredCount + i + 1}
+              />
+            </div>
           ))}
         </div>
-      </aside>
 
-    </div>
-  </div>
+        {archive.length > pageSize && (
+          <div class="qt-more-wrap">
+            <button type="button" class="qt-more-btn" id="qt-more-btn" data-step={pageSize}>
+              더 보기
+              <span class="qt-more-mono" id="qt-more-mono">+{Math.min(pageSize, archive.length - pageSize)}</span>
+            </button>
+          </div>
+        )}
+      </>
+    )}
+
+    {allPosts.length === 0 && (
+      <p class="qt-empty">아직 작성된 글이 없습니다.</p>
+    )}
+  </main>
 </BaseLayout>
 
-<!-- 슬라이더 JS -->
 <script>
-  const section = document.getElementById('hero-section');
-  if (section) {
-    const slides = section.querySelectorAll<HTMLElement>('.hero-slide');
-    const dots = section.querySelectorAll<HTMLElement>('.hero-dot');
-    const prevBtn = document.getElementById('hero-prev');
-    const nextBtn = document.getElementById('hero-next');
-    let current = 0;
-    let timer: ReturnType<typeof setInterval>;
+  // 스크롤 시차 — 히어로 배경만 천천히 따라옴
+  const heroSection = document.getElementById('qt-hero');
+  const bgWrap = document.getElementById('qt-hero-bg-wrap');
+  if (heroSection && bgWrap) {
+    let raf = 0;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        const y = window.scrollY || 0;
+        bgWrap.style.transform = `translateY(${y * 0.4}px)`;
+        raf = 0;
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
 
-    function goTo(idx: number) {
-      slides[current].classList.remove('active');
-      dots[current]?.classList.remove('active');
-      current = (idx + slides.length) % slides.length;
-      slides[current].classList.add('active');
-      dots[current]?.classList.add('active');
+  // SYS_LOG 시계 — 현재 KST 시간 노출
+  const timeEl = document.getElementById('qt-syslog-time');
+  if (timeEl) {
+    function fmt() {
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mi = String(now.getMinutes()).padStart(2, '0');
+      return `${yyyy}.${mm}.${dd} / ${hh}:${mi} KST`;
     }
+    timeEl.textContent = fmt();
+    setInterval(() => { timeEl.textContent = fmt(); }, 30_000);
+  }
 
-    function startTimer() {
-      timer = setInterval(() => goTo(current + 1), 4000);
-    }
+  // 더 보기 — 클라이언트 페이지네이션
+  const moreBtn = document.getElementById('qt-more-btn') as HTMLButtonElement | null;
+  const archiveList = document.getElementById('qt-archive-list');
+  const archiveCount = document.getElementById('qt-archive-count');
+  const moreMono = document.getElementById('qt-more-mono');
+  if (moreBtn && archiveList) {
+    const step = Number(moreBtn.dataset.step) || 8;
+    moreBtn.addEventListener('click', () => {
+      const items = archiveList.querySelectorAll<HTMLElement>('.qt-archive-item');
+      const total = items.length;
+      let visibleCount = 0;
+      items.forEach((el) => { if (el.dataset.visible === 'true') visibleCount++; });
 
-    function resetTimer() {
-      clearInterval(timer);
-      startTimer();
-    }
+      const nextEnd = Math.min(visibleCount + step, total);
+      for (let i = visibleCount; i < nextEnd; i++) {
+        items[i].dataset.visible = 'true';
+        items[i].hidden = false;
+      }
 
-    prevBtn?.addEventListener('click', () => { goTo(current - 1); resetTimer(); });
-    nextBtn?.addEventListener('click', () => { goTo(current + 1); resetTimer(); });
-    dots.forEach((dot, i) => dot.addEventListener('click', () => { goTo(i); resetTimer(); }));
+      if (archiveCount) {
+        archiveCount.textContent = `${String(nextEnd).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
+      }
 
-    if (slides.length > 1) startTimer();
+      if (nextEnd >= total) {
+        moreBtn.style.display = 'none';
+      } else if (moreMono) {
+        moreMono.textContent = `+${Math.min(step, total - nextEnd)}`;
+      }
+    });
   }
 </script>
 
 <style>
   /* ── Hero ── */
-  .hero-section {
-    width: 100%;
-    padding: 0 0 48px;
-  }
-
-  .hero-inner {
-    max-width: 1024px;
-    margin: 0 auto;
-    padding: 40px 20px 0;
+  .qt-hero {
     position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
   }
 
-  .hero-slide {
-    display: none;
-    align-items: center;
-    gap: 48px;
+  .qt-hero-bg-wrap {
+    position: absolute;
+    inset: 0;
+    will-change: transform;
   }
 
-  .hero-slide.active {
+  .qt-hero-inner {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 88px 36px 56px;
+  }
+
+  .qt-hero-syslog {
+    position: absolute;
+    top: 28px;
+    right: 36px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--subtle);
+    letter-spacing: 0.06em;
+    text-align: right;
+    line-height: 1.7;
+  }
+
+  .qt-hero-syslog-time {
+    color: var(--muted);
+  }
+
+  .qt-hero-online {
+    color: var(--accent);
+  }
+
+  .qt-hero-mono {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    margin-bottom: 24px;
+  }
+
+  .qt-hero-title {
+    font-size: calc(76px * var(--h-scale));
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.05em;
+    color: var(--ink);
+    margin: 0;
+    max-width: 920px;
+  }
+
+  .qt-hero-accent {
+    color: var(--accent);
+  }
+
+  .qt-hero-desc {
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--muted);
+    margin: 22px 0 0;
+    max-width: 540px;
+    font-weight: 500;
+  }
+
+  .qt-hero-stats {
+    margin-top: 28px;
     display: flex;
+    gap: 28px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
   }
 
-  /* 좌: 텍스트 */
-  .hero-text {
-    flex: 1;
-    min-width: 0;
+  .qt-hero-stats strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* ── Main ── */
+  .qt-home-main {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 40px 36px 0;
+  }
+
+  .qt-section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-strong);
+    margin-bottom: 4px;
+  }
+
+  .qt-section-archive {
+    margin-top: 56px;
+  }
+
+  .qt-section-mono {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: 0.14em;
+  }
+
+  .qt-section-count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--subtle);
+    letter-spacing: 0.06em;
+  }
+
+  .qt-feat-list,
+  .qt-archive-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
   }
 
-  .hero-tag {
+  .qt-archive-item[hidden] {
+    display: none;
+  }
+
+  .qt-more-wrap {
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
+  }
+
+  .qt-more-btn {
+    padding: 10px 22px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--bg-elev);
+    border: 1px solid var(--border-strong);
+    border-radius: 7px;
+    cursor: pointer;
+    font-family: inherit;
+    letter-spacing: -0.01em;
     display: inline-flex;
     align-items: center;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--color-badge-blue-text);
-    background-color: var(--color-badge-blue);
-    border-radius: 8px;
-    padding: 2px 10px;
-    align-self: flex-start;
-  }
-
-  .hero-title {
-    font-size: 2.25rem;
-    font-weight: 700;
-    color: var(--color-heading);
-    line-height: 1.3;
-    letter-spacing: -0.02em;
-    margin: 0;
-  }
-
-  .hero-title a {
-    color: inherit;
-    text-decoration: none;
-    transition: opacity 0.15s;
-  }
-
-  .hero-title a:hover {
-    opacity: 0.75;
-  }
-
-  .hero-desc {
-    font-size: 17px;
-    color: var(--color-muted);
-    line-height: 1.6;
-    margin: 0;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  /* 우: 이미지 */
-  .hero-image {
-    flex-shrink: 0;
-    width: 440px;
-    height: 260px;
-    border-radius: 16px;
-    overflow: hidden;
-  }
-
-  .hero-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  .hero-image-placeholder {
-    width: 100%;
-    height: 100%;
-  }
-
-  .hero-placeholder-inner {
-    width: 100%;
-    height: 100%;
-  }
-
-  /* 컨트롤 */
-  .hero-controls {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-top: 24px;
-  }
-
-  .hero-arrow {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: none;
-    background-color: var(--color-bg-badge);
-    color: var(--color-heading);
-    cursor: pointer;
+    gap: 8px;
     transition: background-color 0.15s;
-    flex-shrink: 0;
   }
 
-  .hero-arrow:hover {
-    background-color: #E5E8EB;
+  .qt-more-btn:hover {
+    background: var(--bg-alt);
   }
 
-  .hero-dots {
-    display: flex;
-    gap: 6px;
+  .qt-more-mono {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
   }
 
-  .hero-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    border: none;
-    background-color: var(--color-bg-badge);
-    cursor: pointer;
-    padding: 0;
-    transition: background-color 0.2s, transform 0.2s;
-  }
-
-  .hero-dot.active {
-    background-color: var(--color-heading);
-    transform: scale(1.3);
-  }
-
-  /* ── 메인 콘텐츠 ── */
-  .home-content {
-    max-width: 1024px;
-    margin: 0 auto;
-    padding: 0 20px 80px;
-  }
-
-  .home-main-row {
-    display: flex;
-    gap: 72px;
-    align-items: flex-start;
-  }
-
-  /* 좌: 아티클 리스트 */
-  .articles-col {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .section-heading {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--color-body);
-    letter-spacing: -0.02em;
-    margin: 0 0 24px;
-  }
-
-  .empty-msg {
+  .qt-empty {
     text-align: center;
     padding: 64px 0;
-    color: var(--color-muted);
+    color: var(--muted);
     font-size: 15px;
-  }
-
-  /* 우: 사이드바 */
-  .popular-sidebar {
-    flex-shrink: 0;
-    width: 280px;
-    padding-top: 76px; /* "전체 아티클" 헤딩 + TagNav 높이만큼 내림 */
-  }
-
-  .sidebar-heading {
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--color-muted);
-    margin: 0 0 16px;
-  }
-
-  .popular-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .popular-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    text-decoration: none;
-    transition: opacity 0.15s;
-  }
-
-  .popular-item:hover {
-    opacity: 0.7;
-  }
-
-  .popular-num {
-    flex-shrink: 0;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--color-cta);
-    background-color: #fff;
-    border-radius: 8px;
-    border: 1.5px solid var(--color-badge-blue);
-    margin-top: 1px;
-  }
-
-  .popular-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .popular-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--color-heading);
-    line-height: 1.45;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .popular-tag {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--color-muted);
   }
 
   /* ── 반응형 ── */
   @media (max-width: 900px) {
-    .hero-image {
-      width: 320px;
-      height: 200px;
+    .qt-hero-inner {
+      padding: 72px 24px 48px;
     }
-    .hero-title {
-      font-size: 1.75rem;
+    .qt-hero-title {
+      font-size: calc(56px * var(--h-scale));
     }
-    .popular-sidebar {
-      display: none;
-    }
-    .home-main-row {
-      gap: 0;
+    .qt-home-main {
+      padding: 32px 24px 0;
     }
   }
 
-  @media (max-width: 640px) {
-    .hero-slide.active {
-      flex-direction: column-reverse;
-      gap: 24px;
+  @media (max-width: 720px) {
+    .qt-hero-syslog {
+      display: none;
     }
-    .hero-image {
-      width: 100%;
-      height: 200px;
+    .qt-hero-title {
+      font-size: calc(44px * var(--h-scale));
+      letter-spacing: -0.04em;
     }
-    .hero-title {
-      font-size: 1.5rem;
+    .qt-hero-stats {
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 11px;
     }
-    .hero-inner {
-      padding: 24px 16px 0;
+  }
+
+  @media (max-width: 480px) {
+    .qt-hero-inner {
+      padding: 56px 20px 40px;
     }
-    .home-content {
-      padding: 0 16px 60px;
+    .qt-hero-title {
+      font-size: calc(36px * var(--h-scale));
+    }
+    .qt-home-main {
+      padding: 24px 20px 0;
+    }
+    .qt-section-archive {
+      margin-top: 40px;
     }
   }
 </style>

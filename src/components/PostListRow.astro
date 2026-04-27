@@ -1,0 +1,116 @@
+---
+interface Props {
+  id: string;
+  title: string;
+  pubDate: Date;
+  tags: string[];
+  num?: number;
+  showMono?: boolean;
+}
+
+const { id, title, pubDate, tags, num, showMono = true } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+const cat = tags[0] ?? '';
+const sub = tags[1] ?? '';
+const dateLabel = pubDate
+  .toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' })
+  .replace(/\.\s*/g, '.')
+  .replace(/\.$/, '');
+
+const numLabel = num != null ? String(num).padStart(3, '0') : null;
+---
+
+<a
+  href={`${base}posts/${id}/`}
+  class:list={['qt-list-row', { 'has-num': showMono && numLabel }]}
+>
+  {showMono && numLabel && <span class="qt-list-num">№{numLabel}</span>}
+  <span class="qt-list-title">{title}</span>
+  <span class="qt-list-cat">
+    {cat && <span class="qt-list-cat-key">[{cat.toUpperCase()}]</span>}
+    {sub && <span class="qt-list-cat-sub"> {sub}</span>}
+  </span>
+  <span class="qt-list-date">{dateLabel}</span>
+</a>
+
+<style>
+  .qt-list-row {
+    display: grid;
+    grid-template-columns: 1fr 130px 90px;
+    gap: 18px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: baseline;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: background-color 0.12s;
+  }
+
+  .qt-list-row.has-num {
+    grid-template-columns: 60px 1fr 130px 90px;
+  }
+
+  .qt-list-row:hover {
+    background: var(--bg-alt);
+  }
+
+  .qt-list-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--subtle);
+    letter-spacing: 0.04em;
+  }
+
+  .qt-list-title {
+    font-size: 15px;
+    color: var(--ink);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .qt-list-cat {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .qt-list-cat-key {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .qt-list-date {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--subtle);
+    letter-spacing: 0.04em;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 720px) {
+    .qt-list-row,
+    .qt-list-row.has-num {
+      grid-template-columns: 1fr 80px;
+      gap: 10px;
+      padding: 12px 0;
+    }
+    .qt-list-num,
+    .qt-list-cat {
+      display: none;
+    }
+    .qt-list-title {
+      white-space: normal;
+      font-size: 14px;
+    }
+  }
+</style>

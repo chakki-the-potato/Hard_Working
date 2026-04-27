@@ -6,32 +6,142 @@ interface Props {
 }
 
 const { currentPage, lastPage, baseUrl } = Astro.props;
-const base = import.meta.env.BASE_URL;
 
 function getPageUrl(page: number) {
   if (page === 1) return baseUrl;
   return `${baseUrl}${baseUrl.endsWith('/') ? '' : '/'}${page}/`;
 }
+
+function getPageList(current: number, last: number): Array<number | 'gap'> {
+  if (last <= 5) return Array.from({ length: last }, (_, i) => i + 1);
+  if (current <= 3) return [1, 2, 3, 'gap', last];
+  if (current >= last - 2) return [1, 'gap', last - 2, last - 1, last];
+  return [1, 'gap', current, 'gap', last];
+}
+
+const items = getPageList(currentPage, lastPage);
+const hasPrev = currentPage > 1;
+const hasNext = currentPage < lastPage;
+const prevHref = hasPrev ? getPageUrl(currentPage - 1) : undefined;
+const nextHref = hasNext ? getPageUrl(currentPage + 1) : undefined;
 ---
 
 {lastPage > 1 && (
-  <nav class="flex justify-center gap-2 mt-12 flex-wrap" aria-label="Pagination">
-    {Array.from({ length: lastPage }, (_, i) => i + 1).map((num) => (
-      <a
-        href={getPageUrl(num)}
-        class:list={[
-          'w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-opacity',
-          num !== currentPage && 'hover:opacity-60',
-        ]}
-        style={
-          num === currentPage
-            ? 'background-color: var(--color-heading); color: #ffffff;'
-            : 'background-color: var(--color-bg-badge); color: var(--color-muted);'
-        }
-        aria-current={num === currentPage ? 'page' : undefined}
-      >
-        {num}
-      </a>
-    ))}
+  <nav class="qt-pager" aria-label="페이지네이션">
+    {hasPrev ? (
+      <a href={prevHref} class="qt-pager-arrow">← PREV</a>
+    ) : (
+      <span class="qt-pager-arrow is-disabled">← PREV</span>
+    )}
+
+    <div class="qt-pager-pages">
+      {items.map((item) =>
+        item === 'gap' ? (
+          <span class="qt-pager-gap">…</span>
+        ) : (
+          <a
+            href={getPageUrl(item)}
+            class:list={['qt-pager-num', { 'is-active': item === currentPage }]}
+            aria-current={item === currentPage ? 'page' : undefined}
+          >
+            {item}
+          </a>
+        )
+      )}
+    </div>
+
+    {hasNext ? (
+      <a href={nextHref} class="qt-pager-arrow is-next">NEXT →</a>
+    ) : (
+      <span class="qt-pager-arrow is-next is-disabled">NEXT →</span>
+    )}
   </nav>
 )}
+
+<style>
+  .qt-pager {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 0;
+    border-top: 1px solid var(--border-hair);
+    margin-top: 16px;
+    gap: 16px;
+  }
+
+  .qt-pager-arrow {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .qt-pager-arrow:hover:not(.is-disabled) {
+    color: var(--ink);
+    border-color: var(--border-strong);
+    font-weight: 600;
+  }
+
+  .qt-pager-arrow.is-next:hover:not(.is-disabled) {
+    color: var(--ink);
+  }
+
+  .qt-pager-arrow.is-disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .qt-pager-pages {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  .qt-pager-num {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--muted);
+    text-decoration: none;
+    font-family: inherit;
+    font-weight: 500;
+    transition: color 0.15s, border-color 0.15s, background-color 0.15s;
+  }
+
+  .qt-pager-num:hover {
+    color: var(--ink);
+    border-color: var(--border-strong);
+  }
+
+  .qt-pager-num.is-active {
+    background: var(--ink);
+    color: var(--bg-elev);
+    border-color: var(--ink);
+    font-weight: 600;
+  }
+
+  .qt-pager-gap {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--subtle);
+  }
+</style>

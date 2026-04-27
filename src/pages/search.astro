@@ -5,37 +5,53 @@ import { SITE_TITLE } from '../consts';
 const base = import.meta.env.BASE_URL;
 ---
 
-<BaseLayout title={`검색 - ${SITE_TITLE}`} description="블로그 글 검색">
-  <div class="max-w-3xl mx-auto">
-    <div class="relative mb-8">
-      <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style="color: var(--text-secondary);" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+<BaseLayout title={`Search — ${SITE_TITLE}`} description="블로그 글 검색" noPadding={true}>
+  <section class="qt-search-hero">
+    <span class="qt-mono qt-search-mono">// SEARCH</span>
+    <h1 class="qt-search-title">
+      글 찾기<span class="qt-search-dot">.</span>
+    </h1>
+    <p class="qt-search-desc">
+      제목, 설명, 태그로 검색합니다. 단축키 <span class="qt-key">⌘K</span> 또는 <span class="qt-key">Ctrl+K</span>로 어디서든 빠른 팔레트를 열 수 있어요.
+    </p>
+  </section>
+
+  <main class="qt-search-main">
+    <div class="qt-search-input-wrap">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"/>
+        <path d="M21 21l-4.3-4.3"/>
       </svg>
       <input
         id="search-input"
         type="text"
-        placeholder="검색어를 입력하세요..."
+        placeholder="검색어를 입력하세요…"
         autocomplete="off"
         autofocus
-        class="w-full pl-12 pr-4 py-3 rounded-xl border text-base outline-none transition-colors"
-        style="background-color: var(--bg-secondary); border-color: var(--border); color: var(--text-primary);"
       />
     </div>
-    <div id="search-results" class="space-y-4"></div>
-    <p id="search-empty" class="text-center py-8 hidden" style="color: var(--text-secondary);">
-      검색 결과가 없습니다.
-    </p>
-    <p id="search-hint" class="text-center py-8" style="color: var(--text-secondary);">
-      제목, 설명, 태그로 검색할 수 있습니다.
-    </p>
-  </div>
+
+    <div id="search-results" class="qt-search-results"></div>
+
+    <div id="search-empty" class="qt-search-state" hidden>
+      <span class="qt-mono qt-search-state-mark">// NO_RESULTS</span>
+      <p>검색 결과가 없습니다.</p>
+    </div>
+
+    <div id="search-hint" class="qt-search-state">
+      <span class="qt-mono qt-search-state-mark">// READY</span>
+      <p>제목, 설명, 태그로 검색할 수 있습니다.</p>
+    </div>
+  </main>
+
   <div id="search-config" data-base-url={base} hidden></div>
 </BaseLayout>
 
 <script>
   import Fuse from 'fuse.js';
 
-  const BASE_URL = document.getElementById('search-config')!.getAttribute('data-base-url')!;
+  const cfg = document.getElementById('search-config');
+  const BASE_URL = cfg ? cfg.getAttribute('data-base-url') ?? '/' : '/';
 
   interface SearchItem {
     id: string;
@@ -45,14 +61,13 @@ const base = import.meta.env.BASE_URL;
     pubDate: string;
   }
 
-  let fuse: Fuse<SearchItem>;
+  let fuse: Fuse<SearchItem> | null = null;
 
   async function initSearch() {
     try {
-      const response = await fetch(`${BASE_URL}api/search.json`);
-      if (!response.ok) throw new Error('Failed to load search index');
-      const posts: SearchItem[] = await response.json();
-
+      const res = await fetch(`${BASE_URL}api/search.json`);
+      if (!res.ok) throw new Error('failed');
+      const posts: SearchItem[] = await res.json();
       fuse = new Fuse(posts, {
         keys: [
           { name: 'title', weight: 0.4 },
@@ -60,62 +75,242 @@ const base = import.meta.env.BASE_URL;
           { name: 'tags', weight: 0.3 },
         ],
         threshold: 0.3,
-        includeScore: true,
       });
     } catch {
-      document.getElementById('search-hint')!.textContent = '검색 기능을 불러오지 못했습니다. 페이지를 새로고침해 주세요.';
+      const hint = document.getElementById('search-hint');
+      if (hint) hint.querySelector('p')!.textContent = '검색 데이터를 불러오지 못했어요.';
     }
   }
 
-  function renderResults(results: Fuse.FuseResult<SearchItem>[]) {
+  function escapeHtml(s: string) {
+    return s
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function fmtDate(iso: string) {
+    const d = new Date(iso);
+    return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+  }
+
+  function renderResults(results: ReturnType<NonNullable<typeof fuse>['search']>) {
     const container = document.getElementById('search-results')!;
     const empty = document.getElementById('search-empty')!;
     const hint = document.getElementById('search-hint')!;
 
-    hint.classList.add('hidden');
+    hint.hidden = true;
 
     if (results.length === 0) {
       container.innerHTML = '';
-      empty.classList.remove('hidden');
+      empty.hidden = false;
       return;
     }
 
-    empty.classList.add('hidden');
+    empty.hidden = true;
     container.innerHTML = results
-      .map(
-        ({ item }) => `
-      <a href="${BASE_URL}posts/${item.id}/" class="block rounded-xl p-5 transition-opacity hover:opacity-70" style="background-color: var(--bg-secondary);">
-        <h3 class="font-bold mb-1" style="color: var(--text-primary);">${item.title}</h3>
-        <p class="text-sm line-clamp-2 mb-2" style="color: var(--text-secondary);">${item.description}</p>
-        <div class="flex flex-wrap gap-1.5">
-          ${item.tags.map((tag) => `<span class="text-xs px-2 py-0.5 rounded-full" style="background-color: var(--tag-bg); color: var(--text-secondary);">${tag}</span>`).join('')}
-        </div>
-      </a>
-    `
-      )
+      .map(({ item }) => {
+        const cat = item.tags[0] ?? '';
+        const sub = item.tags[1] ?? '';
+        return `
+          <a href="${BASE_URL}posts/${item.id}/" class="qt-search-row">
+            <div>
+              <div class="qt-search-row-title">${escapeHtml(item.title)}</div>
+              <div class="qt-search-row-meta">${cat ? `<span class="qt-search-cat">[${escapeHtml(cat.toUpperCase())}]</span>` : ''}${sub ? ` ${escapeHtml(sub)}` : ''}</div>
+            </div>
+            <div class="qt-search-row-date">${fmtDate(item.pubDate)}</div>
+          </a>
+        `;
+      })
       .join('');
   }
 
-  let debounceTimer: ReturnType<typeof setTimeout>;
+  let timer: ReturnType<typeof setTimeout>;
 
-  document.getElementById('search-input')!.addEventListener('input', (e) => {
-    const query = (e.target as HTMLInputElement).value.trim();
-    clearTimeout(debounceTimer);
+  const input = document.getElementById('search-input') as HTMLInputElement;
+  input.addEventListener('input', () => {
+    const q = input.value.trim();
+    clearTimeout(timer);
 
-    if (!query) {
+    if (!q) {
       document.getElementById('search-results')!.innerHTML = '';
-      document.getElementById('search-empty')!.classList.add('hidden');
-      document.getElementById('search-hint')!.classList.remove('hidden');
+      document.getElementById('search-empty')!.hidden = true;
+      document.getElementById('search-hint')!.hidden = false;
       return;
     }
 
-    debounceTimer = setTimeout(() => {
-      if (fuse) {
-        const results = fuse.search(query);
-        renderResults(results);
-      }
+    timer = setTimeout(() => {
+      if (fuse) renderResults(fuse.search(q));
     }, 200);
   });
 
   initSearch();
 </script>
+
+<style>
+  .qt-mono {
+    font-family: var(--font-mono);
+  }
+
+  .qt-key {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 1px 5px;
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--muted);
+  }
+
+  .qt-search-hero {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 64px 36px 28px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .qt-search-mono {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    margin-bottom: 14px;
+  }
+
+  .qt-search-title {
+    font-size: calc(56px * var(--h-scale));
+    font-weight: 800;
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: -0.045em;
+    line-height: 1;
+  }
+
+  .qt-search-dot {
+    color: var(--accent);
+  }
+
+  .qt-search-desc {
+    font-size: 15px;
+    color: var(--muted);
+    margin: 18px 0 0;
+    max-width: 540px;
+    line-height: 1.7;
+  }
+
+  .qt-search-main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 28px 0;
+  }
+
+  .qt-search-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  #search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    font-family: inherit;
+    color: var(--ink);
+    background: transparent;
+    letter-spacing: -0.015em;
+  }
+
+  #search-input::placeholder {
+    color: var(--subtle);
+  }
+
+  .qt-search-results :global(.qt-search-row) {
+    display: grid;
+    grid-template-columns: 1fr 90px;
+    gap: 16px;
+    align-items: baseline;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.12s;
+  }
+
+  .qt-search-results :global(.qt-search-row:hover) {
+    background: var(--bg-alt);
+  }
+
+  .qt-search-results :global(.qt-search-row-title) {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+    margin-bottom: 4px;
+  }
+
+  .qt-search-results :global(.qt-search-row-meta) {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  .qt-search-results :global(.qt-search-cat) {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .qt-search-results :global(.qt-search-row-date) {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--subtle);
+    text-align: right;
+    letter-spacing: 0.04em;
+  }
+
+  .qt-search-state {
+    padding: 48px 0;
+    text-align: center;
+    color: var(--muted);
+  }
+
+  .qt-search-state[hidden] {
+    display: none;
+  }
+
+  .qt-search-state-mark {
+    display: block;
+    font-size: 11px;
+    color: var(--subtle);
+    letter-spacing: 0.12em;
+    margin-bottom: 8px;
+  }
+
+  .qt-search-state p {
+    margin: 0;
+    font-size: 14px;
+  }
+
+  @media (max-width: 720px) {
+    .qt-search-hero {
+      padding: 40px 20px 20px;
+    }
+    .qt-search-title {
+      font-size: calc(36px * var(--h-scale));
+    }
+    .qt-search-main {
+      padding: 28px 20px 0;
+    }
+  }
+</style>

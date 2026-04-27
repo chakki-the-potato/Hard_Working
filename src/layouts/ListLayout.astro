@@ -1,8 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
-import PostCard from '../components/PostCard.astro';
-import PostGrid from '../components/PostGrid.astro';
+import PostListRow from '../components/PostListRow.astro';
+import TagNav from '../components/TagNav.astro';
 import Pagination from '../components/Pagination.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
@@ -31,277 +31,327 @@ interface Props {
 
 const { page, activeTag } = Astro.props;
 const base = import.meta.env.BASE_URL;
-const title = activeTag ? `${activeTag} - ${SITE_TITLE}` : SITE_TITLE;
+const title = activeTag ? `#${activeTag} — ${SITE_TITLE}` : SITE_TITLE;
 
-// 카테고리 계층 구조
+// 카테고리 계층
 const topCategories = ['Programming', 'Thinking', 'Design'];
 const categoryHierarchy: Record<string, string[]> = {
   Programming: ['Frontend', 'Backend', 'DevOps'],
-  Thinking:    ['Productivity', 'Startup'],
-  Design:      ['CSS'],
+  Thinking: ['Productivity', 'Startup'],
+  Design: ['CSS'],
 };
 const subToParent: Record<string, string> = {};
 for (const [parent, subs] of Object.entries(categoryHierarchy)) {
   subs.forEach((sub) => { subToParent[sub] = parent; });
 }
 
-// 현재 위치 파악
-const isTopCategory   = activeTag ? topCategories.includes(activeTag) : false;
-const isSubCategory   = activeTag ? !!subToParent[activeTag] : false;
-const parentCategory  = isSubCategory ? subToParent[activeTag!] : (isTopCategory ? activeTag : undefined);
-const sidebarSubs     = parentCategory ? (categoryHierarchy[parentCategory] ?? []) : [];
+const isTopCategory = activeTag ? topCategories.includes(activeTag) : false;
+const isSubCategory = activeTag ? !!subToParent[activeTag] : false;
+const parentCategory = isSubCategory ? subToParent[activeTag!] : (isTopCategory ? activeTag : undefined);
+const sidebarSubs = parentCategory ? (categoryHierarchy[parentCategory] ?? []) : [];
 
-// 전체 태그+카운트 (모바일 칩용)
+// 전체 카운트
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const tagCounts = new Map<string, number>();
 allPosts.forEach((p) => p.data.tags.forEach((t) => tagCounts.set(t, (tagCounts.get(t) || 0) + 1)));
 const totalCount = activeTag ? (tagCounts.get(activeTag) ?? 0) : allPosts.length;
 
+const sortedAll = [...allPosts].sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const lastUpdate = sortedAll[0]?.data.pubDate;
+const lastUpdateLabel = lastUpdate
+  ? `${lastUpdate.getFullYear()}.${String(lastUpdate.getMonth() + 1).padStart(2, '0')}.${String(lastUpdate.getDate()).padStart(2, '0')}`
+  : '';
+
 const baseUrl = activeTag ? `${base}tags/${activeTag}/` : base;
+const headerLabel = activeTag ?? '전체';
+
+// 글 번호 매기기 — 발행일 역순 1..N
+const numberMap = new Map<string, number>();
+sortedAll.forEach((p, i) => numberMap.set(p.id, i + 1));
 ---
 
 <BaseLayout title={title} description={SITE_DESCRIPTION} noPadding={true}>
-  <div class="list-page">
+  <section class="qt-list-hero">
+    <span class="qt-mono qt-list-mono">// TAG / FILTER</span>
+    <h1 class="qt-list-title">
+      <span class="qt-list-hash">#</span>{headerLabel}
+    </h1>
+    <span class="qt-mono qt-list-meta">
+      {totalCount} ARTICLES{lastUpdateLabel ? ` · LAST_UPDATE ${lastUpdateLabel}` : ''}
+    </span>
+  </section>
 
-    <!-- 페이지 헤더 -->
-    {activeTag && (
-      <div class="list-page-header">
-        {isSubCategory && (
-          <a href={`${base}tags/${parentCategory}/`} class="list-breadcrumb">
-            {parentCategory}
-          </a>
-        )}
-        <h1 class="list-page-title">#{activeTag}</h1>
-        <p class="list-page-subtitle">{totalCount}개의 아티클</p>
-      </div>
-    )}
+  <section class="qt-list-chips">
+    <TagNav activeTag={activeTag} />
+  </section>
 
-    <!-- 모바일 전용 서브 카테고리 칩 -->
-    {parentCategory && sidebarSubs.length > 0 && (
-      <div class="mobile-tags scrollbar-hide">
-        <a
-          href={`${base}tags/${parentCategory}/`}
-          class={`mobile-tag-chip ${activeTag === parentCategory ? 'mobile-tag-active' : 'mobile-tag-inactive'}`}
-        >
-          전체
-        </a>
-        {sidebarSubs.map((sub) => (
-          <a
-            href={`${base}tags/${sub}/`}
-            class={`mobile-tag-chip ${activeTag === sub ? 'mobile-tag-active' : 'mobile-tag-inactive'}`}
-          >
-            {sub}
-          </a>
-        ))}
-      </div>
-    )}
-
-    <!-- 2컬럼 본문 -->
-    <div class="list-main-row">
-
-      <!-- 좌: 아티클 리스트 -->
-      <div class="list-articles-col">
-        <PostGrid>
-          {page.data.map((post) => (
-            <PostCard
-              id={post.id}
-              title={post.data.title}
-              description={post.data.description}
-              pubDate={post.data.pubDate}
-              tags={post.data.tags}
-              heroImage={post.data.heroImage}
-            />
-          ))}
-        </PostGrid>
-        {page.data.length === 0 && (
-          <p class="list-empty">아직 작성된 글이 없습니다.</p>
-        )}
-        <Pagination
-          currentPage={page.currentPage}
-          lastPage={page.lastPage}
-          baseUrl={baseUrl}
-        />
-      </div>
-
-      <!-- 우: 사이드바 -->
-      {parentCategory && (
-        <aside class="list-sidebar">
-          <!-- 부모 카테고리 헤딩 -->
-          <a
-            href={`${base}tags/${parentCategory}/`}
-            class={`sidebar-parent ${activeTag === parentCategory ? 'sidebar-parent-active' : ''}`}
-          >
-            {parentCategory}
-          </a>
-
-          <!-- 서브 카테고리 목록 -->
-          <div class="sidebar-tag-list">
-            {sidebarSubs.map((sub) => (
-              <a
-                href={`${base}tags/${sub}/`}
-                class={`sidebar-tag-item ${activeTag === sub ? 'sidebar-tag-active' : 'sidebar-tag-inactive'}`}
-              >
-                <span class="sidebar-tag-name">{sub}</span>
-                <span class="sidebar-tag-count">{tagCounts.get(sub) ?? 0}</span>
-              </a>
-            ))}
-          </div>
-        </aside>
+  <div class="qt-list-body">
+    <div class="qt-list-main">
+      {page.data.length > 0 && (
+        <div class="qt-list-thead">
+          <span>NO</span>
+          <span>TITLE</span>
+          <span>CAT/SUB</span>
+          <span class="qt-list-thead-right">DATE</span>
+        </div>
       )}
 
+      <div class="qt-list-rows">
+        {page.data.map((post) => (
+          <PostListRow
+            id={post.id}
+            title={post.data.title}
+            pubDate={post.data.pubDate}
+            tags={post.data.tags}
+            num={numberMap.get(post.id)}
+          />
+        ))}
+      </div>
+
+      {page.data.length === 0 && (
+        <div class="qt-list-empty">
+          <span class="qt-mono qt-list-empty-mark">// EMPTY</span>
+          <p>이 태그에 해당하는 글이 아직 없어요.</p>
+        </div>
+      )}
+
+      <Pagination
+        currentPage={page.currentPage}
+        lastPage={page.lastPage}
+        baseUrl={baseUrl}
+      />
     </div>
+
+    {parentCategory && sidebarSubs.length > 0 && (
+      <aside class="qt-list-aside">
+        <a
+          href={`${base}tags/${parentCategory}/`}
+          class:list={['qt-aside-parent', { 'is-active': activeTag === parentCategory }]}
+        >
+          // {parentCategory.toUpperCase()}
+        </a>
+        <div class="qt-aside-list">
+          {sidebarSubs.map((sub) => (
+            <a
+              href={`${base}tags/${sub}/`}
+              class:list={['qt-aside-item', { 'is-active': activeTag === sub }]}
+            >
+              <span class="qt-aside-name">{sub}</span>
+              <span class="qt-aside-count">{tagCounts.get(sub) ?? 0}</span>
+            </a>
+          ))}
+        </div>
+      </aside>
+    )}
   </div>
 </BaseLayout>
 
 <style>
-  .list-page {
-    max-width: 1024px;
+  .qt-list-hero {
+    padding: 64px 36px 28px;
+    border-bottom: 1px solid var(--border);
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 40px 20px 80px;
   }
 
-  /* 페이지 헤더 */
-  .list-page-header {
-    margin-bottom: 40px;
+  .qt-mono {
+    font-family: var(--font-mono);
   }
 
-  .list-breadcrumb {
-    display: inline-block;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--color-cta);
-    text-decoration: none;
-    margin-bottom: 8px;
-    transition: opacity 0.15s;
+  .qt-list-mono {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    margin-bottom: 14px;
   }
 
-  .list-breadcrumb:hover {
-    opacity: 0.75;
-  }
-
-  .list-page-title {
-    font-size: 2.25rem;
-    font-weight: 700;
-    color: var(--color-heading);
-    letter-spacing: -0.02em;
+  .qt-list-title {
+    font-size: calc(64px * var(--h-scale));
+    font-weight: 800;
+    color: var(--ink);
     margin: 0;
+    letter-spacing: -0.045em;
+    line-height: 1;
   }
 
-  .list-page-subtitle {
-    font-size: 17px;
-    color: var(--color-muted);
-    margin: 8px 0 0;
+  .qt-list-hash {
+    color: var(--accent);
   }
 
-  /* 모바일 태그 칩 */
-  .mobile-tags {
-    display: none;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 2px;
-    margin-bottom: 24px;
+  .qt-list-meta {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 14px;
+    letter-spacing: 0.06em;
   }
 
-  .mobile-tag-chip {
-    flex-shrink: 0;
-    padding: 6px 14px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    white-space: nowrap;
-    text-decoration: none;
-    transition: opacity 0.15s;
-    line-height: 1.4;
+  .qt-list-chips {
+    padding: 20px 36px;
+    border-bottom: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
   }
 
-  .mobile-tag-chip:hover { opacity: 0.7; }
-  .mobile-tag-active  { background-color: var(--color-heading); color: #ffffff; }
-  .mobile-tag-inactive { background-color: var(--color-bg-badge); color: var(--color-muted); }
-
-  /* 2컬럼 */
-  .list-main-row {
-    display: flex;
-    gap: 72px;
-    align-items: flex-start;
+  .qt-list-body {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 36px 0;
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 56px;
+    align-items: start;
   }
 
-  .list-articles-col {
-    flex: 1;
+  .qt-list-body:not(:has(.qt-list-aside)) {
+    grid-template-columns: 1fr;
+  }
+
+  .qt-list-main {
     min-width: 0;
   }
 
-  .list-empty {
+  .qt-list-thead {
+    display: grid;
+    grid-template-columns: 60px 1fr 130px 90px;
+    gap: 18px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-strong);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+  }
+
+  .qt-list-thead-right {
+    text-align: right;
+  }
+
+  .qt-list-empty {
+    padding: 60px 0;
     text-align: center;
-    padding: 64px 0;
-    color: var(--color-muted);
-    font-size: 15px;
+    color: var(--muted);
+  }
+
+  .qt-list-empty-mark {
+    display: block;
+    font-size: 11px;
+    color: var(--subtle);
+    letter-spacing: 0.12em;
+    margin-bottom: 8px;
+  }
+
+  .qt-list-empty p {
+    margin: 0;
+    font-size: 14px;
   }
 
   /* 사이드바 */
-  .list-sidebar {
-    flex-shrink: 0;
-    width: 200px;
+  .qt-list-aside {
+    position: sticky;
+    top: 80px;
   }
 
-  /* 부모 카테고리 헤딩 */
-  .sidebar-parent {
+  .qt-aside-parent {
     display: block;
-    font-size: 13px;
+    font-family: var(--font-mono);
+    font-size: 11px;
     font-weight: 700;
-    color: var(--color-muted);
+    color: var(--ink);
     text-decoration: none;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 10px;
-    transition: color 0.15s;
+    letter-spacing: 0.12em;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-strong);
   }
 
-  .sidebar-parent:hover,
-  .sidebar-parent-active {
-    color: var(--color-heading);
+  .qt-aside-parent:hover {
+    color: var(--accent-ink);
   }
 
-  /* 서브 카테고리 목록 */
-  .sidebar-tag-list {
+  .qt-aside-list {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
   }
 
-  .sidebar-tag-item {
+  .qt-aside-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 14px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 6px;
     text-decoration: none;
-    transition: opacity 0.15s;
+    transition: background-color 0.12s, color 0.12s;
+    color: var(--muted);
   }
 
-  .sidebar-tag-item:hover { opacity: 0.75; }
-  .sidebar-tag-active  { background-color: var(--color-heading); color: #ffffff; }
-  .sidebar-tag-inactive { background-color: var(--color-bg-badge); color: var(--color-muted); }
+  .qt-aside-item:hover {
+    background: var(--bg-alt);
+    color: var(--ink);
+  }
 
-  .sidebar-tag-name { flex: 1; }
+  .qt-aside-item.is-active {
+    background: var(--ink);
+    color: var(--bg-elev);
+  }
 
-  .sidebar-tag-count {
+  .qt-aside-item.is-active .qt-aside-count {
+    color: var(--bg-elev);
+    opacity: 0.7;
+  }
+
+  .qt-aside-name {
     font-size: 13px;
     font-weight: 500;
-    opacity: 0.6;
-    margin-left: 8px;
+  }
+
+  .qt-aside-count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--subtle);
+    letter-spacing: 0.04em;
   }
 
   /* 반응형 */
   @media (max-width: 900px) {
-    .list-sidebar { display: none; }
-    .list-main-row { gap: 0; }
-    .mobile-tags { display: flex; }
+    .qt-list-body {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .qt-list-aside {
+      position: static;
+      order: -1;
+      margin-bottom: 8px;
+    }
+    .qt-aside-list {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .qt-aside-item {
+      padding: 6px 12px;
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+    }
   }
 
-  @media (max-width: 640px) {
-    .list-page { padding: 24px 16px 60px; }
-    .list-page-title { font-size: 1.75rem; }
+  @media (max-width: 720px) {
+    .qt-list-hero {
+      padding: 40px 20px 20px;
+    }
+    .qt-list-chips,
+    .qt-list-body {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+    .qt-list-title {
+      font-size: calc(40px * var(--h-scale));
+    }
+    .qt-list-thead {
+      display: none;
+    }
   }
 </style>
