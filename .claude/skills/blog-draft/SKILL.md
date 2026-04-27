@@ -83,9 +83,31 @@ src/data/blog/{slug}.md
 
 ### 적극 활용할 요소
 - 표: 비교/분류 (Markdown 표)
-- 코드 블록: 언어 명시 필수 (bash, js, python, yaml, ts 등)
+- 코드 블록: 언어 태그 필수. Astro Shiki(`github-light`/`github-dark`)가 언어 토큰에 따라 자동 색을 입히므로, 정확한 alias를 사용해야 하이라이팅이 살아남
 - 번호 목록: 단계별 절차나 우선순위
 - 불릿: 병렬적 항목 나열
+
+### 코드 블록 작성 규칙
+
+Shiki가 색을 입히는 조건과 권장 사용법:
+
+- **언어 태그 필수**: 빈 ` ``` `는 단색 회색으로 렌더되므로 절대 사용 안 함
+- **권장 alias 목록** — Shiki 표준에 맞춰 일관 사용:
+  - JavaScript: `js` (또는 `javascript`)
+  - TypeScript: `ts` (또는 `typescript`)
+  - JSX/TSX: `jsx`, `tsx`
+  - Python: `python` (또는 `py`)
+  - Shell: `bash` (sh, zsh 대신 bash 통일)
+  - JSON: `json`
+  - YAML: `yaml`
+  - Markdown: `md`
+  - HTML/CSS: `html`, `css`
+  - SQL: `sql`
+  - 출력/로그: `text` 또는 `console`
+  - Diff: `diff`
+- **분량**: 한 블록 5~20줄 권장. 30줄 넘으면 핵심만 발췌하고 `// ...` 로 생략
+- **인라인 코드**: 함수명·변수명·짧은 명령은 백틱 1개(`` ` ``)로 강조 — 표나 본문에서 읽힘이 좋아짐
+- **파일명/경로 표기**: 코드 블록 바로 위에 `**`경로`**` 형태로 한 줄 추가 (예: `**src/utils/date.ts**`)
 
 ### 분량
 - 짧은 글: 800~1500자 (개념 정리, 팁)
