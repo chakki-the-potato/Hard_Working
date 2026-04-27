@@ -66,6 +66,7 @@ body {
   letter-spacing: -0.005em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  isolation: isolate;
 }
 
 a {
@@ -85,13 +86,6 @@ a {
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
-}
-
-/* Shiki code highlight (라이트 테마 고정) */
-.astro-code,
-.astro-code span {
-  color: var(--shiki-light) !important;
-  background-color: var(--shiki-light-bg) !important;
 }
 
 .astro-code {

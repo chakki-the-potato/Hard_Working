@@ -1,17 +1,46 @@
 ---
 import { getCollection } from 'astro:content';
-import ListLayout from '../../layouts/ListLayout.astro';
-import { POSTS_PER_PAGE } from '../../consts';
+import HomeLayout from '../../layouts/HomeLayout.astro';
+import { POSTS_PER_PAGE, FEATURED_COUNT } from '../../consts';
 
 export async function getStaticPaths({ paginate }: { paginate: Function }) {
   const allPosts = await getCollection('blog', ({ data }) => !data.draft);
   const sortedPosts = allPosts.sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
   );
-  return paginate(sortedPosts, { pageSize: POSTS_PER_PAGE });
+  const archive = sortedPosts.slice(FEATURED_COUNT);
+
+  const base = import.meta.env.BASE_URL;
+  const pages = paginate(archive, { pageSize: POSTS_PER_PAGE });
+
+  // 1페이지는 src/pages/index.astro가 처리하므로 제외
+  return pages
+    .filter((p: any) => p.props.page.currentPage > 1)
+    .map((p: any) => {
+      // 2페이지의 prev는 /page/1/ 이 아니라 홈(/)
+      if (p.props.page.currentPage === 2) {
+        p.props.page.url.prev = base;
+      }
+      return p;
+    });
 }
 
 const { page } = Astro.props;
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const sortedPosts = allPosts.sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+const tagSet = new Set<string>();
+sortedPosts.forEach((p) => p.data.tags.forEach((t) => tagSet.add(t)));
+
+const featured = sortedPosts.slice(0, FEATURED_COUNT);
 ---
 
-<ListLayout page={page} />
+<HomeLayout
+  featured={featured}
+  archivePage={page}
+  totalArticles={sortedPosts.length}
+  totalTags={tagSet.size}
+  lastUpdate={sortedPosts[0]?.data.pubDate}
+/>

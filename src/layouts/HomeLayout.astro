@@ -3,7 +3,7 @@ import BaseLayout from './BaseLayout.astro';
 import PostCard from '../components/PostCard.astro';
 import PostListRow from '../components/PostListRow.astro';
 import HeroDriftBg from '../components/HeroDriftBg.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { SITE_TITLE, SITE_DESCRIPTION, FEATURED_COUNT, POSTS_PER_PAGE } from '../consts';
 
 interface ArticlePost {
   id: string;
@@ -16,42 +16,53 @@ interface ArticlePost {
   };
 }
 
-interface Props {
-  allPosts: ArticlePost[];
-  totalTags: number;
-  pageSize?: number;
+interface ArchivePage {
+  data: ArticlePost[];
+  currentPage: number;
+  lastPage: number;
+  url: { prev?: string; next?: string; current: string };
 }
 
-const { allPosts, totalTags, pageSize = 8 } = Astro.props;
+interface Props {
+  featured: ArticlePost[];
+  archivePage: ArchivePage;
+  totalArticles: number;
+  totalTags: number;
+  lastUpdate?: Date;
+}
 
-const featuredCount = 3;
-const featured = allPosts.slice(0, featuredCount);
-const archive = allPosts.slice(featuredCount);
+const { featured, archivePage, totalArticles, totalTags, lastUpdate } = Astro.props;
 
-const totalArticles = allPosts.length;
-const featuredCountLabel = String(Math.min(featuredCount, totalArticles)).padStart(2, '0');
-const totalLabel = String(totalArticles).padStart(2, '0');
+const pad2 = (n: number) => String(n).padStart(2, '0');
 
-const lastUpdate = allPosts[0]?.data.pubDate
-  ? `${allPosts[0].data.pubDate.getFullYear()}.${String(allPosts[0].data.pubDate.getMonth() + 1).padStart(2, '0')}.${String(allPosts[0].data.pubDate.getDate()).padStart(2, '0')}`
+const featuredCountLabel = pad2(featured.length);
+const totalLabel = pad2(totalArticles);
+
+const archivePageLabel = pad2(archivePage.currentPage);
+const archiveLastLabel = pad2(archivePage.lastPage);
+
+const lastUpdateLabel = lastUpdate
+  ? `${lastUpdate.getFullYear()}.${pad2(lastUpdate.getMonth() + 1)}.${pad2(lastUpdate.getDate())}`
   : '';
+
+const archiveStartIndex = FEATURED_COUNT + (archivePage.currentPage - 1) * POSTS_PER_PAGE;
 ---
 
 <BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION} noPadding={true}>
-  <section class="qt-hero" id="qt-hero">
+  <section class="qt-hero" id="qt-hero" transition:persist="qt-hero">
     <div class="qt-hero-bg-wrap" id="qt-hero-bg-wrap">
       <HeroDriftBg strength={1} />
     </div>
     <div class="qt-hero-inner">
       <div class="qt-hero-syslog">
         SYS_LOG<br />
-        <span class="qt-hero-syslog-time" id="qt-syslog-time">{lastUpdate}</span><br />
+        <span class="qt-hero-syslog-time" id="qt-syslog-time">{lastUpdateLabel}</span><br />
         <span class="qt-hero-online">● ONLINE</span>
       </div>
       <span class="qt-hero-mono">╱╱  HARD_WORKING / V.02</span>
       <h1 class="qt-hero-title">
-        공부의 결을<br />
-        한 편씩 <span class="qt-hero-accent">기록</span>합니다.
+        세상은 넓고도<br />
+        넓지만 내 <span class="qt-hero-accent">자리</span>는 있다.
       </h1>
       <p class="qt-hero-desc">
         Programming · Thinking · Design — 매일의 학습 기록.
@@ -66,7 +77,7 @@ const lastUpdate = allPosts[0]?.data.pubDate
 
   <main class="qt-home-main">
     {featured.length > 0 && (
-      <>
+      <div class="qt-featured-wrap" transition:persist="qt-featured">
         <div class="qt-section-head">
           <h2 class="qt-section-mono">// FEATURED</h2>
           <span class="qt-section-count">{featuredCountLabel} OF {totalLabel}</span>
@@ -83,54 +94,68 @@ const lastUpdate = allPosts[0]?.data.pubDate
             />
           ))}
         </div>
-      </>
+      </div>
     )}
 
-    {archive.length > 0 && (
-      <>
-        <div class="qt-section-head qt-section-archive">
+    {archivePage.data.length > 0 && (
+      <div transition:name="qt-archive" transition:animate="fade">
+        <div class:list={['qt-section-head', { 'qt-section-archive': featured.length > 0 }]}>
           <h2 class="qt-section-mono">// ARCHIVE</h2>
-          <span class="qt-section-count" id="qt-archive-count">
-            {String(Math.min(pageSize, archive.length)).padStart(2, '0')} / {String(archive.length).padStart(2, '0')}
-          </span>
+          <span class="qt-section-count">PAGE {archivePageLabel} OF {archiveLastLabel}</span>
         </div>
-        <div class="qt-archive-list" id="qt-archive-list" data-page-size={pageSize}>
-          {archive.map((post, i) => (
-            <div
-              class="qt-archive-item"
-              data-index={i}
-              data-visible={i < pageSize ? 'true' : 'false'}
-              hidden={i >= pageSize}
-            >
-              <PostListRow
-                id={post.id}
-                title={post.data.title}
-                pubDate={post.data.pubDate}
-                tags={post.data.tags}
-                num={featuredCount + i + 1}
-              />
-            </div>
+        <div class="qt-archive-list">
+          {archivePage.data.map((post, i) => (
+            <PostListRow
+              id={post.id}
+              title={post.data.title}
+              pubDate={post.data.pubDate}
+              tags={post.data.tags}
+              num={archiveStartIndex + i + 1}
+            />
           ))}
         </div>
 
-        {archive.length > pageSize && (
-          <div class="qt-more-wrap">
-            <button type="button" class="qt-more-btn" id="qt-more-btn" data-step={pageSize}>
-              더 보기
-              <span class="qt-more-mono" id="qt-more-mono">+{Math.min(pageSize, archive.length - pageSize)}</span>
-            </button>
-          </div>
+        {archivePage.lastPage > 1 && (
+          <nav class="qt-archive-pager" aria-label="페이지네이션">
+            {archivePage.url.prev ? (
+              <a href={archivePage.url.prev} class="qt-pager-arrow">← PREV</a>
+            ) : (
+              <span class="qt-pager-arrow is-disabled">← PREV</span>
+            )}
+            <span class="qt-pager-mono">{archivePageLabel} / {archiveLastLabel}</span>
+            {archivePage.url.next ? (
+              <a href={archivePage.url.next} class="qt-pager-arrow is-next">NEXT →</a>
+            ) : (
+              <span class="qt-pager-arrow is-next is-disabled">NEXT →</span>
+            )}
+          </nav>
         )}
-      </>
+      </div>
     )}
 
-    {allPosts.length === 0 && (
+    {totalArticles === 0 && (
       <p class="qt-empty">아직 작성된 글이 없습니다.</p>
     )}
   </main>
 </BaseLayout>
 
 <script>
+  // ARCHIVE 페이지 전환 시 스크롤 위치 유지
+  // (View Transitions 기본 동작은 맨 위로 리셋)
+  let savedScrollY: number | null = null;
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement | null;
+    if (target?.closest('a.qt-pager-arrow')) {
+      savedScrollY = window.scrollY;
+    }
+  });
+  document.addEventListener('astro:after-swap', () => {
+    if (savedScrollY !== null) {
+      window.scrollTo({ top: savedScrollY, left: 0, behavior: 'instant' });
+      savedScrollY = null;
+    }
+  });
+
   // 스크롤 시차 — 히어로 배경만 천천히 따라옴
   const heroSection = document.getElementById('qt-hero');
   const bgWrap = document.getElementById('qt-hero-bg-wrap');
@@ -161,37 +186,6 @@ const lastUpdate = allPosts[0]?.data.pubDate
     }
     timeEl.textContent = fmt();
     setInterval(() => { timeEl.textContent = fmt(); }, 30_000);
-  }
-
-  // 더 보기 — 클라이언트 페이지네이션
-  const moreBtn = document.getElementById('qt-more-btn') as HTMLButtonElement | null;
-  const archiveList = document.getElementById('qt-archive-list');
-  const archiveCount = document.getElementById('qt-archive-count');
-  const moreMono = document.getElementById('qt-more-mono');
-  if (moreBtn && archiveList) {
-    const step = Number(moreBtn.dataset.step) || 8;
-    moreBtn.addEventListener('click', () => {
-      const items = archiveList.querySelectorAll<HTMLElement>('.qt-archive-item');
-      const total = items.length;
-      let visibleCount = 0;
-      items.forEach((el) => { if (el.dataset.visible === 'true') visibleCount++; });
-
-      const nextEnd = Math.min(visibleCount + step, total);
-      for (let i = visibleCount; i < nextEnd; i++) {
-        items[i].dataset.visible = 'true';
-        items[i].hidden = false;
-      }
-
-      if (archiveCount) {
-        archiveCount.textContent = `${String(nextEnd).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
-      }
-
-      if (nextEnd >= total) {
-        moreBtn.style.display = 'none';
-      } else if (moreMono) {
-        moreMono.textContent = `+${Math.min(step, total - nextEnd)}`;
-      }
-    });
   }
 </script>
 
@@ -325,42 +319,47 @@ const lastUpdate = allPosts[0]?.data.pubDate
     flex-direction: column;
   }
 
-  .qt-archive-item[hidden] {
-    display: none;
-  }
-
-  .qt-more-wrap {
+  .qt-archive-pager {
     display: flex;
-    justify-content: center;
-    margin-top: 32px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 0;
+    border-top: 1px solid var(--border-hair);
+    margin-top: 16px;
+    gap: 16px;
   }
 
-  .qt-more-btn {
-    padding: 10px 22px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--ink);
-    background: var(--bg-elev);
-    border: 1px solid var(--border-strong);
-    border-radius: 7px;
-    cursor: pointer;
-    font-family: inherit;
-    letter-spacing: -0.01em;
+  .qt-pager-arrow {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    transition: background-color 0.15s;
-  }
-
-  .qt-more-btn:hover {
-    background: var(--bg-alt);
-  }
-
-  .qt-more-mono {
-    font-family: var(--font-mono);
-    font-size: 10px;
+    padding: 7px 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 12.5px;
+    font-weight: 500;
     color: var(--muted);
-    letter-spacing: 0.04em;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .qt-pager-arrow:hover:not(.is-disabled) {
+    color: var(--ink);
+    border-color: var(--border-strong);
+    font-weight: 600;
+  }
+
+  .qt-pager-arrow.is-disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .qt-pager-mono {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
   }
 
   .qt-empty {
