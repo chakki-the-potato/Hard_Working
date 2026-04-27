@@ -22,10 +22,7 @@ function navHref(item: string) {
   <div class="qt-header-inner">
     <div class="qt-header-left">
       <a href={base} class="qt-logo" aria-label={SITE_TITLE}>
-        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
-          <rect x="1.25" y="1.25" width="19.5" height="19.5" rx="4" stroke="currentColor" stroke-width="1.4"/>
-          <path d="M5.5 14.5L9 8L12 12L16.5 5.5" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-        </svg>
+        <img src={`${base}favicon.png`} width="22" height="22" alt="" class="qt-logo-img" />
         <span class="qt-logo-name">Hard_Working</span>
       </a>
       <span class="qt-logo-version">v.02 / 2026</span>
@@ -60,8 +57,6 @@ function navHref(item: string) {
           <path d="M21 21l-4.3-4.3"/>
         </svg>
       </a>
-
-      <a href={`${base}rss.xml`} class="qt-rss">RSS</a>
 
       <a
         href={`${base}about/`}
@@ -102,16 +97,20 @@ function navHref(item: string) {
   .qt-header-left {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 12px;
     flex-shrink: 0;
   }
 
   .qt-logo {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     color: var(--ink);
     text-decoration: none;
+  }
+
+  .qt-logo-img {
+    display: block;
   }
 
   .qt-logo-name {
@@ -222,19 +221,6 @@ function navHref(item: string) {
     text-decoration: none;
   }
 
-  .qt-rss {
-    padding: 6px 10px;
-    color: var(--muted);
-    text-decoration: none;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.06em;
-  }
-
-  .qt-rss:hover {
-    color: var(--ink);
-  }
-
   .qt-about {
     padding: 6px 10px;
     color: var(--muted);
@@ -292,7 +278,6 @@ function navHref(item: string) {
   @media (max-width: 720px) {
     .qt-nav,
     .qt-divider,
-    .qt-rss,
     .qt-about,
     .qt-logo-version {
       display: none;
