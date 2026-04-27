@@ -1,3 +1,0 @@
-[     103ms] ReferenceError: BASE_URL is not defined
-    at Xe (http://localhost:4321/study_blog/_astro/search.astro_astro_type_script_index_0_lang.7siQS8aJ.js:1:18290)
-    at http://localhost:4321/study_blog/_astro/search.astro_astro_type_script_index_0_lang.7siQS8aJ.js:9:399
