@@ -1,7 +1,7 @@
 ---
 title: "JavaScript Map과 Object의 차이점과 선택 기준"
 description: "ES6에 도입된 Map은 Object와 비슷해 보이지만 키 타입, 순서 보장, 성능, 직렬화 방식에서 뚜렷한 차이가 있습니다. 두 자료구조의 특징을 비교하고 상황에 따른 선택 기준을 정리합니다."
-pubDate: 2026-04-25
+pubDate: 2026-04-25T00:54:14+09:00
 tags: ["Programming", "JavaScript"]
 ---
 

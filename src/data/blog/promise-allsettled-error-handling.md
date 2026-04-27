@@ -1,7 +1,7 @@
 ---
 title: "Promise.allSettled의 에러 처리 패턴 정리"
 description: "Promise.all과 달리 모든 프로미스가 완료될 때까지 기다리는 Promise.allSettled의 동작 원리와 실전 에러 처리 패턴을 코드 예제와 함께 정리합니다."
-pubDate: 2026-04-25
+pubDate: 2026-04-25T00:34:22+09:00
 tags: ["Programming", "JavaScript"]
 ---
 
