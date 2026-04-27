@@ -65,9 +65,9 @@ const lastUpdateLabel = lastUpdate
 const baseUrl = activeTag ? `${base}tags/${activeTag}/` : base;
 const headerLabel = activeTag ?? '전체';
 
-// 글 번호 매기기 — 발행일 역순 1..N
+// 글 번호 매기기 — 발행일 오름차순 1..N (가장 먼저 쓴 글이 №001)
 const numberMap = new Map<string, number>();
-sortedAll.forEach((p, i) => numberMap.set(p.id, i + 1));
+[...sortedAll].reverse().forEach((p, i) => numberMap.set(p.id, i + 1));
 ---
 
 <BaseLayout title={title} description={SITE_DESCRIPTION} noPadding={true}>

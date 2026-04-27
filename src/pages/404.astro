@@ -8,7 +8,7 @@ const base = import.meta.env.BASE_URL;
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const sortedAll = [...allPosts].sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 const numberMap = new Map<string, number>();
-sortedAll.forEach((p, i) => numberMap.set(p.id, i + 1));
+[...sortedAll].reverse().forEach((p, i) => numberMap.set(p.id, i + 1));
 const suggestions = sortedAll.slice(0, 3);
 ---
 

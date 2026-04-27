@@ -231,7 +231,7 @@ const base = import.meta.env.BASE_URL;
         const res = await fetch(`${baseUrl}api/search.json`);
         if (!res.ok) throw new Error('failed');
         const raw: SearchItem[] = await res.json();
-        posts = raw.map((p, i) => ({ ...p, num: i + 1 }));
+        posts = raw.map((p, i) => ({ ...p, num: raw.length - i }));
         fuse = new Fuse(posts, {
           keys: [
             { name: 'title', weight: 0.4 },
