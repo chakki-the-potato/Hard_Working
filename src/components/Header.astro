@@ -35,6 +35,12 @@ const currentPath = Astro.url.pathname;
             </a>
           );
         })}
+        <a
+          href={`${base}ideas/`}
+          class={`header-nav-link${currentPath.startsWith(`${base}ideas`) ? ' active' : ''}`}
+        >
+          Ideas
+        </a>
       </nav>
       <a href={`${base}rss.xml`} class="header-subscribe">
         구독하기

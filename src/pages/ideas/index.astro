@@ -1,0 +1,71 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import IdeaCard from '../../components/IdeaCard.astro';
+
+const ideas = await getCollection('ideas', ({ data }) => !data.draft);
+const sortedIdeas = ideas.sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<BaseLayout title="Ideas" description="러프하게 떠오른 아이디어들">
+  <section class="ideas-wrapper">
+    <header class="ideas-header">
+      <h1 class="ideas-title">Ideas</h1>
+      <p class="ideas-desc">러프하게 떠오른 아이디어들. 정리되지 않은 메모와 발전시킬 만한 방향들을 모아둡니다.</p>
+    </header>
+
+    {sortedIdeas.length === 0 ? (
+      <p class="ideas-empty">아직 아이디어가 없습니다.</p>
+    ) : (
+      <div class="ideas-list">
+        {sortedIdeas.map((entry) => (
+          <IdeaCard entry={entry} />
+        ))}
+      </div>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .ideas-wrapper {
+    max-width: 740px;
+    margin: 0 auto;
+  }
+
+  .ideas-header {
+    margin-bottom: 16px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .ideas-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-heading);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin: 0 0 12px 0;
+  }
+
+  .ideas-desc {
+    font-size: 15px;
+    color: var(--color-muted);
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .ideas-empty {
+    padding: 48px 0;
+    text-align: center;
+    font-size: 15px;
+    color: var(--color-subtle);
+  }
+
+  @media (max-width: 600px) {
+    .ideas-title {
+      font-size: 1.875rem;
+    }
+  }
+</style>
