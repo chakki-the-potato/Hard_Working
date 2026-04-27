@@ -81,7 +81,7 @@ Settings → Branches → Branch protection rules에서:
 
 **Conventional Commits 형식 예시**
 
-```
+```text
 feat: 로그인 페이지 추가
 fix: 사용자 이름 유효성 검사 오류 수정
 docs: API 문서 업데이트

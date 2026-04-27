@@ -12,7 +12,7 @@ tags: ["Programming", "Backend"]
 
 ## AWS 핵심 서비스 지도
 
-```
+```text
 사용자
   │
   ▼

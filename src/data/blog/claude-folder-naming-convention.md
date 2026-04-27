@@ -25,7 +25,7 @@ Claude Code가 인식하는 폴더 이름은 모두 복수형입니다.
 
 ### agents/ — 단일 파일 방식
 
-```
+```text
 .claude/agents/
   code-reviewer.md
   test-writer.md
@@ -35,7 +35,7 @@ Claude Code가 인식하는 폴더 이름은 모두 복수형입니다.
 
 ### commands/ — 단일 파일 방식
 
-```
+```text
 .claude/commands/
   deploy.md
   test-all.md
@@ -45,7 +45,7 @@ Claude Code가 인식하는 폴더 이름은 모두 복수형입니다.
 
 ### skills/ — 하위 디렉토리 방식
 
-```
+```text
 .claude/skills/
   blog-draft/
     SKILL.md

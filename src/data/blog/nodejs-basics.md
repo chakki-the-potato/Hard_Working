@@ -12,7 +12,7 @@ Java나 PHP가 요청마다 새 스레드를 만드는 것과 달리, Node.js는
 
 ## 이벤트 루프 동작 원리
 
-```
+```text
    ┌─────────────────────────┐
    │        Call Stack        │
    └──────────┬──────────────┘
@@ -119,8 +119,8 @@ app.get('/api/me', authenticate, (req, res) => {
 npm install dotenv
 ```
 
-```js
-// .env
+```bash
+# .env
 DATABASE_URL=mongodb://localhost:27017/mydb
 JWT_SECRET=my-secret-key
 PORT=3000

@@ -11,7 +11,7 @@ tags: ["Thinking", "Productivity"]
 
 ## 개발자용 Notion 구조
 
-```
+```text
 📁 개발 공부
   ├── 📊 학습 로그 (Database)
   ├── 📚 북마크 (Database)
@@ -41,7 +41,7 @@ tags: ["Thinking", "Productivity"]
 
 매일 쓰는 학습 노트 템플릿:
 
-```
+````markdown
 # {{날짜}} 학습 노트
 
 ## 오늘 배운 것
@@ -55,7 +55,7 @@ tags: ["Thinking", "Productivity"]
 
 ## 내일 할 것
 -
-```
+````
 
 ## Notion AI 활용법
 
