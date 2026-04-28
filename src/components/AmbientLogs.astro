@@ -1,0 +1,120 @@
+---
+type Pos = { top?: string; bottom?: string; left?: string; right?: string };
+type Line = {
+  prompt?: '$' | '>' | '//';
+  text: string;
+  pos: Pos;
+  d: string;
+  delay: string;
+};
+
+const lines: Line[] = [
+  { prompt: '$',  text: 'git pull origin main',    pos: { top: '8%',  left: '6%'  }, d: '17s', delay: '-1s'  },
+  { prompt: '>',  text: '23 articles indexed',     pos: { top: '14%', right: '8%' }, d: '19s', delay: '-7s'  },
+  { prompt: '$',  text: 'npm run build',           pos: { top: '32%', left: '14%' }, d: '18s', delay: '-12s' },
+  { prompt: '>',  text: 'ready · port 4321',       pos: { top: '28%', right: '4%' }, d: '20s', delay: '-3s'  },
+  { prompt: '>',  text: 'compiled in 1.74s',       pos: { top: '52%', left: '4%'  }, d: '16s', delay: '-9s'  },
+  { prompt: '//', text: 'TODO: refactor',          pos: { top: '44%', right: '12%' }, d: '21s', delay: '-15s' },
+  { prompt: '>',  text: 'writing thoughts',        pos: { top: '68%', left: '10%' }, d: '18s', delay: '-5s'  },
+  { prompt: '$',  text: 'git status',              pos: { top: '72%', right: '6%' }, d: '17s', delay: '-11s' },
+  {               text: 'const n = 23;',           pos: { top: '24%', left: '46%' }, d: '22s', delay: '-2s'  },
+  {               text: 'if (err) throw err;',     pos: { top: '60%', right: '24%'}, d: '20s', delay: '-14s' },
+  {               text: 'import { ... }',          pos: { top: '88%', left: '32%' }, d: '19s', delay: '-6s'  },
+  { prompt: '>',  text: '[OK]',                    pos: { top: '4%',  left: '38%' }, d: '16s', delay: '-10s' },
+  { prompt: '//', text: 'pending...',              pos: { top: '82%', right: '32%'}, d: '21s', delay: '-4s'  },
+  { prompt: '$',  text: 'npm run dev',             pos: { top: '40%', right: '38%'}, d: '18s', delay: '-13s' },
+];
+
+function styleFor(line: Line): string {
+  const parts: string[] = [`--ad:${line.d}`, `--adelay:${line.delay}`];
+  if (line.pos.top) parts.push(`top:${line.pos.top}`);
+  if (line.pos.bottom) parts.push(`bottom:${line.pos.bottom}`);
+  if (line.pos.left) parts.push(`left:${line.pos.left}`);
+  if (line.pos.right) parts.push(`right:${line.pos.right}`);
+  return parts.join(';');
+}
+---
+
+<div class="qt-ambient" aria-hidden="true">
+  {lines.map((l) => (
+    <div class="qt-ambient-line" style={styleFor(l)}>
+      {l.prompt && (
+        <span class:list={['qt-ambient-prompt', l.prompt === '$' && 'is-cmd', l.prompt === '//' && 'is-comment']}>
+          {l.prompt}
+        </span>
+      )}
+      <span class="qt-ambient-text">{l.text}</span>
+    </div>
+  ))}
+</div>
+
+<style>
+  .qt-ambient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .qt-ambient-line {
+    position: absolute;
+    display: flex;
+    gap: 6px;
+    align-items: baseline;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    opacity: 0;
+    animation: qt-ambient-cycle var(--ad) ease-in-out infinite;
+    animation-delay: var(--adelay);
+    will-change: opacity;
+  }
+
+  .qt-ambient-prompt {
+    color: var(--subtle);
+    font-weight: 500;
+  }
+
+  .qt-ambient-prompt.is-cmd {
+    color: var(--accent);
+  }
+
+  .qt-ambient-prompt.is-comment {
+    color: var(--subtle);
+    opacity: 0.85;
+  }
+
+  .qt-ambient-text {
+    color: var(--muted);
+  }
+
+  @keyframes qt-ambient-cycle {
+    0%, 8%   { opacity: 0; }
+    20%      { opacity: 0.38; }
+    32%      { opacity: 0.34; }
+    42%      { opacity: 0; }
+    100%     { opacity: 0; }
+  }
+
+  @media (max-width: 720px) {
+    .qt-ambient-line:nth-child(n + 8) {
+      display: none;
+    }
+    .qt-ambient-line {
+      font-size: 10px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .qt-ambient-line {
+      animation: none;
+      opacity: 0.22;
+    }
+  }
+</style>

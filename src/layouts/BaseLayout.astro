@@ -2,6 +2,7 @@
 import { ClientRouter } from 'astro:transitions';
 import BaseHead from '../components/BaseHead.astro';
 import BackgroundFx from '../components/BackgroundFx.astro';
+import AmbientLogs from '../components/AmbientLogs.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import CmdK from '../components/CmdK.astro';
@@ -25,6 +26,7 @@ const { title, description, image, noPadding = false } = Astro.props;
   </head>
   <body class="min-h-screen flex flex-col">
     <BackgroundFx />
+    <AmbientLogs />
     <Header />
     {noPadding
       ? <main class="flex-1 w-full"><slot /></main>
