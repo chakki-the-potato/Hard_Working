@@ -3,6 +3,13 @@ import BaseLayout from './BaseLayout.astro';
 import PostCard from '../components/PostCard.astro';
 import PostListRow from '../components/PostListRow.astro';
 import HeroDriftBg from '../components/HeroDriftBg.astro';
+import SidebarAbout from '../components/widgets/SidebarAbout.astro';
+import SidebarCategoryStats from '../components/widgets/SidebarCategoryStats.astro';
+import SidebarTagCloud from '../components/widgets/SidebarTagCloud.astro';
+import SidebarActivity from '../components/widgets/SidebarActivity.astro';
+import IdeasStrip from '../components/widgets/IdeasStrip.astro';
+import type { ActivityEntry } from '../components/widgets/SidebarActivity.astro';
+import type { IdeaCard } from '../components/widgets/IdeasStrip.astro';
 import { SITE_TITLE, SITE_DESCRIPTION, FEATURED_COUNT, POSTS_PER_PAGE } from '../consts';
 import type { Category } from '../lib/categories';
 
@@ -31,9 +38,23 @@ interface Props {
   totalArticles: number;
   totalTags: number;
   lastUpdate?: Date;
+  categoryCounts: Record<Category, number>;
+  topTags: Array<{ tag: string; count: number }>;
+  recentActivity: ActivityEntry[];
+  recentIdeas: IdeaCard[];
 }
 
-const { featured, archivePage, totalArticles, totalTags, lastUpdate } = Astro.props;
+const {
+  featured,
+  archivePage,
+  totalArticles,
+  totalTags,
+  lastUpdate,
+  categoryCounts,
+  topTags,
+  recentActivity,
+  recentIdeas,
+} = Astro.props;
 
 const pad2 = (n: number) => String(n).padStart(2, '0');
 
@@ -81,69 +102,80 @@ const archiveStartIndex = FEATURED_COUNT + (archivePage.currentPage - 1) * POSTS
     </div>
   </section>
 
-  <main class="qt-home-main">
-    {featured.length > 0 && (
-      <div class="qt-featured-wrap" transition:persist="qt-featured">
-        <div class="qt-section-head">
-          <h2 class="qt-section-mono">// FEATURED</h2>
-          <span class="qt-section-count">{featuredCountLabel} OF {totalLabel}</span>
+  <main class="qt-home-shell">
+    <div class="qt-home-content">
+      {featured.length > 0 && (
+        <div class="qt-featured-wrap" transition:persist="qt-featured">
+          <div class="qt-section-head">
+            <h2 class="qt-section-mono">// FEATURED</h2>
+            <span class="qt-section-count">{featuredCountLabel} OF {totalLabel}</span>
+          </div>
+          <div class="qt-feat-list">
+            {featured.map((post, i) => (
+              <PostCard
+                id={post.id}
+                title={post.data.title}
+                description={post.data.description}
+                pubDate={post.data.pubDate}
+                category={post.data.category}
+                tags={post.data.tags}
+                num={totalArticles - i}
+              />
+            ))}
+          </div>
         </div>
-        <div class="qt-feat-list">
-          {featured.map((post, i) => (
-            <PostCard
-              id={post.id}
-              title={post.data.title}
-              description={post.data.description}
-              pubDate={post.data.pubDate}
-              category={post.data.category}
-              tags={post.data.tags}
-              num={i + 1}
-            />
-          ))}
-        </div>
-      </div>
-    )}
+      )}
 
-    {archivePage.data.length > 0 && (
-      <div transition:name="qt-archive" transition:animate="fade">
-        <div class:list={['qt-section-head', { 'qt-section-archive': featured.length > 0 }]}>
-          <h2 class="qt-section-mono">// ARCHIVE</h2>
-          <span class="qt-section-count">PAGE {archivePageLabel} OF {archiveLastLabel}</span>
-        </div>
-        <div class="qt-archive-list">
-          {archivePage.data.map((post, i) => (
-            <PostListRow
-              id={post.id}
-              title={post.data.title}
-              pubDate={post.data.pubDate}
-              category={post.data.category}
-              tags={post.data.tags}
-              num={archiveStartIndex + i + 1}
-            />
-          ))}
-        </div>
+      <IdeasStrip ideas={recentIdeas} />
 
-        {archivePage.lastPage > 1 && (
-          <nav class="qt-archive-pager" aria-label="페이지네이션">
-            {archivePage.url.prev ? (
-              <a href={archivePage.url.prev} class="qt-pager-arrow">← PREV</a>
-            ) : (
-              <span class="qt-pager-arrow is-disabled">← PREV</span>
-            )}
-            <span class="qt-pager-mono">{archivePageLabel} / {archiveLastLabel}</span>
-            {archivePage.url.next ? (
-              <a href={archivePage.url.next} class="qt-pager-arrow is-next">NEXT →</a>
-            ) : (
-              <span class="qt-pager-arrow is-next is-disabled">NEXT →</span>
-            )}
-          </nav>
-        )}
-      </div>
-    )}
+      {archivePage.data.length > 0 && (
+        <div transition:name="qt-archive" transition:animate="fade">
+          <div class:list={['qt-section-head', { 'qt-section-archive': featured.length > 0 || recentIdeas.length > 0 }]}>
+            <h2 class="qt-section-mono">// ARCHIVE</h2>
+            <span class="qt-section-count">PAGE {archivePageLabel} OF {archiveLastLabel}</span>
+          </div>
+          <div class="qt-archive-list">
+            {archivePage.data.map((post, i) => (
+              <PostListRow
+                id={post.id}
+                title={post.data.title}
+                pubDate={post.data.pubDate}
+                category={post.data.category}
+                tags={post.data.tags}
+                num={totalArticles - archiveStartIndex - i}
+              />
+            ))}
+          </div>
 
-    {totalArticles === 0 && (
-      <p class="qt-empty">아직 작성된 글이 없습니다.</p>
-    )}
+          {archivePage.lastPage > 1 && (
+            <nav class="qt-archive-pager" aria-label="페이지네이션">
+              {archivePage.url.prev ? (
+                <a href={archivePage.url.prev} class="qt-pager-arrow">← PREV</a>
+              ) : (
+                <span class="qt-pager-arrow is-disabled">← PREV</span>
+              )}
+              <span class="qt-pager-mono">{archivePageLabel} / {archiveLastLabel}</span>
+              {archivePage.url.next ? (
+                <a href={archivePage.url.next} class="qt-pager-arrow is-next">NEXT →</a>
+              ) : (
+                <span class="qt-pager-arrow is-next is-disabled">NEXT →</span>
+              )}
+            </nav>
+          )}
+        </div>
+      )}
+
+      {totalArticles === 0 && (
+        <p class="qt-empty">아직 작성된 글이 없습니다.</p>
+      )}
+    </div>
+
+    <aside class="qt-home-aside" aria-label="사이드바">
+      <SidebarAbout />
+      <SidebarCategoryStats counts={categoryCounts} />
+      {topTags.length > 0 && <SidebarTagCloud tags={topTags} />}
+      {recentActivity.length > 0 && <SidebarActivity entries={recentActivity} />}
+    </aside>
   </main>
 </BaseLayout>
 
@@ -313,11 +345,26 @@ const archiveStartIndex = FEATURED_COUNT + (archivePage.currentPage - 1) * POSTS
     font-weight: 600;
   }
 
-  /* ── Main ── */
-  .qt-home-main {
-    max-width: 1040px;
+  /* ── Main shell (grid) ── */
+  .qt-home-shell {
+    max-width: 1200px;
     margin: 0 auto;
     padding: 40px 36px 0;
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: 56px;
+    align-items: start;
+  }
+
+  .qt-home-content {
+    min-width: 0;
+  }
+
+  .qt-home-aside {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding-left: 4px;
   }
 
   .qt-section-head {
@@ -418,15 +465,26 @@ const archiveStartIndex = FEATURED_COUNT + (archivePage.currentPage - 1) * POSTS
     }
   }
 
+  @media (max-width: 960px) {
+    .qt-home-shell {
+      grid-template-columns: 1fr;
+      gap: 36px;
+      padding: 32px 24px 0;
+    }
+    .qt-home-aside {
+      order: 2;
+      padding-left: 0;
+      padding-top: 28px;
+      border-top: 1px solid var(--border-hair);
+    }
+  }
+
   @media (max-width: 900px) {
     .qt-hero-inner {
       padding: 72px 24px 48px;
     }
     .qt-hero-title {
       font-size: calc(56px * var(--h-scale));
-    }
-    .qt-home-main {
-      padding: 32px 24px 0;
     }
   }
 
@@ -462,7 +520,7 @@ const archiveStartIndex = FEATURED_COUNT + (archivePage.currentPage - 1) * POSTS
     .qt-hero-title {
       font-size: calc(36px * var(--h-scale));
     }
-    .qt-home-main {
+    .qt-home-shell {
       padding: 24px 20px 0;
     }
     .qt-section-archive {

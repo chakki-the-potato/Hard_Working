@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import HomeLayout from '../../layouts/HomeLayout.astro';
 import { POSTS_PER_PAGE, FEATURED_COUNT } from '../../consts';
+import { loadHomeData } from '../../lib/home-data';
 
 export async function getStaticPaths({ paginate }: { paginate: Function }) {
   const allPosts = await getCollection('blog', ({ data }) => !data.draft);
@@ -27,12 +28,12 @@ export async function getStaticPaths({ paginate }: { paginate: Function }) {
 
 const { page } = Astro.props;
 
+const home = await loadHomeData();
+
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const sortedPosts = allPosts.sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
-const tagSet = new Set<string>();
-sortedPosts.forEach((p) => p.data.tags.forEach((t) => tagSet.add(t)));
 
 const featured = sortedPosts.slice(0, FEATURED_COUNT);
 ---
@@ -40,7 +41,11 @@ const featured = sortedPosts.slice(0, FEATURED_COUNT);
 <HomeLayout
   featured={featured}
   archivePage={page}
-  totalArticles={sortedPosts.length}
-  totalTags={tagSet.size}
-  lastUpdate={sortedPosts[0]?.data.pubDate}
+  totalArticles={home.totalArticles}
+  totalTags={home.totalTags}
+  lastUpdate={home.lastUpdate}
+  categoryCounts={home.categoryCounts}
+  topTags={home.topTags}
+  recentActivity={home.recentActivity}
+  recentIdeas={home.recentIdeas}
 />

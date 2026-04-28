@@ -1,0 +1,115 @@
+---
+interface TagEntry {
+  tag: string;
+  count: number;
+}
+
+interface Props {
+  tags: TagEntry[];
+}
+
+const { tags } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+const max = Math.max(1, ...tags.map((t) => t.count));
+---
+
+{tags.length > 0 && (
+  <section class="qt-w-tags">
+    <span class="qt-w-mono">// TAGS · TOP {String(tags.length).padStart(2, '0')}</span>
+    <div class="qt-w-tags-cloud">
+      {tags.map(({ tag, count }) => {
+        const heat = count / max;
+        const sizeStep = heat > 0.66 ? 'lg' : heat > 0.33 ? 'md' : 'sm';
+        return (
+          <a
+            href={`${base}tags/${tag}/`}
+            class:list={['qt-w-tag', `is-${sizeStep}`]}
+            data-count={count}
+          >
+            <span class="qt-w-tag-hash" aria-hidden="true">#</span>{tag}
+            <span class="qt-w-tag-count">{count}</span>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+)}
+
+<style>
+  .qt-w-tags {
+    padding: 0;
+  }
+
+  .qt-w-mono {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 0.14em;
+    margin-bottom: 12px;
+  }
+
+  .qt-w-tags-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .qt-w-tag {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: var(--bg-alt);
+    border: 1px solid transparent;
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: border-color 0.12s, color 0.12s, background-color 0.12s;
+  }
+
+  .qt-w-tag:hover {
+    background: var(--bg-elev);
+    border-color: var(--border-strong);
+    color: var(--ink);
+  }
+
+  .qt-w-tag-hash {
+    color: var(--subtle);
+    font-family: var(--font-mono);
+  }
+
+  .qt-w-tag-count {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--subtle);
+    margin-left: 1px;
+  }
+
+  .qt-w-tag.is-sm {
+    font-size: 11.5px;
+  }
+
+  .qt-w-tag.is-md {
+    font-size: 12.5px;
+    color: var(--ink);
+  }
+
+  .qt-w-tag.is-lg {
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 600;
+    background: var(--accent-soft);
+  }
+
+  .qt-w-tag.is-lg .qt-w-tag-hash {
+    color: var(--accent-ink);
+  }
+
+  .qt-w-tag.is-lg .qt-w-tag-count {
+    color: var(--accent-ink);
+  }
+</style>

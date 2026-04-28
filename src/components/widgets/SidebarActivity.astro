@@ -1,0 +1,129 @@
+---
+import type { Category } from '../../lib/categories';
+
+export interface ActivityEntry {
+  kind: 'blog' | 'idea';
+  title: string;
+  href: string;
+  date: Date;
+  category: Category;
+}
+
+interface Props {
+  entries: ActivityEntry[];
+}
+
+const { entries } = Astro.props;
+
+const pad2 = (n: number) => String(n).padStart(2, '0');
+const fmtDate = (d: Date) => `${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+---
+
+{entries.length > 0 && (
+  <section class="qt-w-activity">
+    <span class="qt-w-mono">// ACTIVITY</span>
+    <ol class="qt-w-activity-list">
+      {entries.map((entry) => (
+        <li class="qt-w-activity-row">
+          <span class="qt-w-activity-date">{fmtDate(entry.date)}</span>
+          <a href={entry.href} class="qt-w-activity-link">
+            <span class:list={['qt-w-activity-kind', `is-${entry.kind}`]}>
+              {entry.kind === 'idea' ? 'IDEA' : 'BLOG'}
+            </span>
+            <span class="qt-w-activity-title">{entry.title}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </section>
+)}
+
+<style>
+  .qt-w-activity {
+    padding: 0;
+  }
+
+  .qt-w-mono {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 0.14em;
+    margin-bottom: 12px;
+  }
+
+  .qt-w-activity-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+
+  .qt-w-activity-list::before {
+    content: '';
+    position: absolute;
+    left: 36px;
+    top: 6px;
+    bottom: 6px;
+    width: 1px;
+    background: var(--border-hair);
+  }
+
+  .qt-w-activity-row {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 8px;
+    padding: 6px 0;
+    align-items: start;
+  }
+
+  .qt-w-activity-date {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--subtle);
+    letter-spacing: 0.04em;
+    padding-top: 1px;
+  }
+
+  .qt-w-activity-link {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    text-decoration: none;
+    color: inherit;
+    padding-left: 10px;
+    transition: opacity 0.12s;
+  }
+
+  .qt-w-activity-link:hover {
+    opacity: 0.78;
+  }
+
+  .qt-w-activity-link:hover .qt-w-activity-title {
+    color: var(--accent-ink);
+  }
+
+  .qt-w-activity-kind {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+  }
+
+  .qt-w-activity-title {
+    font-size: 12.5px;
+    line-height: 1.4;
+    color: var(--ink);
+    font-weight: 500;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: color 0.12s;
+  }
+</style>

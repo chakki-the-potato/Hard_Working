@@ -1,0 +1,184 @@
+---
+import { categoryLabel, type Category } from '../../lib/categories';
+
+export interface IdeaCard {
+  id: string;
+  title: string;
+  pubDate: Date;
+  category: Category;
+}
+
+interface Props {
+  ideas: IdeaCard[];
+}
+
+const { ideas } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+const pad2 = (n: number) => String(n).padStart(2, '0');
+const fmtDate = (d: Date) =>
+  `${d.getFullYear()}.${pad2(d.getMonth() + 1)}.${pad2(d.getDate())}`;
+---
+
+{ideas.length > 0 && (
+  <section class="qt-strip">
+    <div class="qt-strip-head">
+      <h2 class="qt-strip-mono">// IDEAS · SCRATCHPAD</h2>
+      <a href={`${base}ideas/`} class="qt-strip-more">
+        ALL <span aria-hidden="true">→</span>
+      </a>
+    </div>
+    <div class="qt-strip-rail">
+      {ideas.map((idea, i) => (
+        <a href={`${base}ideas/${idea.id}/`} class="qt-strip-card">
+          <span class="qt-strip-num">№ {String(i + 1).padStart(2, '0')}</span>
+          <span class="qt-strip-cat">[{categoryLabel(idea.category).toUpperCase()}]</span>
+          <h3 class="qt-strip-title">{idea.title}</h3>
+          <span class="qt-strip-date">{fmtDate(idea.pubDate)}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+)}
+
+<style>
+  .qt-strip {
+    margin-top: 48px;
+    padding: 22px 24px 24px;
+    background: var(--bg-alt);
+    border: 1px solid var(--border-hair);
+    border-radius: 10px;
+    position: relative;
+  }
+
+  .qt-strip::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    background:
+      repeating-linear-gradient(
+        135deg,
+        transparent 0,
+        transparent 14px,
+        rgba(99, 102, 241, 0.025) 14px,
+        rgba(99, 102, 241, 0.025) 15px
+      );
+    pointer-events: none;
+  }
+
+  .qt-strip-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    position: relative;
+  }
+
+  .qt-strip-mono {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 0.14em;
+    margin: 0;
+  }
+
+  .qt-strip-more {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    transition: color 0.12s;
+  }
+
+  .qt-strip-more:hover {
+    color: var(--accent-ink);
+  }
+
+  .qt-strip-rail {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    position: relative;
+  }
+
+  .qt-strip-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px 14px 16px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+
+  .qt-strip-card:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+  }
+
+  .qt-strip-num {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--subtle);
+    letter-spacing: 0.08em;
+  }
+
+  .qt-strip-cat {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+
+  .qt-strip-title {
+    font-size: 14.5px;
+    line-height: 1.4;
+    color: var(--ink);
+    font-weight: 600;
+    margin: 2px 0 6px;
+    letter-spacing: -0.01em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .qt-strip-date {
+    margin-top: auto;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--subtle);
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 720px) {
+    .qt-strip {
+      padding: 18px 16px 20px;
+      margin-top: 36px;
+    }
+    .qt-strip-rail {
+      grid-template-columns: none;
+      grid-auto-flow: column;
+      grid-auto-columns: 78%;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      gap: 10px;
+      margin: 0 -16px;
+      padding: 0 16px;
+      scrollbar-width: none;
+    }
+    .qt-strip-rail::-webkit-scrollbar {
+      display: none;
+    }
+    .qt-strip-card {
+      scroll-snap-align: start;
+    }
+  }
+</style>

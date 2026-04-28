@@ -1,0 +1,106 @@
+---
+import { CATEGORIES, categoryLabel, type Category } from '../../lib/categories';
+
+interface Props {
+  counts: Record<Category, number>;
+}
+
+const { counts } = Astro.props;
+
+const max = Math.max(1, ...CATEGORIES.map((c) => counts[c] ?? 0));
+const rows = CATEGORIES.map((slug) => {
+  const count = counts[slug] ?? 0;
+  return {
+    slug,
+    label: categoryLabel(slug),
+    count,
+    pct: Math.round((count / max) * 100),
+  };
+});
+---
+
+<section class="qt-w-stats">
+  <span class="qt-w-mono">// CATEGORY</span>
+  <ul class="qt-w-stats-list">
+    {rows.map((row) => (
+      <li>
+        <div class="qt-w-stats-row" data-empty={row.count === 0 ? 'true' : undefined}>
+          <span class="qt-w-stats-name">{row.label}</span>
+          <span class="qt-w-stats-count">{String(row.count).padStart(2, '0')}</span>
+          <span class="qt-w-stats-track" aria-hidden="true">
+            <span class="qt-w-stats-bar" style={`width: ${row.pct}%`}></span>
+          </span>
+        </div>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .qt-w-stats {
+    padding: 0;
+  }
+
+  .qt-w-mono {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 0.14em;
+    margin-bottom: 12px;
+  }
+
+  .qt-w-stats-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .qt-w-stats-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      'name count'
+      'track track';
+    column-gap: 8px;
+    row-gap: 5px;
+  }
+
+  .qt-w-stats-row[data-empty='true'] {
+    opacity: 0.5;
+  }
+
+  .qt-w-stats-name {
+    grid-area: name;
+    font-size: 12.5px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .qt-w-stats-count {
+    grid-area: count;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--subtle);
+    letter-spacing: 0.06em;
+  }
+
+  .qt-w-stats-track {
+    grid-area: track;
+    height: 3px;
+    background: var(--bg-alt);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .qt-w-stats-bar {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+</style>
