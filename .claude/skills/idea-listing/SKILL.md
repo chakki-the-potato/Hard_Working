@@ -1,6 +1,6 @@
 ---
 name: idea-listing
-description: 텔레그램 또는 Claude Code에서 받은 러프한 아이디어를 분석해 src/data/ideas/{slug}.md 파일을 만들고 main에 커밋한다. 관련 외부 자료, 기존 블로그 중 유사 글, 발전 방향 피드백을 함께 작성한다. 메시지가 "아이디어:" 또는 "idea:" prefix로 시작하거나, Claude Code에서 명시적으로 idea-listing을 호출했을 때 사용.
+description: 텔레그램 또는 Claude Code에서 받은 러프한 아이디어를 분석해 src/data/ideas/{category}/{year}/{slug}.md 파일을 만들고 main에 커밋한다. 관련 외부 자료, 기존 블로그 중 유사 글, 발전 방향 피드백을 함께 작성한다. 메시지가 "아이디어:" 또는 "idea:" prefix로 시작하거나, Claude Code에서 명시적으로 idea-listing을 호출했을 때 사용.
 ---
 
 # Idea Listing Skill
@@ -33,13 +33,14 @@ description: 텔레그램 또는 Claude Code에서 받은 러프한 아이디어
 ## 작업 흐름
 
 1. **입력 분석** — prefix 제거 후 본문 추출. 너무 짧거나(2자 이하) 모호하면("ㅎㅇ", "ㅋ" 등) 작업 중단
-2. **카테고리 결정** — Programming / Thinking / Design 중 하나. blog-draft와 동일 분류 기준
-3. **slug 생성** — 영문 소문자 + 하이픈. 충돌 시 `-2`, `-3`
-4. **유사한 이전 블로그 글 검색** — `src/data/blog/`에서 frontmatter `title`·`tags` 기준 매칭. 상위 1~3개 추출 (`rg` 사용 권장)
-5. **외부 자료 조사** — `WebSearch` 0~3회. 라이브러리/도구/최신 트렌드면 검색, 일반 개념이면 생략
-6. **피드백 작성** — 아이디어를 더 흥미롭게/구체적으로 만들 방향 1~3개 제시
-7. **파일 작성** — `src/data/ideas/{slug}.md` 생성
-8. **커밋** — `idea: {title}` 메시지로 main 브랜치 직접 커밋. 푸시는 사용자가 수동으로 함
+2. **카테고리 결정** — `programming` / `thinking` / `design` 중 하나 (소문자). blog-draft와 동일 분류 기준
+3. **현재 KST 연도 확인** — `TZ=Asia/Seoul date '+%Y'`로 폴더용 연도 추출. `pubDate`용 날짜는 `TZ=Asia/Seoul date '+%Y-%m-%d'`
+4. **slug 생성** — 영문 소문자 + 하이픈. 충돌 검사는 동일 카테고리 폴더 안에서만. 충돌 시 `-2`, `-3`
+5. **유사한 이전 블로그 글 검색** — `src/data/blog/**/*.md` (재귀)에서 frontmatter `title`·`tags` 기준 매칭. 상위 1~3개 추출 (`rg` 사용 권장)
+6. **외부 자료 조사** — `WebSearch` 0~3회. 라이브러리/도구/최신 트렌드면 검색, 일반 개념이면 생략
+7. **피드백 작성** — 아이디어를 더 흥미롭게/구체적으로 만들 방향 1~3개 제시
+8. **파일 작성** — `src/data/ideas/{category}/{year}/{slug}.md` 생성. 카테고리/연도 폴더가 없으면 새로 생성
+9. **커밋** — `idea: {title}` 메시지로 main 브랜치 직접 커밋. 푸시는 사용자가 수동으로 함
 
 ## Frontmatter 스키마
 
@@ -49,7 +50,8 @@ description: 텔레그램 또는 Claude Code에서 받은 러프한 아이디어
 ---
 title: "아이디어 한 줄"
 pubDate: 2026-04-26
-tags: ["Programming", "TypeScript"]
+category: programming
+tags: ["TypeScript"]
 ---
 ```
 
@@ -57,26 +59,33 @@ tags: ["Programming", "TypeScript"]
 
 - `title`: 15~50자. 한 줄 아이디어. 큰따옴표 필수. 콜론 포함 시 따옴표 안 그대로
 - `pubDate`: 한국 시간 기준 오늘 날짜 (`YYYY-MM-DD`)
-- `tags`: 첫 번째는 반드시 카테고리(Programming / Thinking / Design 중 하나). 그 뒤 1~2개 세부 태그. 첫 글자 대문자
+- `category`: **필수 필드**. `programming` / `design` / `thinking` 중 하나 (소문자). 폴더 경로의 카테고리와 반드시 동일
+- `tags`: 카테고리와 별개의 자유 라벨. 영문, 첫 글자 대문자, 0~3개. 비워도 OK
 
 ## 카테고리 분류 가이드
 
-blog-draft와 동일.
+blog-draft와 동일. 자동 분류는 3종만 사용:
 
-- **Programming**: 코드, 프레임워크, 라이브러리, 알고리즘, 시스템 설계, 도구 사용법
-- **Thinking**: 학습 방법, 커리어, 의사결정, 회고, 생각 정리, 책/강의 후기
-- **Design**: UI/UX, 타이포그래피, 색감, 디자인 시스템, 사용자 경험
+- `programming`: 코드, 프레임워크, 라이브러리, 알고리즘, 시스템 설계, CLI·에디터·워크플로우 자동화 등 도구 사용기까지 포함
+- `thinking`: 학습 방법, 커리어, 의사결정, 회고, 생각 정리, 책/강의 후기
+- `design`: UI/UX, 타이포그래피, 색감, 디자인 시스템, 사용자 경험
+
+> `tools`, `works` enum 값도 스키마상 유효하지만 자동 라우팅에서는 사용하지 않는다. 사용자가 명시할 때만 예외.
+> - `works`: "프로젝트 아이디어", "에이전트 아이디어", "공모전 출품 아이디어"처럼 만들 결과물에 대한 러프 메모일 때만 사용.
 
 ## 파일 경로 규칙
 
 ```
-src/data/ideas/{slug}.md
+src/data/ideas/{category}/{year}/{slug}.md
 ```
 
-- 평평한 구조: 하위 폴더 사용 안 함
+- `{category}`는 frontmatter `category` 값과 반드시 동일
+- `{year}`는 현재 KST 연도 (`TZ=Asia/Seoul date '+%Y'`)
+- 카테고리/연도 폴더가 없으면 새로 생성
 - 파일명에 날짜 prefix 없음
 - slug는 영문 hyphenated (예: `satisfies-operator`, `oss-release-timing`)
-- 동일 slug 존재 시 `-2`, `-3` 등 숫자 붙이기
+- slug 충돌 검사는 동일 카테고리 폴더 안에서만 수행 (다른 카테고리에 같은 slug 있어도 OK — public id가 `{category}/{slug}`라 충돌 아님)
+- 동일 카테고리 내 충돌 시 `-2`, `-3` 등 숫자 붙이기
 
 ## 본문 작성 스타일
 
@@ -104,7 +113,7 @@ src/data/ideas/{slug}.md
 
 - **본문(섹션 헤더 없음)**: 1~3문장. 아이디어 자체를 풀어 씀. 너무 길면 안 됨 — "러프 메모"라는 본질 유지
 - **관련 자료**: 외부 링크. 자료가 없으면 섹션 통째로 생략
-- **유사한 이전 글**: 같은 블로그 내 글. 매칭되는 글이 없으면 섹션 통째로 생략. 링크는 `/Hard_Working/posts/{slug}/` 형식 (base URL 포함)
+- **유사한 이전 글**: 같은 블로그 내 글. 매칭되는 글이 없으면 섹션 통째로 생략. 링크는 `/Hard_Working/posts/{category}/{slug}/` 형식 (base URL 포함, post.id가 이미 `{category}/{slug}` 형태이므로 그대로 활용)
 - **피드백 / 더 발전시킨다면**: 항상 1~3개 작성. 이 섹션이 가장 중요 — 사용자가 아이디어를 다듬는 데 실제로 도움이 되어야 함
 
 ### 톤
@@ -116,16 +125,17 @@ src/data/ideas/{slug}.md
 
 ## 유사 글 검색 가이드
 
-`src/data/blog/` 디렉토리의 모든 `.md` 파일에서:
+`src/data/blog/**/*.md` (재귀)에서:
 
 1. 아이디어의 핵심 키워드(2~3개)로 frontmatter `title` grep
-2. 카테고리/태그가 일치하는 글 우선
+2. frontmatter `category`/`tags`가 일치하는 글 우선
 3. 본문에서도 키워드 검색 (`rg -l "키워드" src/data/blog/`)
 4. 상위 1~3개만 선정. 약하게 매칭되는 건 차라리 섹션 생략
 
 링크 형식 검증:
-- 파일명이 `foo-bar.md` → `/Hard_Working/posts/foo-bar/`
-- 절대 `/posts/foo-bar/`로 쓰지 말 것 (base URL 빠지면 깨짐)
+- 파일 경로 `src/data/blog/programming/2026/foo-bar.md` → `/Hard_Working/posts/programming/foo-bar/`
+- 즉, `{category}/{slug}` 부분만 떼어 base URL과 결합 (year는 URL에 들어가지 않음)
+- 절대 `/posts/foo-bar/`나 `/posts/2026/foo-bar/`로 쓰지 말 것 (base URL 빠지거나 year가 URL에 새면 깨짐)
 
 ## 외부 자료 조사 가이드
 
@@ -169,7 +179,7 @@ idea: {title}
 - 생성 파일 경로
 - frontmatter의 `title`
 - 커밋 SHA
-- 배포 후 예상 URL: `https://chakki-the-potato.github.io/Hard_Working/ideas/`
+- 배포 후 예상 URL: `https://chakki-the-potato.github.io/Hard_Working/ideas/{category}/{slug}/`
 
 ## 작업하지 않을 것
 
