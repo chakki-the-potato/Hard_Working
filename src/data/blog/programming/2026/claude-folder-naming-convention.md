@@ -2,7 +2,8 @@
 title: ".claude 폴더 이름 규칙 — skills인가, skill인가"
 description: "Claude Code의 .claude 디렉토리 안 폴더 이름은 agents, commands, skills처럼 항상 복수형을 사용합니다. 각 폴더의 내부 구조와 적용 범위를 정리합니다."
 pubDate: 2026-04-27
-tags: ["Programming", "Claude Code"]
+category: programming
+tags: ["Claude Code"]
 ---
 
 `.claude` 디렉토리는 Claude Code가 프로젝트별 설정과 도구를 읽어오는 곳입니다. 공식 문서와 실제 동작 방식을 보면 폴더 이름에 일관된 규칙이 있습니다. `skill`인지 `skills`인지, `agent`인지 `agents`인지 헷갈릴 수 있는데, 답은 하나입니다.

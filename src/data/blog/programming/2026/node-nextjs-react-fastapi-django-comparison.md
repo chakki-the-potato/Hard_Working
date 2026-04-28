@@ -2,7 +2,8 @@
 title: "Node.js, Next.js, React, FastAPI, Django 차이와 선택 기준"
 description: "Node.js, Next.js, React, FastAPI, Django는 각자 다른 역할을 합니다. 런타임부터 UI 라이브러리, 백엔드 프레임워크까지 각 기술의 포지션과 선택 기준을 정리합니다."
 pubDate: 2026-04-26
-tags: ["Programming", "JavaScript", "Python"]
+category: programming
+tags: ["JavaScript", "Python"]
 ---
 
 Node.js, Next.js, React, FastAPI, Django는 모두 "웹 개발" 생태계에 속하지만 각자 담당하는 역할이 다릅니다. 이 다섯 기술을 나란히 비교하려면 같은 층위에 있지 않다는 점을 먼저 이해해야 합니다.

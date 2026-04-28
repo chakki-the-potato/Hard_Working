@@ -2,7 +2,8 @@
 title: "JavaScript Map과 Object의 차이점과 선택 기준"
 description: "ES6에 도입된 Map은 Object와 비슷해 보이지만 키 타입, 순서 보장, 성능, 직렬화 방식에서 뚜렷한 차이가 있습니다. 두 자료구조의 특징을 비교하고 상황에 따른 선택 기준을 정리합니다."
 pubDate: 2026-04-25T00:54:14+09:00
-tags: ["Programming", "JavaScript"]
+category: programming
+tags: ["JavaScript"]
 ---
 
 JavaScript에서 키-값 쌍을 저장할 때 가장 먼저 떠오르는 것은 Object입니다. ES6에서 도입된 Map은 같은 역할을 하지만 동작 방식이 다릅니다. 둘의 차이를 모르면 잘못된 선택으로 버그나 성능 문제가 생길 수 있습니다.

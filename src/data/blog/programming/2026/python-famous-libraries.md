@@ -2,7 +2,8 @@
 title: "파이썬 필수 라이브러리 5선: NumPy, Pandas, Requests, FastAPI, Pytest"
 description: "파이썬 생태계에서 가장 많이 사용되는 핵심 라이브러리 5가지를 분야별로 정리합니다. NumPy, Pandas, Requests, FastAPI, Pytest 각각의 역할과 대표적인 사용 패턴을 예제 코드와 함께 파악할 수 있습니다."
 pubDate: 2026-04-27T18:56:32+09:00
-tags: ["Programming", "Python"]
+category: programming
+tags: ["Python"]
 ---
 
 파이썬의 강점 중 하나는 풍부한 서드파티 라이브러리 생태계입니다. PyPI에는 수십만 개 이상의 패키지가 등록되어 있지만, 실무에서 자주 등장하는 핵심 라이브러리는 일부에 집중됩니다. 분야별로 대표적인 라이브러리 5개를 정리합니다.

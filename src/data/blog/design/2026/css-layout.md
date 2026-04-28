@@ -2,7 +2,8 @@
 title: "CSS Flexbox & Grid 완전 정복"
 description: "float 시대는 끝났습니다. Flexbox와 Grid로 어떤 레이아웃이든 만들 수 있습니다. 헷갈리는 속성들을 시각적으로 정리합니다."
 pubDate: 2026-01-20
-tags: ["Design", "CSS"]
+category: design
+tags: ["CSS"]
 ---
 
 ## Flexbox — 1차원 레이아웃

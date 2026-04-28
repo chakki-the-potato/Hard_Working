@@ -2,7 +2,8 @@
 title: "사이드 프로젝트를 끝까지 완성하는 방법"
 description: "시작은 하지만 완성을 못하는 사이드 프로젝트의 저주. 기획, 개발, 런칭까지 실제로 완주한 경험에서 얻은 교훈을 공유합니다."
 pubDate: 2026-02-01
-tags: ["Thinking", "Startup"]
+category: thinking
+tags: ["Startup"]
 ---
 
 ## 99%의 사이드 프로젝트는 미완성으로 끝난다

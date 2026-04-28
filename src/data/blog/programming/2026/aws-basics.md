@@ -2,7 +2,8 @@
 title: "AWS 핵심 서비스 입문 — 개발자가 알아야 할 클라우드 기초"
 description: "EC2, S3, RDS, Lambda까지 개발자가 실무에서 자주 쓰는 AWS 핵심 서비스를 정리합니다. 아키텍처 설계 패턴도 함께 다룹니다."
 pubDate: 2026-02-22
-tags: ["Programming", "Backend"]
+category: programming
+tags: ["Backend"]
 ---
 
 ## AWS를 배워야 하는 이유

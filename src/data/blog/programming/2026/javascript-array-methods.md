@@ -2,7 +2,8 @@
 title: "JavaScript 배열 메서드 정리: map, filter, reduce"
 description: "자주 사용하는 JavaScript 배열 메서드의 동작 원리와 실전 활용법을 정리합니다. map, filter, reduce를 중심으로 예제와 함께 알아봅니다."
 pubDate: 2026-02-20
-tags: ["Programming", "Frontend"]
+category: programming
+tags: ["Frontend"]
 ---
 
 ## 배열 메서드란?

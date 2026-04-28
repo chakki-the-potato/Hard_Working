@@ -2,7 +2,8 @@
 title: "Node.js 입문 — 비동기와 이벤트 루프 이해하기"
 description: "Node.js의 핵심인 비동기 처리와 이벤트 루프 동작 방식을 이해하고, Express로 간단한 서버를 만드는 방법을 다룹니다."
 pubDate: 2026-02-18
-tags: ["Programming", "Backend"]
+category: programming
+tags: ["Backend"]
 ---
 
 ## Node.js가 특별한 이유

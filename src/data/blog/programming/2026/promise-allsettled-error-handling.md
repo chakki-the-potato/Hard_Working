@@ -2,7 +2,8 @@
 title: "Promise.allSettled의 에러 처리 패턴 정리"
 description: "Promise.all과 달리 모든 프로미스가 완료될 때까지 기다리는 Promise.allSettled의 동작 원리와 실전 에러 처리 패턴을 코드 예제와 함께 정리합니다."
 pubDate: 2026-04-25T00:34:22+09:00
-tags: ["Programming", "JavaScript"]
+category: programming
+tags: ["JavaScript"]
 ---
 
 `Promise.all`은 하나라도 실패하면 즉시 reject됩니다. 나머지 결과가 필요 없을 때는 적합하지만, 여러 API를 병렬 호출하면서 각각의 성공/실패를 모두 처리해야 할 때는 맞지 않습니다. `Promise.allSettled`는 이 문제를 해결하기 위해 ES2020에 도입되었습니다.

@@ -2,7 +2,8 @@
 title: "pandas로 데이터 분석 시작하기 — 실전 예제 모음"
 description: "Python 데이터 분석의 핵심 라이브러리 pandas를 활용해 데이터를 불러오고, 정제하고, 집계하는 방법을 실전 예제와 함께 정리합니다."
 pubDate: 2026-02-05
-tags: ["Programming", "Backend"]
+category: programming
+tags: ["Backend"]
 ---
 
 ## pandas 설치

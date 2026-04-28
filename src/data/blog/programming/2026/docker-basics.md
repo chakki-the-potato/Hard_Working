@@ -2,7 +2,8 @@
 title: "Docker 입문 — 컨테이너로 개발 환경 통일하기"
 description: "내 컴퓨터에서는 되는데 서버에서 안 된다? Docker로 어디서나 동일한 실행 환경을 만드는 방법을 정리합니다. 이미지, 컨테이너, Compose까지."
 pubDate: 2026-01-25
-tags: ["Programming", "DevOps"]
+category: programming
+tags: ["DevOps"]
 ---
 
 ## Docker란?

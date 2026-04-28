@@ -2,7 +2,8 @@
 title: "TypeScript 실전 팁 — 타입을 제대로 쓰는 방법"
 description: "any를 남발하지 않고 TypeScript를 제대로 활용하는 실전 패턴들. 제네릭, 유틸리티 타입, 타입 가드까지 실무에서 바로 쓸 수 있는 예제로 정리합니다."
 pubDate: 2026-02-08
-tags: ["Programming", "Frontend"]
+category: programming
+tags: ["Frontend"]
 ---
 
 ## any는 TypeScript를 포기하는 것
