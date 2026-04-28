@@ -54,11 +54,15 @@ const numLabel = num != null ? String(num).padStart(3, '0') : null;
     text-decoration: none;
     color: inherit;
     cursor: pointer;
-    transition: opacity 0.15s;
   }
 
-  .qt-feat-row:hover {
-    opacity: 0.78;
+  .qt-feat-row:hover .qt-feat-title {
+    color: var(--accent);
+  }
+
+  .qt-feat-row:hover .qt-feat-foot {
+    color: var(--accent);
+    transform: translateX(4px);
   }
 
   .qt-feat-meta {
@@ -94,6 +98,7 @@ const numLabel = num != null ? String(num).padStart(3, '0') : null;
     letter-spacing: -0.025em;
     color: var(--ink);
     margin: 0 0 10px;
+    transition: color 0.15s;
   }
 
   .qt-feat-desc {
@@ -117,6 +122,7 @@ const numLabel = num != null ? String(num).padStart(3, '0') : null;
     font-size: 10.5px;
     color: var(--subtle);
     letter-spacing: 0.06em;
+    transition: color 0.15s, transform 0.15s;
   }
 
   @media (max-width: 720px) {
