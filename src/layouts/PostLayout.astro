@@ -131,17 +131,10 @@ const nextPost = idx >= 0 && idx < sortedByNum.length - 1 ? sortedByNum[idx + 1]
         <slot />
       </div>
 
-      <a href={base} class="qt-post-back">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-        </svg>
-        목록으로
-      </a>
-
-      {related.length > 0 && (
-        <section class="qt-post-related">
-          <span class="qt-post-related-mono">// RELATED</span>
-          {related.map((p) => (
+      <section class="qt-post-related">
+        <span class="qt-post-related-mono">// RELATED</span>
+        {related.length > 0 ? (
+          related.map((p) => (
             <PostListRow
               id={p.id}
               title={p.data.title}
@@ -150,9 +143,11 @@ const nextPost = idx >= 0 && idx < sortedByNum.length - 1 ? sortedByNum[idx + 1]
               tags={p.data.tags}
               num={numberMap.get(p.id)}
             />
-          ))}
-        </section>
-      )}
+          ))
+        ) : (
+          <p class="qt-post-related-empty">같은 카테고리의 다른 글이 아직 없어요.</p>
+        )}
+      </section>
 
       {(prevPost || nextPost) && (
         <nav class="qt-post-nav" aria-label="이전·다음 글">
@@ -182,6 +177,15 @@ const nextPost = idx >= 0 && idx < sortedByNum.length - 1 ? sortedByNum[idx + 1]
           )}
         </nav>
       )}
+
+      <div class="qt-post-back-wrap">
+        <a href={base} class="qt-post-back">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          목록으로
+        </a>
+      </div>
     </article>
   </div>
 </BaseLayout>
@@ -291,11 +295,16 @@ const nextPost = idx >= 0 && idx < sortedByNum.length - 1 ? sortedByNum[idx + 1]
     border-bottom-color: var(--accent);
   }
 
+  .qt-post-back-wrap {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-start;
+  }
+
   .qt-post-back {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    margin-top: 56px;
     padding: 8px 14px;
     font-size: 13px;
     font-weight: 500;
@@ -326,9 +335,16 @@ const nextPost = idx >= 0 && idx < sortedByNum.length - 1 ? sortedByNum[idx + 1]
     margin-bottom: 14px;
   }
 
+  .qt-post-related-empty {
+    margin: 0;
+    padding: 16px 0;
+    font-size: 13px;
+    color: var(--subtle);
+  }
+
   .qt-post-nav {
     position: relative;
-    margin-top: 40px;
+    margin-top: 20px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 14px;
