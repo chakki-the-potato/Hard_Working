@@ -5,11 +5,6 @@ dist/
 screenshots/
 .playwright-mcp/
 
-# Env
-.env
-.env.local
-.env.*.local
-
 # Local Claude settings
 .claude/settings.local.json
 

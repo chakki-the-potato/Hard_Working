@@ -3,7 +3,6 @@ import { getCollection } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
 import PostListRow from '../components/PostListRow.astro';
 import ReadingProgress from '../components/ReadingProgress.astro';
-import Comments from '../components/Comments.astro';
 import { categoryLabel, type Category } from '../lib/categories';
 
 interface Props {
@@ -131,8 +130,6 @@ const nextPost = idx >= 0 && idx < sortedByNum.length - 1 ? sortedByNum[idx + 1]
       <div class="prose">
         <slot />
       </div>
-
-      <Comments postId={id} />
 
       <a href={base} class="qt-post-back">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
