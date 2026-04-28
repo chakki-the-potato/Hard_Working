@@ -12,6 +12,7 @@
     "@astrojs/rss": "^4.0.0",
     "@astrojs/sitemap": "^3.0.0",
     "@fontsource/jetbrains-mono": "^5.2.8",
+    "@supabase/supabase-js": "^2.105.0",
     "astro": "^5.2.0",
     "fuse.js": "^7.0.0"
   },

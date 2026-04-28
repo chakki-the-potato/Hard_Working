@@ -1,0 +1,356 @@
+---
+interface Props {
+  postId: string;
+}
+
+const { postId } = Astro.props;
+---
+
+<section class="qt-comments" data-comments-root data-post-id={postId} aria-labelledby="qt-comments-heading">
+  <span id="qt-comments-heading" class="qt-comments-mono">// COMMENTS <span data-comments-count>(0)</span></span>
+
+  <p class="qt-comments-status" data-comments-status>댓글을 불러오는 중…</p>
+
+  <ol class="qt-comments-list" data-comments-list></ol>
+
+  <form class="qt-comments-form" data-comments-form novalidate>
+    <div class="qt-comments-row">
+      <label class="qt-comments-label" for="qt-comments-name">닉네임</label>
+      <input
+        id="qt-comments-name"
+        name="author_name"
+        type="text"
+        maxlength="30"
+        required
+        autocomplete="nickname"
+      />
+    </div>
+
+    <div class="qt-comments-row">
+      <label class="qt-comments-label" for="qt-comments-body">댓글</label>
+      <textarea
+        id="qt-comments-body"
+        name="body"
+        rows="4"
+        maxlength="2000"
+        required
+      ></textarea>
+    </div>
+
+    <input
+      class="qt-comments-honeypot"
+      name="website"
+      type="text"
+      tabindex="-1"
+      autocomplete="off"
+      aria-hidden="true"
+    />
+
+    <div class="qt-comments-actions">
+      <span class="qt-comments-error" data-comments-error role="alert"></span>
+      <button type="submit" class="qt-comments-submit">남기기</button>
+    </div>
+  </form>
+</section>
+
+<script>
+  import { supabase, type Comment } from '../lib/supabase';
+
+  const root = document.querySelector<HTMLElement>('[data-comments-root]');
+  if (!root) throw new Error('comments root missing');
+
+  const postId = root.dataset.postId ?? '';
+  const listEl = root.querySelector<HTMLOListElement>('[data-comments-list]')!;
+  const statusEl = root.querySelector<HTMLElement>('[data-comments-status]')!;
+  const countEl = root.querySelector<HTMLElement>('[data-comments-count]')!;
+  const formEl = root.querySelector<HTMLFormElement>('[data-comments-form]')!;
+  const errorEl = root.querySelector<HTMLElement>('[data-comments-error]')!;
+  const submitBtn = formEl.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+
+  function fmtTime(iso: string): string {
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return iso;
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  function setCount(n: number) {
+    countEl.textContent = `(${n})`;
+  }
+
+  function renderRow(c: Comment): HTMLLIElement {
+    const li = document.createElement('li');
+    li.className = 'qt-comments-item';
+
+    const meta = document.createElement('div');
+    meta.className = 'qt-comments-item-meta';
+
+    const name = document.createElement('span');
+    name.className = 'qt-comments-item-name';
+    name.textContent = c.author_name;
+
+    const time = document.createElement('time');
+    time.className = 'qt-comments-item-time';
+    time.dateTime = c.created_at;
+    time.textContent = fmtTime(c.created_at);
+
+    meta.append(name, time);
+
+    const body = document.createElement('p');
+    body.className = 'qt-comments-item-body';
+    body.textContent = c.body;
+
+    li.append(meta, body);
+    return li;
+  }
+
+  function showStatus(msg: string) {
+    statusEl.textContent = msg;
+    statusEl.hidden = false;
+  }
+  function hideStatus() {
+    statusEl.hidden = true;
+  }
+  function showError(msg: string) {
+    errorEl.textContent = msg;
+  }
+  function clearError() {
+    errorEl.textContent = '';
+  }
+
+  if (!supabase) {
+    showStatus('댓글 백엔드가 설정되지 않았습니다. (.env 확인)');
+    formEl.hidden = true;
+  } else {
+    const client = supabase;
+
+    (async () => {
+      const { data, error } = await client
+        .from('comments')
+        .select('id, post_id, author_name, body, created_at, status')
+        .eq('post_id', postId)
+        .order('created_at', { ascending: true });
+
+      if (error) {
+        showStatus('댓글을 불러오지 못했습니다.');
+        return;
+      }
+      const rows = (data ?? []) as Comment[];
+      setCount(rows.length);
+      if (rows.length === 0) {
+        showStatus('아직 댓글이 없습니다. 첫 댓글을 남겨보세요.');
+      } else {
+        hideStatus();
+        for (const r of rows) listEl.appendChild(renderRow(r));
+      }
+    })();
+
+    formEl.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearError();
+
+      const fd = new FormData(formEl);
+      if ((fd.get('website') ?? '').toString().length > 0) {
+        formEl.reset();
+        return;
+      }
+
+      const author_name = (fd.get('author_name') ?? '').toString().trim();
+      const body = (fd.get('body') ?? '').toString().trim();
+
+      if (author_name.length < 1 || author_name.length > 30) {
+        showError('닉네임은 1~30자로 입력해주세요.');
+        return;
+      }
+      if (body.length < 1 || body.length > 2000) {
+        showError('댓글은 1~2000자로 입력해주세요.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      const { data, error } = await client
+        .from('comments')
+        .insert({ post_id: postId, author_name, body })
+        .select()
+        .single();
+      submitBtn.disabled = false;
+
+      if (error || !data) {
+        showError('댓글 저장에 실패했습니다. 잠시 후 다시 시도해주세요.');
+        return;
+      }
+
+      const inserted = data as Comment;
+      hideStatus();
+      listEl.appendChild(renderRow(inserted));
+      setCount(listEl.children.length);
+      formEl.reset();
+    });
+  }
+</script>
+
+<style>
+  .qt-comments {
+    margin-top: 56px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+  }
+
+  .qt-comments-mono {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--subtle);
+    letter-spacing: 0.12em;
+    margin-bottom: 18px;
+  }
+
+  .qt-comments-status {
+    margin: 0 0 16px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .qt-comments-list {
+    list-style: none;
+    margin: 0 0 28px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .qt-comments-item {
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-alt);
+  }
+
+  .qt-comments-item-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .qt-comments-item-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+
+  .qt-comments-item-time {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--subtle);
+    letter-spacing: 0.04em;
+  }
+
+  .qt-comments-item-body {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .qt-comments-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+
+  .qt-comments-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .qt-comments-label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--subtle);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .qt-comments-form input[type='text'],
+  .qt-comments-form textarea {
+    font: inherit;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--bg);
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: border-color 0.15s;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .qt-comments-form input[type='text']:focus,
+  .qt-comments-form textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .qt-comments-form textarea {
+    resize: vertical;
+    min-height: 96px;
+    font-family: inherit;
+    line-height: 1.55;
+  }
+
+  .qt-comments-honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .qt-comments-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .qt-comments-error {
+    font-size: 12.5px;
+    color: #c0392b;
+  }
+
+  .qt-comments-submit {
+    appearance: none;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--bg);
+    padding: 8px 18px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .qt-comments-submit:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .qt-comments-submit:not(:disabled):hover {
+    opacity: 0.85;
+  }
+</style>
