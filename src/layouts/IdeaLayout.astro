@@ -1,0 +1,123 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { categoryLabel, type Category } from '../lib/categories';
+
+interface Props {
+  title: string;
+  pubDate: Date;
+  category: Category;
+  tags: string[];
+}
+
+const { title, pubDate, category, tags } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+const cat = categoryLabel(category);
+const dateLabel = pubDate
+  .toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' })
+  .replace(/\.\s*/g, '.')
+  .replace(/\.$/, '');
+---
+
+<BaseLayout title={`${title} — Hard_Working`} description={title} noPadding={true}>
+  <article class="qt-idea-detail">
+    <a href={`${base}ideas/`} class="qt-idea-back">
+      <span class="qt-mono">← IDEAS</span>
+    </a>
+
+    <header class="qt-idea-head">
+      <div class="qt-idea-meta">
+        <span class="qt-idea-cat">[{cat.toUpperCase()}]</span>
+        {tags.map((t) => (
+          <span class="qt-idea-tag">#{t}</span>
+        ))}
+        <time datetime={pubDate.toISOString()} class="qt-idea-date">{dateLabel}</time>
+      </div>
+      <h1 class="qt-idea-title">{title}</h1>
+    </header>
+
+    <div class="qt-idea-body prose">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .qt-mono {
+    font-family: var(--font-mono);
+  }
+
+  .qt-idea-detail {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 28px 96px;
+  }
+
+  .qt-idea-back {
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-decoration: none;
+    margin-bottom: 32px;
+    transition: color 0.15s;
+  }
+
+  .qt-idea-back:hover {
+    color: var(--ink);
+  }
+
+  .qt-idea-head {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 24px;
+    margin-bottom: 32px;
+  }
+
+  .qt-idea-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    margin-bottom: 14px;
+  }
+
+  .qt-idea-cat {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .qt-idea-tag {
+    color: var(--muted);
+  }
+
+  .qt-idea-date {
+    color: var(--subtle);
+    margin-left: auto;
+  }
+
+  .qt-idea-title {
+    font-size: calc(36px * var(--h-scale));
+    font-weight: 800;
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+  }
+
+  @media (max-width: 720px) {
+    .qt-idea-detail {
+      padding: 32px 20px 64px;
+    }
+    .qt-idea-title {
+      font-size: calc(26px * var(--h-scale));
+    }
+    .qt-idea-date {
+      margin-left: 0;
+    }
+  }
+</style>

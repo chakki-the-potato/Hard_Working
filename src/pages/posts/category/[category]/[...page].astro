@@ -1,0 +1,33 @@
+---
+import { getCollection } from 'astro:content';
+import ListLayout from '../../../../layouts/ListLayout.astro';
+import { POSTS_PER_PAGE } from '../../../../consts';
+import { CATEGORIES, isCategory, type Category } from '../../../../lib/categories';
+
+export async function getStaticPaths({ paginate }: { paginate: Function }) {
+  // Categories that should render an empty landing page even before any post exists.
+  const alwaysVisible = new Set<Category>(['works']);
+  const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+
+  return CATEGORIES.flatMap((category) => {
+    const filtered = allPosts
+      .filter((post) => post.data.category === category)
+      .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+    if (filtered.length === 0 && !alwaysVisible.has(category)) return [];
+    return paginate(filtered, {
+      params: { category },
+      pageSize: POSTS_PER_PAGE,
+    });
+  });
+}
+
+const { page } = Astro.props;
+const { category } = Astro.params;
+
+if (!category || !isCategory(category)) {
+  throw new Error(`Invalid category: ${category}`);
+}
+const cat: Category = category;
+---
+
+<ListLayout page={page} mode={{ kind: 'category', category: cat }} />

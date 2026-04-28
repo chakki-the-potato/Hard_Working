@@ -2,10 +2,16 @@
 import { getCollection } from 'astro:content';
 import ListLayout from '../../../layouts/ListLayout.astro';
 import { POSTS_PER_PAGE } from '../../../consts';
+import { ALWAYS_VISIBLE_TAGS } from '../../../lib/categories';
 
 export async function getStaticPaths({ paginate }: { paginate: Function }) {
   const allPosts = await getCollection('blog', ({ data }) => !data.draft);
-  const uniqueTags = [...new Set(allPosts.flatMap((post) => post.data.tags))];
+  const uniqueTags = [
+    ...new Set([
+      ...allPosts.flatMap((post) => post.data.tags),
+      ...ALWAYS_VISIBLE_TAGS,
+    ]),
+  ];
 
   return uniqueTags.flatMap((tag) => {
     const filtered = allPosts
@@ -22,4 +28,4 @@ const { page } = Astro.props;
 const { tag } = Astro.params;
 ---
 
-<ListLayout page={page} activeTag={tag} />
+<ListLayout page={page} mode={{ kind: 'tag', tag: tag! }} />

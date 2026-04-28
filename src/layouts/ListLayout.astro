@@ -5,6 +5,16 @@ import PostListRow from '../components/PostListRow.astro';
 import TagNav from '../components/TagNav.astro';
 import Pagination from '../components/Pagination.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import {
+  ALWAYS_VISIBLE_TAGS_PER_CATEGORY,
+  categoryLabel,
+  type Category,
+} from '../lib/categories';
+
+type ListMode =
+  | { kind: 'all' }
+  | { kind: 'tag'; tag: string }
+  | { kind: 'category'; category: Category };
 
 interface Props {
   page: {
@@ -14,6 +24,7 @@ interface Props {
         title: string;
         description: string;
         pubDate: Date;
+        category: Category;
         tags: string[];
         heroImage?: string;
       };
@@ -26,35 +37,42 @@ interface Props {
       current: string;
     };
   };
-  activeTag?: string;
+  mode?: ListMode;
 }
 
-const { page, activeTag } = Astro.props;
+const { page, mode = { kind: 'all' } } = Astro.props;
 const base = import.meta.env.BASE_URL;
-const title = activeTag ? `#${activeTag} — ${SITE_TITLE}` : SITE_TITLE;
 
-// 카테고리 계층
-const topCategories = ['Programming', 'Thinking', 'Design'];
-const categoryHierarchy: Record<string, string[]> = {
-  Programming: ['Frontend', 'Backend', 'DevOps'],
-  Thinking: ['Productivity', 'Startup'],
-  Design: ['CSS'],
-};
-const subToParent: Record<string, string> = {};
-for (const [parent, subs] of Object.entries(categoryHierarchy)) {
-  subs.forEach((sub) => { subToParent[sub] = parent; });
-}
+const headerLabel =
+  mode.kind === 'category' ? `#${categoryLabel(mode.category)}`
+  : mode.kind === 'tag' ? `#${mode.tag}`
+  : '전체';
+const title = mode.kind === 'all' ? SITE_TITLE : `${headerLabel} — ${SITE_TITLE}`;
+const heroMono = mode.kind === 'category' ? '// CATEGORY' : '// TAG / FILTER';
 
-const isTopCategory = activeTag ? topCategories.includes(activeTag) : false;
-const isSubCategory = activeTag ? !!subToParent[activeTag] : false;
-const parentCategory = isSubCategory ? subToParent[activeTag!] : (isTopCategory ? activeTag : undefined);
-const sidebarSubs = parentCategory ? (categoryHierarchy[parentCategory] ?? []) : [];
-
-// 전체 카운트
+// 전체 카운트 + 사이드바 데이터
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const tagCounts = new Map<string, number>();
-allPosts.forEach((p) => p.data.tags.forEach((t) => tagCounts.set(t, (tagCounts.get(t) || 0) + 1)));
-const totalCount = activeTag ? (tagCounts.get(activeTag) ?? 0) : allPosts.length;
+const categoryCounts = new Map<Category, number>();
+const tagsPerCategory = new Map<Category, Map<string, number>>();
+for (const p of allPosts) {
+  const cat = p.data.category;
+  categoryCounts.set(cat, (categoryCounts.get(cat) ?? 0) + 1);
+  let perCat = tagsPerCategory.get(cat);
+  if (!perCat) {
+    perCat = new Map<string, number>();
+    tagsPerCategory.set(cat, perCat);
+  }
+  for (const t of p.data.tags) {
+    tagCounts.set(t, (tagCounts.get(t) ?? 0) + 1);
+    perCat.set(t, (perCat.get(t) ?? 0) + 1);
+  }
+}
+
+const totalCount =
+  mode.kind === 'category' ? (categoryCounts.get(mode.category) ?? 0)
+  : mode.kind === 'tag' ? (tagCounts.get(mode.tag) ?? 0)
+  : allPosts.length;
 
 const sortedAll = [...allPosts].sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 const lastUpdate = sortedAll[0]?.data.pubDate;
@@ -62,8 +80,46 @@ const lastUpdateLabel = lastUpdate
   ? `${lastUpdate.getFullYear()}.${String(lastUpdate.getMonth() + 1).padStart(2, '0')}.${String(lastUpdate.getDate()).padStart(2, '0')}`
   : '';
 
-const baseUrl = activeTag ? `${base}tags/${activeTag}/` : base;
-const headerLabel = activeTag ?? '전체';
+const baseUrl =
+  mode.kind === 'category' ? `${base}posts/category/${mode.category}/`
+  : mode.kind === 'tag' ? `${base}tags/${mode.tag}/`
+  : base;
+
+// Sidebar: when viewing a category page, list its sub-tags. When viewing a tag page,
+// figure out which category that tag mostly belongs to and show siblings.
+const activeCategory: Category | undefined =
+  mode.kind === 'category'
+    ? mode.category
+    : mode.kind === 'tag'
+      ? (() => {
+          let best: Category | undefined;
+          let bestCount = 0;
+          for (const [c, perCat] of tagsPerCategory.entries()) {
+            const count = perCat.get(mode.tag) ?? 0;
+            if (count > bestCount) {
+              best = c;
+              bestCount = count;
+            }
+          }
+          // Fallback: whitelisted tag with no posts yet (e.g. Tools under programming)
+          if (!best) {
+            for (const [c, tags] of Object.entries(ALWAYS_VISIBLE_TAGS_PER_CATEGORY)) {
+              if ((tags ?? []).includes(mode.tag)) {
+                best = c as Category;
+                break;
+              }
+            }
+          }
+          return best;
+        })()
+      : undefined;
+
+const sidebarTags = activeCategory
+  ? [...(tagsPerCategory.get(activeCategory) ?? new Map()).entries()]
+      .sort((a, b) => b[1] - a[1])
+      .map(([tag, count]) => ({ tag, count }))
+  : [];
+const activeTagLabel = mode.kind === 'tag' ? mode.tag : undefined;
 
 // 글 번호 매기기 — 발행일 오름차순 1..N (가장 먼저 쓴 글이 №001)
 const numberMap = new Map<string, number>();
@@ -72,9 +128,10 @@ const numberMap = new Map<string, number>();
 
 <BaseLayout title={title} description={SITE_DESCRIPTION} noPadding={true}>
   <section class="qt-list-hero">
-    <span class="qt-mono qt-list-mono">// TAG / FILTER</span>
+    <span class="qt-mono qt-list-mono">{heroMono}</span>
     <h1 class="qt-list-title">
-      <span class="qt-list-hash">#</span>{headerLabel}
+      {(mode.kind === 'tag' || mode.kind === 'category') && <span class="qt-list-hash">#</span>}
+      {mode.kind === 'category' ? categoryLabel(mode.category) : (mode.kind === 'tag' ? mode.tag : '전체')}
     </h1>
     <span class="qt-mono qt-list-meta">
       {totalCount} ARTICLES{lastUpdateLabel ? ` · LAST_UPDATE ${lastUpdateLabel}` : ''}
@@ -82,7 +139,7 @@ const numberMap = new Map<string, number>();
   </section>
 
   <section class="qt-list-chips">
-    <TagNav activeTag={activeTag} />
+    <TagNav activeCategory={activeCategory} activeTag={activeTagLabel} />
   </section>
 
   <div class="qt-list-body">
@@ -102,6 +159,7 @@ const numberMap = new Map<string, number>();
             id={post.id}
             title={post.data.title}
             pubDate={post.data.pubDate}
+            category={post.data.category}
             tags={post.data.tags}
             num={numberMap.get(post.id)}
           />
@@ -111,7 +169,7 @@ const numberMap = new Map<string, number>();
       {page.data.length === 0 && (
         <div class="qt-list-empty">
           <span class="qt-mono qt-list-empty-mark">// EMPTY</span>
-          <p>이 태그에 해당하는 글이 아직 없어요.</p>
+          <p>해당하는 글이 아직 없어요.</p>
         </div>
       )}
 
@@ -122,22 +180,22 @@ const numberMap = new Map<string, number>();
       />
     </div>
 
-    {parentCategory && sidebarSubs.length > 0 && (
+    {activeCategory && sidebarTags.length > 0 && (
       <aside class="qt-list-aside">
         <a
-          href={`${base}tags/${parentCategory}/`}
-          class:list={['qt-aside-parent', { 'is-active': activeTag === parentCategory }]}
+          href={`${base}posts/category/${activeCategory}/`}
+          class:list={['qt-aside-parent', { 'is-active': mode.kind === 'category' && mode.category === activeCategory }]}
         >
-          // {parentCategory.toUpperCase()}
+          // {categoryLabel(activeCategory).toUpperCase()}
         </a>
         <div class="qt-aside-list">
-          {sidebarSubs.map((sub) => (
+          {sidebarTags.map(({ tag, count }) => (
             <a
-              href={`${base}tags/${sub}/`}
-              class:list={['qt-aside-item', { 'is-active': activeTag === sub }]}
+              href={`${base}tags/${tag}/`}
+              class:list={['qt-aside-item', { 'is-active': mode.kind === 'tag' && mode.tag === tag }]}
             >
-              <span class="qt-aside-name">{sub}</span>
-              <span class="qt-aside-count">{tagCounts.get(sub) ?? 0}</span>
+              <span class="qt-aside-name">{tag}</span>
+              <span class="qt-aside-count">{count}</span>
             </a>
           ))}
         </div>

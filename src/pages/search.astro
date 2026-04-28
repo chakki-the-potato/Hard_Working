@@ -57,6 +57,8 @@ const base = import.meta.env.BASE_URL;
     id: string;
     title: string;
     description: string;
+    category: string;
+    categoryLabel: string;
     tags: string[];
     pubDate: string;
   }
@@ -71,8 +73,9 @@ const base = import.meta.env.BASE_URL;
       fuse = new Fuse(posts, {
         keys: [
           { name: 'title', weight: 0.4 },
-          { name: 'description', weight: 0.3 },
-          { name: 'tags', weight: 0.3 },
+          { name: 'description', weight: 0.25 },
+          { name: 'tags', weight: 0.2 },
+          { name: 'categoryLabel', weight: 0.15 },
         ],
         threshold: 0.3,
       });
@@ -112,8 +115,8 @@ const base = import.meta.env.BASE_URL;
     empty.hidden = true;
     container.innerHTML = results
       .map(({ item }) => {
-        const cat = item.tags[0] ?? '';
-        const sub = item.tags[1] ?? '';
+        const cat = item.categoryLabel ?? '';
+        const sub = item.tags[0] ?? '';
         return `
           <a href="${BASE_URL}posts/${item.id}/" class="qt-search-row">
             <div>

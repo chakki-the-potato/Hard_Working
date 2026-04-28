@@ -1,31 +1,60 @@
 ---
 import { getCollection } from 'astro:content';
+import {
+  ALWAYS_VISIBLE_TAGS_PER_CATEGORY,
+  categoryLabel,
+  type Category,
+} from '../lib/categories';
 
 interface Props {
+  activeCategory?: Category;
   activeTag?: string;
   showCount?: boolean;
 }
 
-const { activeTag, showCount = false } = Astro.props;
+const { activeCategory, activeTag, showCount = false } = Astro.props;
 const base = import.meta.env.BASE_URL;
 
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+
+const scopedPosts = activeCategory
+  ? allPosts.filter((p) => p.data.category === activeCategory)
+  : allPosts;
+
 const tagCounts = new Map<string, number>();
-allPosts.forEach((post) => {
+scopedPosts.forEach((post) => {
   post.data.tags.forEach((tag) => {
     tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1);
   });
 });
+
+// Force-show whitelisted sub-tags (e.g. Tools under programming) even with 0 posts.
+if (activeCategory) {
+  const alwaysTags = ALWAYS_VISIBLE_TAGS_PER_CATEGORY[activeCategory] ?? [];
+  for (const tag of alwaysTags) {
+    if (!tagCounts.has(tag)) tagCounts.set(tag, 0);
+  }
+}
+
 const sortedTags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]);
+
+const allHref = activeCategory ? `${base}posts/category/${activeCategory}/` : base;
+const allLabel = activeCategory ? categoryLabel(activeCategory) : '전체';
+const allActive = !activeTag;
+const allCount = scopedPosts.length;
 ---
 
 <div class="qt-tag-chips" role="navigation" aria-label="태그 필터">
-  <a
-    href={base}
-    class:list={['qt-chip', { 'is-active': !activeTag }]}
-  >
-    전체{showCount && <span class="qt-chip-count">{allPosts.length}</span>}
-  </a>
+  {activeCategory ? (
+    <a href={base} class="qt-chip">전체</a>
+  ) : (
+    <a
+      href={allHref}
+      class:list={['qt-chip', { 'is-active': allActive }]}
+    >
+      {allLabel}{showCount && <span class="qt-chip-count">{allCount}</span>}
+    </a>
+  )}
   {sortedTags.map(([tag, count]) => (
     <a
       href={`${base}tags/${tag}/`}

@@ -1,20 +1,42 @@
 ---
+import { getCollection } from 'astro:content';
 import { SITE_TITLE } from '../consts';
+import { CATEGORIES, categoryLabel, type Category } from '../lib/categories';
 
 const base = import.meta.env.BASE_URL;
-const navItems = ['Programming', 'Thinking', 'Design', 'Ideas'] as const;
 const currentPath = Astro.url.pathname;
 
-function isActive(item: string) {
-  if (item === 'Ideas') {
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const populatedCategories = new Set<Category>(allPosts.map((p) => p.data.category));
+
+// `works` is a showcase tab that should always appear, even before any works post exists.
+const ALWAYS_VISIBLE_CATEGORIES = new Set<Category>(['works']);
+
+type NavItem =
+  | { kind: 'category'; slug: Category; label: string }
+  | { kind: 'ideas'; label: string };
+
+const navItems: NavItem[] = [
+  ...CATEGORIES.filter(
+    (slug) => populatedCategories.has(slug) || ALWAYS_VISIBLE_CATEGORIES.has(slug),
+  ).map((slug) => ({
+    kind: 'category' as const,
+    slug,
+    label: categoryLabel(slug),
+  })),
+  { kind: 'ideas', label: 'Ideas' },
+];
+
+function isActive(item: NavItem) {
+  if (item.kind === 'ideas') {
     return currentPath.startsWith(`${base}ideas`);
   }
-  return currentPath.startsWith(`${base}tags/${item}`);
+  return currentPath.startsWith(`${base}posts/category/${item.slug}`);
 }
 
-function navHref(item: string) {
-  if (item === 'Ideas') return `${base}ideas/`;
-  return `${base}tags/${item}/`;
+function navHref(item: NavItem) {
+  if (item.kind === 'ideas') return `${base}ideas/`;
+  return `${base}posts/category/${item.slug}/`;
 }
 ---
 
@@ -35,7 +57,7 @@ function navHref(item: string) {
             href={navHref(item)}
             class:list={['qt-nav-link', { 'is-active': isActive(item) }]}
           >
-            {item}
+            {item.label}
           </a>
         ))}
       </nav>

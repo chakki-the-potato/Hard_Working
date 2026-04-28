@@ -3,6 +3,8 @@ import { getCollection } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
 import PostListRow from '../components/PostListRow.astro';
 import ReadingProgress from '../components/ReadingProgress.astro';
+import Comments from '../components/Comments.astro';
+import { categoryLabel, type Category } from '../lib/categories';
 
 interface Props {
   id: string;
@@ -10,15 +12,39 @@ interface Props {
   description: string;
   pubDate: Date;
   updatedDate?: Date;
+  category: Category;
   tags: string[];
   heroImage?: string;
+  demoUrl?: string;
+  repoUrl?: string;
+  role?: string;
+  period?: string;
+  outcome?: string;
 }
 
-const { id, title, description, pubDate, updatedDate, tags } = Astro.props;
+const {
+  id,
+  title,
+  description,
+  pubDate,
+  updatedDate,
+  category,
+  tags,
+  demoUrl,
+  repoUrl,
+  role,
+  period,
+  outcome,
+} = Astro.props;
+
+const isWorks = category === 'works';
+const hasWorksMeta = isWorks && Boolean(demoUrl || repoUrl || role || period || outcome);
+const repoLabel = repoUrl ? repoUrl.replace(/^https?:\/\//, '').replace(/\/$/, '') : '';
+const demoLabel = demoUrl ? demoUrl.replace(/^https?:\/\//, '').replace(/\/$/, '') : '';
 const base = import.meta.env.BASE_URL;
 
-const cat = tags[0] ?? '';
-const sub = tags[1] ?? '';
+const cat = categoryLabel(category);
+const sub = tags[0] ?? '';
 
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const sortedAll = [...allPosts].sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
@@ -37,7 +63,7 @@ const readLabel = '5분';
 
 // 관련 글 — 같은 카테고리 최근 3개 (현재 글 제외)
 const related = sortedAll
-  .filter((p) => p.id !== id && p.data.tags[0] === cat)
+  .filter((p) => p.id !== id && p.data.category === category)
   .slice(0, 3);
 
 // 번호 오름차순 (№001 → 최신) 으로 인접 글 계산
@@ -63,9 +89,50 @@ const nextPost = idx >= 0 && idx < sortedByNum.length - 1 ? sortedByNum[idx + 1]
       </div>
       <p class="qt-post-lede">{description}</p>
 
+      {hasWorksMeta && (
+        <dl class="qt-post-works-meta" aria-label="Works metadata">
+          {role && (
+            <div class="qt-works-row">
+              <dt>ROLE</dt>
+              <dd>{role}</dd>
+            </div>
+          )}
+          {period && (
+            <div class="qt-works-row">
+              <dt>PERIOD</dt>
+              <dd>{period}</dd>
+            </div>
+          )}
+          {outcome && (
+            <div class="qt-works-row">
+              <dt>OUTCOME</dt>
+              <dd>{outcome}</dd>
+            </div>
+          )}
+          {demoUrl && (
+            <div class="qt-works-row">
+              <dt>DEMO</dt>
+              <dd>
+                <a href={demoUrl} target="_blank" rel="noopener noreferrer">{demoLabel}</a>
+              </dd>
+            </div>
+          )}
+          {repoUrl && (
+            <div class="qt-works-row">
+              <dt>REPO</dt>
+              <dd>
+                <a href={repoUrl} target="_blank" rel="noopener noreferrer">{repoLabel}</a>
+              </dd>
+            </div>
+          )}
+        </dl>
+      )}
+
       <div class="prose">
         <slot />
       </div>
+
+      <Comments postId={id} />
 
       <a href={base} class="qt-post-back">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -82,6 +149,7 @@ const nextPost = idx >= 0 && idx < sortedByNum.length - 1 ? sortedByNum[idx + 1]
               id={p.id}
               title={p.data.title}
               pubDate={p.data.pubDate}
+              category={p.data.category}
               tags={p.data.tags}
               num={numberMap.get(p.id)}
             />
@@ -183,6 +251,47 @@ const nextPost = idx >= 0 && idx < sortedByNum.length - 1 ? sortedByNum[idx + 1]
     margin: 32px 0;
     font-weight: 600;
     letter-spacing: -0.015em;
+  }
+
+  .qt-post-works-meta {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    column-gap: 18px;
+    row-gap: 8px;
+    margin: 0 0 36px;
+    padding: 16px 18px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-alt);
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+  }
+
+  .qt-works-row {
+    display: contents;
+  }
+
+  .qt-post-works-meta dt {
+    color: var(--subtle);
+    letter-spacing: 0.12em;
+    align-self: baseline;
+  }
+
+  .qt-post-works-meta dd {
+    margin: 0;
+    color: var(--ink);
+    word-break: break-all;
+  }
+
+  .qt-post-works-meta a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    transition: border-color 0.15s;
+  }
+
+  .qt-post-works-meta a:hover {
+    border-bottom-color: var(--accent);
   }
 
   .qt-post-back {
@@ -307,6 +416,20 @@ const nextPost = idx >= 0 && idx < sortedByNum.length - 1 ? sortedByNum[idx + 1]
     }
     .qt-post-lede {
       font-size: 17px;
+    }
+    .qt-post-works-meta {
+      grid-template-columns: 1fr;
+      row-gap: 14px;
+      padding: 14px 14px;
+      font-size: 12px;
+    }
+    .qt-works-row {
+      display: block;
+    }
+    .qt-post-works-meta dt {
+      display: block;
+      margin-bottom: 2px;
+      font-size: 10.5px;
     }
     .qt-post-nav {
       grid-template-columns: 1fr;

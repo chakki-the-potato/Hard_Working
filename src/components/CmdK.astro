@@ -202,6 +202,8 @@ const base = import.meta.env.BASE_URL;
     id: string;
     title: string;
     description: string;
+    category: string;
+    categoryLabel: string;
     tags: string[];
     pubDate: string;
   }
@@ -235,8 +237,9 @@ const base = import.meta.env.BASE_URL;
         fuse = new Fuse(posts, {
           keys: [
             { name: 'title', weight: 0.4 },
-            { name: 'description', weight: 0.25 },
-            { name: 'tags', weight: 0.35 },
+            { name: 'description', weight: 0.2 },
+            { name: 'tags', weight: 0.25 },
+            { name: 'categoryLabel', weight: 0.15 },
           ],
           threshold: 0.35,
         });
@@ -278,8 +281,8 @@ const base = import.meta.env.BASE_URL;
       resultsEl.innerHTML = list
         .map((p, i) => {
           const num = String(p.num).padStart(3, '0');
-          const cat = p.tags[0] ?? '';
-          const sub = p.tags[1] ?? '';
+          const cat = p.categoryLabel ?? '';
+          const sub = p.tags[0] ?? '';
           return `
             <a href="${baseUrl}posts/${p.id}/" class="qt-cmdk-item${i === 0 ? ' is-active' : ''}" data-index="${i}">
               <span class="qt-cmdk-num">№${num}</span>

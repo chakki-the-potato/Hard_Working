@@ -1,40 +1,90 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import IdeaCard from '../../components/IdeaCard.astro';
+import PostListRow from '../../components/PostListRow.astro';
+import { CATEGORIES, categoryLabel, type Category } from '../../lib/categories';
 
-const ideas = await getCollection('ideas', ({ data }) => !data.draft);
-const sortedIdeas = ideas.sort(
+const base = import.meta.env.BASE_URL;
+
+const allIdeas = await getCollection('ideas', ({ data }) => !data.draft);
+const sortedIdeas = [...allIdeas].sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
+
+const lastUpdate = sortedIdeas[0]?.data.pubDate;
+const lastUpdateLabel = lastUpdate
+  ? `${lastUpdate.getFullYear()}.${String(lastUpdate.getMonth() + 1).padStart(2, '0')}.${String(lastUpdate.getDate()).padStart(2, '0')}`
+  : '';
+
+// Idea numbering — pubDate ascending 1..N (oldest = №001), matching ListLayout convention.
+const numberMap = new Map<string, number>();
+[...sortedIdeas].reverse().forEach((entry, i) => numberMap.set(entry.id, i + 1));
+
+const allBlogPosts = await getCollection('blog', ({ data }) => !data.draft);
+const populatedCategories = new Set<Category>(allBlogPosts.map((p) => p.data.category));
+const ALWAYS_VISIBLE_CATEGORIES = new Set<Category>(['works']);
+
+const categoryChips = CATEGORIES.filter(
+  (slug) => populatedCategories.has(slug) || ALWAYS_VISIBLE_CATEGORIES.has(slug),
+).map((slug) => ({
+  label: categoryLabel(slug),
+  href: `${base}posts/category/${slug}/`,
+}));
 ---
 
 <BaseLayout title="Ideas — Hard_Working" description="러프하게 떠오른 아이디어들" noPadding={true}>
-  <section class="qt-ideas-hero">
-    <span class="qt-mono qt-ideas-mono">// IDEAS / SCRATCHPAD</span>
-    <h1 class="qt-ideas-title">
-      아이디어<span class="qt-ideas-dot">.</span>
+  <section class="qt-list-hero">
+    <span class="qt-mono qt-list-mono">// IDEAS / SCRATCHPAD</span>
+    <h1 class="qt-list-title">
+      <span class="qt-list-hash">#</span>{' '}Idea
     </h1>
-    <p class="qt-ideas-desc">
-      정리되지 않은 메모와 발전시킬 만한 방향들. 글이 되기 전 단계의 러프한 노트.
-    </p>
-    <span class="qt-mono qt-ideas-meta">{sortedIdeas.length} NOTES</span>
+    <span class="qt-mono qt-list-meta">
+      {sortedIdeas.length} NOTES{lastUpdateLabel ? ` · LAST_UPDATE ${lastUpdateLabel}` : ''}
+    </span>
   </section>
 
-  <main class="qt-ideas-main">
-    {sortedIdeas.length === 0 ? (
-      <div class="qt-ideas-empty">
-        <span class="qt-mono qt-ideas-empty-mark">// EMPTY</span>
-        <p>아직 아이디어가 없습니다.</p>
-      </div>
-    ) : (
-      <div class="qt-ideas-list">
+  <section class="qt-list-chips">
+    <div class="qt-tag-chips" role="navigation" aria-label="카테고리 필터">
+      <a href={`${base}ideas/`} class="qt-chip is-active" aria-current="page">전체</a>
+      {categoryChips.map((c) => (
+        <a href={c.href} class="qt-chip">{c.label}</a>
+      ))}
+    </div>
+  </section>
+
+  <div class="qt-list-body">
+    <div class="qt-list-main">
+      {sortedIdeas.length > 0 && (
+        <div class="qt-list-thead">
+          <span>NO</span>
+          <span>TITLE</span>
+          <span>CAT/SUB</span>
+          <span class="qt-list-thead-right">DATE</span>
+        </div>
+      )}
+
+      <div class="qt-list-rows">
         {sortedIdeas.map((entry) => (
-          <IdeaCard entry={entry} />
+          <PostListRow
+            id={entry.id}
+            title={entry.data.title}
+            pubDate={entry.data.pubDate}
+            category={entry.data.category}
+            tags={entry.data.tags}
+            num={numberMap.get(entry.id)}
+            routeBase="ideas"
+          />
         ))}
       </div>
-    )}
-  </main>
+
+      {sortedIdeas.length === 0 && (
+        <div class="qt-list-empty">
+          <span class="qt-mono qt-list-empty-mark">// EMPTY</span>
+          <p>아직 아이디어가 없습니다.</p>
+        </div>
+      )}
+    </div>
+  </div>
 </BaseLayout>
 
 <style>
@@ -42,14 +92,14 @@ const sortedIdeas = ideas.sort(
     font-family: var(--font-mono);
   }
 
-  .qt-ideas-hero {
-    max-width: 1200px;
-    margin: 0 auto;
+  .qt-list-hero {
     padding: 64px 36px 28px;
     border-bottom: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
   }
 
-  .qt-ideas-mono {
+  .qt-list-mono {
     display: block;
     font-size: 11px;
     color: var(--muted);
@@ -57,7 +107,7 @@ const sortedIdeas = ideas.sort(
     margin-bottom: 14px;
   }
 
-  .qt-ideas-title {
+  .qt-list-title {
     font-size: calc(64px * var(--h-scale));
     font-weight: 800;
     color: var(--ink);
@@ -66,20 +116,11 @@ const sortedIdeas = ideas.sort(
     line-height: 1;
   }
 
-  .qt-ideas-dot {
+  .qt-list-hash {
     color: var(--accent);
   }
 
-  .qt-ideas-desc {
-    font-size: 17px;
-    color: var(--muted);
-    margin: 18px 0 0;
-    max-width: 540px;
-    line-height: 1.65;
-    font-weight: 500;
-  }
-
-  .qt-ideas-meta {
+  .qt-list-meta {
     display: block;
     font-size: 12px;
     color: var(--muted);
@@ -87,19 +128,80 @@ const sortedIdeas = ideas.sort(
     letter-spacing: 0.06em;
   }
 
-  .qt-ideas-main {
-    max-width: 740px;
+  .qt-list-chips {
+    padding: 20px 36px;
+    border-bottom: 1px solid var(--border);
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 32px 28px 0;
   }
 
-  .qt-ideas-empty {
+  .qt-tag-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .qt-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 11px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    border-radius: 4px;
+    color: var(--muted);
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+  }
+
+  .qt-chip:hover {
+    opacity: 0.78;
+  }
+
+  .qt-chip.is-active {
+    color: var(--bg-elev);
+    background: var(--ink);
+    border-color: var(--ink);
+    font-weight: 600;
+  }
+
+  .qt-list-body {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 36px 0;
+  }
+
+  .qt-list-main {
+    min-width: 0;
+  }
+
+  .qt-list-thead {
+    display: grid;
+    grid-template-columns: 60px 1fr 130px 90px;
+    gap: 18px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-strong);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+  }
+
+  .qt-list-thead-right {
+    text-align: right;
+  }
+
+  .qt-list-empty {
     padding: 60px 0;
     text-align: center;
     color: var(--muted);
   }
 
-  .qt-ideas-empty-mark {
+  .qt-list-empty-mark {
     display: block;
     font-size: 11px;
     color: var(--subtle);
@@ -107,20 +209,25 @@ const sortedIdeas = ideas.sort(
     margin-bottom: 8px;
   }
 
-  .qt-ideas-empty p {
+  .qt-list-empty p {
     margin: 0;
     font-size: 14px;
   }
 
   @media (max-width: 720px) {
-    .qt-ideas-hero {
+    .qt-list-hero {
       padding: 40px 20px 20px;
     }
-    .qt-ideas-title {
+    .qt-list-chips,
+    .qt-list-body {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+    .qt-list-title {
       font-size: calc(40px * var(--h-scale));
     }
-    .qt-ideas-main {
-      padding: 24px 20px 0;
+    .qt-list-thead {
+      display: none;
     }
   }
 </style>
