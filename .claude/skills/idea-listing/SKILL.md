@@ -9,8 +9,6 @@ description: 텔레그램 또는 Claude Code에서 받은 러프한 아이디어
 
 `blog-draft` 스킬이 정식 블로그 초안을 만든다면, 이 스킬은 그 전 단계 — "정리되지 않은 아이디어 메모"를 다룬다. 두 스킬은 카테고리 enum, 톤 규칙, 클리셰 금지 룰을 공유한다.
 
-> 메시지가 `[blog/...]` prefix로 시작하면 이 스킬이 아니라 `blog-draft`가 처리한다.
-
 ## 입력 형식
 
 트리거 페이로드의 `text` 필드에 사용자가 작성한 텔레그램 메시지 텍스트가 들어 있다 (또는 Claude Code 터미널에서 직접 호출). **prefix가 있으면 prefix 우선**, 없으면 자연어 자동 라우팅으로 폴백한다.
@@ -54,7 +52,7 @@ prefix가 검출되면 **카테고리는 강제**되고, 자연어 분류 가이
 8. **외부 자료 조사** — `WebSearch` 0~3회. 라이브러리·도구·최신 트렌드면 검색, 일반 개념이면 생략
 9. **피드백 작성** — 아이디어를 더 흥미롭게·구체적으로 만들 방향 1~3개 제시
 10. **파일 작성** — `src/data/ideas/{category}/{year}/{slug}.md`. 카테고리/연도 폴더가 없으면 새로 생성
-11. **커밋** — `idea: {title}` 메시지로 main 브랜치 직접 커밋. 푸시는 사용자가 수동
+11. **커밋 + 푸시** — `idea({category}/{Tag1}): {title}` 메시지로 main 브랜치에 직접 커밋한 뒤 즉시 `git push origin main` 실행
 
 ## Frontmatter 스키마 (절대 어기지 말 것)
 
@@ -206,7 +204,7 @@ src/data/ideas/{category}/{year}/{slug}.md
 ## 커밋 컨벤션
 
 ```
-idea: {title}
+idea({category}/{Tag1}): {title}
 
 via telegram-bot
 ```
@@ -214,13 +212,25 @@ via telegram-bot
 또는 Claude Code 호출 시:
 
 ```
-idea: {title}
+idea({category}/{Tag1}): {title}
 ```
 
+규칙:
+- `{category}`: frontmatter `category` 값 그대로 (소문자, programming/design/thinking/works 중 하나)
+- `{Tag1}`: frontmatter `tags[0]` (있으면)
+- `tags`가 비어 있으면 `idea({category}): {title}` 로 (괄호 유지)
 - 제목 부분은 frontmatter의 `title` 그대로
 - 한 번에 하나의 아이디어만 커밋
 - main 브랜치에 직접 커밋 (브랜치 분기·PR 사용 안 함)
-- 푸시는 사용자가 수동으로 — Claude는 푸시하지 않음
+- **`git commit` 직후 자동으로 `git push origin main` 실행** — Claude가 push까지 책임진다
+
+예시:
+- `idea(programming/TypeScript): satisfies 연산자로 안전한 const`
+- `idea(design): 다크 모드 채도 토큰 네이밍 패턴`
+- `idea(thinking): OSS 공개 시점 판단 메모`
+- `idea(works/Astro): 블로그 빌드로그 작성 컨셉`
+
+이 컨벤션은 GitHub webhook을 받는 Cloudflare Worker가 commit 메시지를 파싱해 텔레그램 알림에 카테고리·태그 메타라인을 표시하기 위함. 컨벤션을 어겨도 빌드는 통과하지만, 알림 메타라인이 폴더 경로 fallback으로만 표시되어 정보가 줄어든다.
 
 ## 실패 시 행동
 
@@ -243,9 +253,7 @@ idea: {title}
 ## 작업하지 않을 것
 
 - 정식 블로그 초안 작성 — `blog-draft` 스킬의 역할
-- `[blog/...]` prefix로 들어온 메시지 처리 — `blog-draft`가 담당 (대칭 라우팅)
 - 이미지 생성·검색
 - frontmatter에 스키마 외 필드 추가 (`description`, `draft`, `updatedDate`, works 메타 등)
 - 기존 아이디어 수정 (덮어쓰기 위험)
 - 여러 아이디어 동시 작성
-- `git push` (사용자가 수동)
