@@ -46,12 +46,22 @@ prefix가 검출되면 **카테고리는 강제**되고, 자연어 분류 가이
 4. **현재 KST 날짜 확인** — Bash로 두 값을 동시에 추출:
    - `pubDate`용: `TZ=Asia/Seoul date '+%Y-%m-%d'`
    - 폴더명용 연도: `TZ=Asia/Seoul date '+%Y'`
-5. **slug 생성** — 영문 소문자, 단어 사이 하이픈. 동일 카테고리 폴더 안에서만 충돌 검사, 충돌 시 `-2` / `-3`
-6. **양식 reference 로드** — `.claude/skills/idea-listing/templates/{category}.md`가 존재하면 본문 작성 전에 read (없으면 skip). 양식이 없을 때는 `src/data/ideas/{category}/{year}/*.md` 중 최근 파일 1~2편을 read해서 톤·길이를 흉내
+5. **slug 생성** — 영문 소문자, 단어 사이 하이픈. 동일 카테고리 폴더 안에서만 충돌 검사
+   - `works`이면 `{project-slug}/{detail-slug}` 형태로 생성 (아래 "works 폴더 구조" 참조)
+5b. **버전 체크 (versioning)** — 동일 slug 파일이 이미 존재하는지 확인
+   - 존재하면 **버전 업데이트 모드** 진입: 기존 파일을 수정하고 `version`을 올린다
+     - 기존 `version` 없으면 `v1.0` → 이번 수정으로 `v1.1` 부여
+     - 기존 `version: "v1.x"` 있으면 patch 숫자 +1 (v1.1 → v1.2)
+     - `updatedDate`를 오늘 KST 날짜로 추가/갱신
+   - 존재하지 않으면 **신규 파일 생성** 모드 (기존 흐름)
+6. **양식 reference 로드** — `.claude/skills/idea-listing/templates/{category}.md`가 존재하면 본문 작성 전에 read (없으면 skip). 양식이 없을 때는 `src/data/ideas/{category}/**/*.md` 중 최근 파일 1~2편을 read해서 톤·길이를 흉내
 7. **유사한 이전 블로그 글 검색** — `src/data/blog/**/*.md` (재귀)에서 frontmatter `title`·`tags` 기준 매칭. `rg`로 키워드 grep. 상위 1~3개 추출
 8. **외부 자료 조사** — `WebSearch` 0~3회. 라이브러리·도구·최신 트렌드면 검색, 일반 개념이면 생략
 9. **피드백 작성** — 아이디어를 더 흥미롭게·구체적으로 만들 방향 1~3개 제시
-10. **파일 작성** — `src/data/ideas/{category}/{year}/{slug}.md`. 카테고리/연도 폴더가 없으면 새로 생성
+10. **파일 작성/수정**
+    - 신규 생성: `src/data/ideas/{category}/{year}/{slug}.md` (works 제외). 폴더가 없으면 새로 생성
+    - works 신규: `src/data/ideas/works/{project-slug}/{detail-slug}.md`
+    - 버전 업데이트: 기존 파일 frontmatter의 `version` + `updatedDate` 수정, 본문 내용 보완
 11. **커밋 + 푸시** — `idea({category}/{Tag1}): {title}` 메시지로 main 브랜치에 직접 커밋한 뒤 즉시 `git push origin main` 실행
 
 ## Frontmatter 스키마 (절대 어기지 말 것)
@@ -64,15 +74,20 @@ title: "아이디어 한 줄"
 pubDate: 2026-04-29
 category: programming
 tags: ["TypeScript"]
+# 버전 관리 시에만 추가:
+# version: "v1.0"
+# updatedDate: 2026-04-30
 ---
 ```
 
 ### 필드별 규칙
 
 - `title`: 15~50자. 한 줄 아이디어. 큰따옴표 필수. 콜론 포함 시 따옴표 안에 그대로
-- `pubDate`: 한국 시간 기준 오늘 날짜 (`YYYY-MM-DD`). ideas는 같은 날 정렬 정밀도가 중요하지 않으므로 시·분·초는 넣지 않는다 (blog-draft와의 의도적 차이)
+- `pubDate`: 한국 시간 기준 최초 작성 날짜 (`YYYY-MM-DD`). 버전 업데이트 시에도 변경하지 않음
+- `updatedDate`: 버전 업데이트 시에만 추가. 오늘 KST 날짜 (`YYYY-MM-DD`). 신규 글이면 생략
 - `category`: **필수 필드**. `programming` / `design` / `thinking` / `works` 중 하나 (소문자). enum 미스매치 시 빌드 실패. 폴더 경로의 카테고리와 반드시 동일
 - `tags`: 카테고리와 별개의 자유 라벨. 영문, 첫 글자 대문자, 0~3개. 비워도 OK
+- `version`: 버전 관리 시에만 추가. 형식 `"v1.0"` (따옴표 필수). 신규 글이면 생략. 처음 버전 업데이트가 발생하는 시점에 기존 파일에 `v1.0` → 이후 `v1.1`로 작성
 
 ### 추가하지 말 것
 
@@ -80,7 +95,7 @@ ideas 컬렉션 스키마는 다음 필드를 지원하지 않는다. frontmatte
 
 - `description` (blog 전용)
 - `demoUrl` / `repoUrl` / `role` / `period` / `outcome` (blog의 works 전용 optional 메타)
-- `heroImage`, `updatedDate` 등
+- `heroImage` 등
 
 works 카테고리 아이디어라도 위 메타 필드는 ideas frontmatter에 넣지 않고, 필요하면 본문에 평문으로 적는다.
 
@@ -115,16 +130,43 @@ works 카테고리 아이디어라도 위 메타 필드는 ideas frontmatter에 
 ## 파일 경로 규칙
 
 ```
+# programming / design / thinking
 src/data/ideas/{category}/{year}/{slug}.md
+
+# works — 프로젝트별 폴더
+src/data/ideas/works/{project-slug}/{detail-slug}.md
 ```
+
+### programming / design / thinking
 
 - `{category}`는 frontmatter `category` 값과 반드시 동일
 - `{year}`는 현재 KST 연도 (`TZ=Asia/Seoul date '+%Y'`). pubDate를 거꾸로 파싱하지 않음
 - 카테고리·연도 폴더가 없으면 새로 생성
 - 파일명에 날짜 prefix 없음
 - slug는 영문 hyphenated (예: `satisfies-operator`, `oss-release-timing`)
-- slug 충돌 검사는 동일 카테고리 폴더 안에서만 수행 (다른 카테고리에 같은 slug 있어도 OK — public id가 `{category}/{slug}`라 충돌 아님)
+- slug 충돌 검사는 동일 카테고리 폴더 안에서만 수행
 - 동일 카테고리 내 충돌 시 `-2`, `-3` 등 숫자 붙이기
+
+### works — 프로젝트별 폴더 구조
+
+works 카테고리는 연도 폴더 대신 **프로젝트 슬러그 폴더**로 구분한다.
+
+```
+src/data/ideas/works/
+  auto-work-tracking/
+    overview.md       ← 프로젝트 개요 / 첫 메모
+    tech-stack.md     ← 기술 선택 메모
+    feature-ideas.md  ← 기능 아이디어 목록
+  speaking-practice/
+    overview.md
+```
+
+- `{project-slug}`: 프로젝트 이름을 hyphenated 영문 소문자로 (예: `auto-work-tracking`)
+- `{detail-slug}`: 해당 메모의 세부 주제. 첫 메모라면 `overview` 권장
+- 폴더가 없으면 새로 생성
+- public id: `works/{project-slug}/{detail-slug}` → URL: `/ideas/works/{project-slug}/{detail-slug}/`
+- works에 처음 올라오는 아이디어면 프로젝트 폴더와 `overview.md` 동시 생성
+- 기존 `works/{year}/{slug}.md` 형식으로 쓴 파일은 하위 호환 유지 (`flattenYear`가 연도인지 자동 감지)
 
 ## 본문 작성 톤
 

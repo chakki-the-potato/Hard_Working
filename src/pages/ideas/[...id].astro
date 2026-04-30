@@ -17,8 +17,10 @@ const { Content } = await render(idea);
 <IdeaLayout
   title={idea.data.title}
   pubDate={idea.data.pubDate}
+  updatedDate={idea.data.updatedDate}
   category={idea.data.category}
   tags={idea.data.tags}
+  version={idea.data.version}
 >
   <Content />
 </IdeaLayout>

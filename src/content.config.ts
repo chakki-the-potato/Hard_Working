@@ -3,14 +3,18 @@ import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { CATEGORIES } from './lib/categories';
 
-// Folder layout: {category}/{year}/{slug}.md
-// Public id (and URL segment): {category}/{slug}  — year is filesystem-only.
+// Folder layout:
+//   blog/other categories: {category}/{year}/{slug}.md  → public id: {category}/{slug}
+//   ideas/works:           works/{project}/{slug}.md    → public id: works/{project}/{slug}
+//   ideas/other:           {category}/{year}/{slug}.md  → public id: {category}/{slug}
 function flattenYear({ entry }: { entry: string }) {
   const noExt = entry.replace(/\.md$/, '');
   const parts = noExt.split('/');
-  if (parts.length >= 3) {
-    return `${parts[0]}/${parts[parts.length - 1]}`;
+  if (parts.length === 3 && /^\d{4}$/.test(parts[1])) {
+    // {category}/{year}/{slug} → strip year
+    return `${parts[0]}/${parts[2]}`;
   }
+  // works/{project}/{slug} or any non-year nested path → keep as-is
   return noExt;
 }
 
@@ -38,9 +42,11 @@ const ideas = defineCollection({
   schema: z.object({
     title: z.string(),
     pubDate: z.coerce.date(),
+    updatedDate: z.coerce.date().optional(),
     category: z.enum(CATEGORIES),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
+    version: z.string().optional(),
   }),
 });
 
