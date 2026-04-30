@@ -1,5 +1,32 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { CATEGORIES, categoryLabel, type Category } from '../lib/categories';
+import { loadHomeData } from '../lib/home-data';
+
+const base = import.meta.env.BASE_URL;
+const home = await loadHomeData();
+
+const categoryDescriptions: Record<Category, string> = {
+  programming: '웹 개발·도구·트러블슈팅 노트',
+  design: 'UI/UX·디자인 시스템·시각 언어',
+  thinking: '사고·커리어·메타 학습',
+  works: '사이드 프로젝트·실험',
+};
+
+const categoryGuide = CATEGORIES.map((slug) => ({
+  slug,
+  label: categoryLabel(slug),
+  description: categoryDescriptions[slug],
+  count: home.categoryCounts[slug],
+  href: `${base}posts/category/${slug}/`,
+}));
+
+const now: Array<[string, string]> = [
+  ['LEARNING', 'Astro content collections 깊이 파기'],
+  ['READING', '《함께 자라기》 — 김창준'],
+  ['BUILDING', 'Hard_Working 블로그 v.02'],
+];
+const nowUpdated = '2026-04-30';
 
 const stack = ['TypeScript', 'React', 'Next.js', 'Node.js', 'Python', 'PostgreSQL', 'AWS', 'Astro'];
 
@@ -13,7 +40,7 @@ const timeline: Array<[string, string]> = [
 const contact: Array<[string, string, string]> = [
   ['EMAIL', 'chanhee2468@gmail.com', 'mailto:chanhee2468@gmail.com'],
   ['GITHUB', 'github.com/chakki-the-potato', 'https://github.com/chakki-the-potato'],
-  ['RSS', 'rss.xml', `${import.meta.env.BASE_URL}rss.xml`],
+  ['RSS', 'rss.xml', `${base}rss.xml`],
 ];
 ---
 
@@ -30,6 +57,36 @@ const contact: Array<[string, string, string]> = [
   </section>
 
   <main class="qt-about-main">
+    <div class="qt-about-row">
+      <span class="qt-mono qt-about-key">// CATEGORIES</span>
+      <ul class="qt-about-categories">
+        {categoryGuide.map((c) => (
+          <li class="qt-category-item">
+            <a class="qt-category-link" href={c.href}>
+              <span class="qt-category-name">{c.label}</span>
+              <span class="qt-category-count">· {c.count}</span>
+              <span class="qt-category-desc">{c.description}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="qt-about-row">
+      <span class="qt-mono qt-about-key">
+        // NOW
+        <span class="qt-now-updated">updated {nowUpdated}</span>
+      </span>
+      <ul class="qt-about-now">
+        {now.map(([k, v]) => (
+          <li class="qt-now-item">
+            <span class="qt-now-key">{k}</span>
+            <span class="qt-now-text">{v}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+
     <div class="qt-about-row">
       <span class="qt-mono qt-about-key">// STACK</span>
       <div class="qt-about-stack">
@@ -135,6 +192,97 @@ const contact: Array<[string, string, string]> = [
     letter-spacing: 0.06em;
   }
 
+  /* CATEGORIES */
+  .qt-about-categories {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .qt-category-item {
+    margin: 0;
+  }
+
+  .qt-category-link {
+    display: grid;
+    grid-template-columns: 132px 40px 1fr;
+    gap: 12px;
+    align-items: baseline;
+    padding: 8px 0;
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 0.15s;
+  }
+
+  .qt-category-link:hover {
+    opacity: 0.7;
+  }
+
+  .qt-category-name {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .qt-category-count {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .qt-category-desc {
+    font-size: 14px;
+    color: var(--body);
+    line-height: 1.5;
+  }
+
+  /* NOW */
+  .qt-now-updated {
+    margin-left: 8px;
+    color: var(--subtle);
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    text-transform: none;
+  }
+
+  .qt-about-now {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .qt-now-item {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 16px;
+    align-items: baseline;
+    padding: 8px 0;
+  }
+
+  .qt-now-key {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+
+  .qt-now-text {
+    font-size: 14px;
+    color: var(--body);
+    line-height: 1.6;
+  }
+
   /* STACK */
   .qt-about-stack {
     display: flex;
@@ -231,6 +379,14 @@ const contact: Array<[string, string, string]> = [
       grid-template-columns: 1fr;
       gap: 12px;
       padding: 24px 0;
+    }
+    .qt-category-link {
+      grid-template-columns: 110px 32px 1fr;
+      gap: 8px;
+    }
+    .qt-now-item {
+      grid-template-columns: 80px 1fr;
+      gap: 12px;
     }
   }
 </style>
