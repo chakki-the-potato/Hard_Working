@@ -5,6 +5,12 @@ import PostListRow from '../components/PostListRow.astro';
 import ReadingProgress from '../components/ReadingProgress.astro';
 import { categoryLabel, type Category } from '../lib/categories';
 
+interface ArchiveBanner {
+  version: string;
+  archivedDate: Date;
+  currentUrl: string;
+}
+
 interface Props {
   id: string;
   title: string;
@@ -19,6 +25,9 @@ interface Props {
   role?: string;
   period?: string;
   outcome?: string;
+  version?: string;
+  archivedCount?: number;
+  archiveBanner?: ArchiveBanner;
 }
 
 const {
@@ -34,6 +43,9 @@ const {
   role,
   period,
   outcome,
+  version,
+  archivedCount = 0,
+  archiveBanner,
 } = Astro.props;
 
 const isWorks = category === 'works';
@@ -52,10 +64,15 @@ const numberMap = new Map<string, number>();
 const num = numberMap.get(id);
 const numLabel = num != null ? String(num).padStart(3, '0') : '';
 
-const dateLabel = `${pubDate.getFullYear()}.${String(pubDate.getMonth() + 1).padStart(2, '0')}.${String(pubDate.getDate()).padStart(2, '0')}`;
-const updatedLabel = updatedDate
-  ? `${updatedDate.getFullYear()}.${String(updatedDate.getMonth() + 1).padStart(2, '0')}.${String(updatedDate.getDate()).padStart(2, '0')}`
-  : '';
+const fmtDate = (d: Date) =>
+  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+
+const dateLabel = fmtDate(pubDate);
+const updatedLabel = updatedDate ? fmtDate(updatedDate) : '';
+const archivedLabel = archiveBanner ? fmtDate(archiveBanner.archivedDate) : '';
+
+// 파일명 — id 의 마지막 segment 가 slug (latest post 든 archived snapshot 의 parentSlug 든 동일)
+const fileName = `${id.split('/').pop()}.md`;
 
 // 읽기 시간 추정 (대략 — 한글 600자/분 기준은 본문이 없으니 대략 5분 고정)
 const readLabel = '5분';
@@ -81,10 +98,23 @@ const nextPost = idx >= 0 && idx < sortedByNum.length - 1 ? sortedByNum[idx + 1]
     </section>
 
     <article class="qt-post">
+      {archiveBanner && (
+        <aside class="qt-post-archive-banner" role="note">
+          <span class="qt-post-archive-banner-text">
+            이 글은 <strong>{archiveBanner.version}</strong> 스냅샷입니다 ({archivedLabel} 보관)
+          </span>
+          <a href={archiveBanner.currentUrl} class="qt-post-archive-banner-link">최신 버전 보기 →</a>
+        </aside>
+      )}
       <span class="qt-post-mono">// {numLabel || '—'} · {(cat || 'NOTE').toUpperCase()}{sub ? ` / ${sub.toUpperCase()}` : ''}</span>
       <h1 class="qt-post-title">{title}</h1>
       <div class="qt-post-meta">
-        {dateLabel} ─ {readLabel}
+        {version && <span class="qt-post-version">{version}</span>}
+        <span class="qt-post-filename">{fileName}</span>
+        <span class="qt-post-meta-date">{dateLabel} ─ {readLabel}{updatedLabel ? ` ─ UPD ${updatedLabel}` : ''}</span>
+        {archivedCount > 0 && (
+          <a href={`${base}posts/versions/${id}/`} class="qt-post-history-link">버전 히스토리 →</a>
+        )}
       </div>
       <p class="qt-post-lede">{description}</p>
 
@@ -243,6 +273,73 @@ const nextPost = idx >= 0 && idx < sortedByNum.length - 1 ? sortedByNum[idx + 1]
     font-size: 12px;
     color: var(--muted);
     letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .qt-post-version {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--bg-elev);
+    background: var(--accent);
+    padding: 2px 6px;
+    border-radius: 3px;
+    letter-spacing: 0.06em;
+  }
+
+  .qt-post-filename {
+    color: var(--ink);
+  }
+
+  .qt-post-meta-date {
+    color: var(--muted);
+  }
+
+  .qt-post-history-link {
+    margin-left: auto;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    transition: border-color 0.15s;
+  }
+
+  .qt-post-history-link:hover {
+    border-bottom-color: var(--accent);
+  }
+
+  .qt-post-archive-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 0 0 20px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-alt);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .qt-post-archive-banner-text strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .qt-post-archive-banner-link {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    transition: border-color 0.15s;
+  }
+
+  .qt-post-archive-banner-link:hover {
+    border-bottom-color: var(--accent);
   }
 
   .qt-post-lede {
@@ -429,6 +526,9 @@ const nextPost = idx >= 0 && idx < sortedByNum.length - 1 ? sortedByNum[idx + 1]
     }
     .qt-post-lede {
       font-size: 17px;
+    }
+    .qt-post-history-link {
+      margin-left: 0;
     }
     .qt-post-works-meta {
       grid-template-columns: 1fr;

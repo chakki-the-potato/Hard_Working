@@ -1,0 +1,256 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PostLayout from '../../../layouts/PostLayout.astro';
+import { categoryLabel } from '../../../lib/categories';
+
+type ListProps = {
+  mode: 'list';
+  post: CollectionEntry<'blog'>;
+  archived: CollectionEntry<'blogVersions'>[];
+};
+type SnapshotProps = {
+  mode: 'snapshot';
+  entry: CollectionEntry<'blogVersions'>;
+};
+type Props = ListProps | SnapshotProps;
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  const versions = await getCollection('blogVersions');
+
+  const listPaths = posts.map((post) => {
+    const archived = versions.filter((v) => v.data.parentSlug === post.id);
+    return {
+      params: { id: post.id },
+      props: { mode: 'list' as const, post, archived },
+    };
+  });
+
+  const snapshotPaths = versions.map((entry) => ({
+    params: { id: entry.id },
+    props: { mode: 'snapshot' as const, entry },
+  }));
+
+  return [...listPaths, ...snapshotPaths];
+}
+
+const props = Astro.props as Props;
+const base = import.meta.env.BASE_URL;
+
+const fmtDate = (d: Date) =>
+  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+
+// Snapshot mode: render markdown body
+let SnapshotContent: any = null;
+let snapshotCurrentUrl = '';
+if (props.mode === 'snapshot') {
+  const rendered = await render(props.entry);
+  SnapshotContent = rendered.Content;
+  snapshotCurrentUrl = `${base}posts/${props.entry.data.parentSlug}/`;
+}
+
+// List mode: precompute everything
+let listData: {
+  post: CollectionEntry<'blog'>;
+  cat: string;
+  currentVersion: string;
+  currentDate: Date;
+  sortedArchived: CollectionEntry<'blogVersions'>[];
+  currentUrl: string;
+} | null = null;
+if (props.mode === 'list') {
+  const { post, archived } = props;
+  listData = {
+    post,
+    cat: categoryLabel(post.data.category),
+    currentVersion: post.data.version ?? 'v1.0',
+    currentDate: post.data.updatedDate ?? post.data.pubDate,
+    sortedArchived: [...archived].sort(
+      (a, b) => b.data.archivedDate.valueOf() - a.data.archivedDate.valueOf(),
+    ),
+    currentUrl: `${base}posts/${post.id}/`,
+  };
+}
+---
+
+{props.mode === 'snapshot' && SnapshotContent && (
+  <PostLayout
+    id={props.entry.data.parentSlug}
+    title={props.entry.data.title}
+    description={props.entry.data.description}
+    pubDate={props.entry.data.pubDate}
+    category={props.entry.data.category}
+    tags={props.entry.data.tags}
+    heroImage={props.entry.data.heroImage}
+    demoUrl={props.entry.data.demoUrl}
+    repoUrl={props.entry.data.repoUrl}
+    role={props.entry.data.role}
+    period={props.entry.data.period}
+    outcome={props.entry.data.outcome}
+    version={props.entry.data.version}
+    archiveBanner={{
+      version: props.entry.data.version,
+      archivedDate: props.entry.data.archivedDate,
+      currentUrl: snapshotCurrentUrl,
+    }}
+  >
+    <SnapshotContent />
+  </PostLayout>
+)}
+
+{props.mode === 'list' && listData && (
+  <BaseLayout
+    title={`${listData.post.data.title} — 버전 히스토리`}
+    description={listData.post.data.description}
+    noPadding={true}
+  >
+    <div class="qt-versions-wrap">
+      <a href={listData.currentUrl} class="qt-versions-back">← 글로 돌아가기</a>
+      <span class="qt-versions-mono">// VERSIONS · {listData.cat ? listData.cat.toUpperCase() : 'NOTE'}</span>
+      <h1 class="qt-versions-title">{listData.post.data.title}</h1>
+      <p class="qt-versions-lede">{listData.post.data.description}</p>
+
+      <ul class="qt-versions-list" aria-label="버전 목록">
+        <li class="qt-versions-row qt-versions-row-current">
+          <span class="qt-versions-version">{listData.currentVersion}</span>
+          <span class="qt-versions-date">{fmtDate(listData.currentDate)}</span>
+          <span class="qt-versions-tag">현재 버전</span>
+          <a class="qt-versions-link" href={listData.currentUrl}>읽으러 가기 →</a>
+        </li>
+        {listData.sortedArchived.map((v) => (
+          <li class="qt-versions-row">
+            <span class="qt-versions-version">{v.data.version}</span>
+            <span class="qt-versions-date">{fmtDate(v.data.archivedDate)}</span>
+            <span class="qt-versions-tag">archived</span>
+            <a class="qt-versions-link" href={`${base}posts/versions/${v.id}/`}>스냅샷 보기 →</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </BaseLayout>
+)}
+
+<style>
+  .qt-versions-wrap {
+    max-width: var(--content-w, 760px);
+    margin: 0 auto;
+    padding: 48px 28px 96px;
+  }
+
+  .qt-versions-back {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-decoration: none;
+    margin-bottom: 28px;
+    transition: color 0.15s;
+  }
+
+  .qt-versions-back:hover {
+    color: var(--ink);
+  }
+
+  .qt-versions-mono {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    margin-bottom: 14px;
+  }
+
+  .qt-versions-title {
+    font-size: calc(32px * var(--h-scale));
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    margin: 0 0 14px;
+  }
+
+  .qt-versions-lede {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--muted);
+    margin: 0 0 32px;
+  }
+
+  .qt-versions-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .qt-versions-row {
+    display: grid;
+    grid-template-columns: max-content max-content 1fr max-content;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 4px;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  .qt-versions-row-current {
+    background: color-mix(in srgb, var(--accent) 6%, transparent);
+  }
+
+  .qt-versions-version {
+    font-weight: 600;
+    color: var(--bg-elev);
+    background: var(--accent);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+  }
+
+  .qt-versions-date {
+    color: var(--ink);
+    letter-spacing: 0.04em;
+  }
+
+  .qt-versions-tag {
+    color: var(--subtle);
+    letter-spacing: 0.08em;
+  }
+
+  .qt-versions-link {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    transition: border-color 0.15s;
+  }
+
+  .qt-versions-link:hover {
+    border-bottom-color: var(--accent);
+  }
+
+  @media (max-width: 720px) {
+    .qt-versions-wrap {
+      padding: 32px 20px 64px;
+    }
+    .qt-versions-title {
+      font-size: calc(22px * var(--h-scale));
+    }
+    .qt-versions-row {
+      grid-template-columns: max-content 1fr;
+      row-gap: 6px;
+    }
+    .qt-versions-tag {
+      grid-column: 1 / -1;
+      font-size: 10.5px;
+    }
+    .qt-versions-link {
+      grid-column: 1 / -1;
+      justify-self: start;
+    }
+  }
+</style>

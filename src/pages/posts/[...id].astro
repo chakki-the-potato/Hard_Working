@@ -4,13 +4,17 @@ import PostLayout from '../../layouts/PostLayout.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
-  return posts.map((post) => ({
-    params: { id: post.id },
-    props: { post },
-  }));
+  const allVersions = await getCollection('blogVersions');
+  return posts.map((post) => {
+    const archivedCount = allVersions.filter((v) => v.data.parentSlug === post.id).length;
+    return {
+      params: { id: post.id },
+      props: { post, archivedCount },
+    };
+  });
 }
 
-const { post } = Astro.props;
+const { post, archivedCount } = Astro.props;
 const { Content } = await render(post);
 ---
 
@@ -28,6 +32,8 @@ const { Content } = await render(post);
   role={post.data.role}
   period={post.data.period}
   outcome={post.data.outcome}
+  version={post.data.version ?? 'v1.0'}
+  archivedCount={archivedCount}
 >
   <Content />
 </PostLayout>

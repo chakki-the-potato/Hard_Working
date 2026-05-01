@@ -10,9 +10,10 @@ interface Props {
   num?: number;
   showMono?: boolean;
   routeBase?: string;
+  version?: string;
 }
 
-const { id, title, pubDate, category, tags, num, showMono = true, routeBase = 'posts' } = Astro.props;
+const { id, title, pubDate, category, tags, num, showMono = true, routeBase = 'posts', version } = Astro.props;
 const base = import.meta.env.BASE_URL;
 
 const cat = categoryLabel(category);
@@ -30,7 +31,10 @@ const numLabel = num != null ? String(num).padStart(3, '0') : null;
   class:list={['qt-list-row', { 'has-num': showMono && numLabel }]}
 >
   {showMono && numLabel && <span class="qt-list-num">№{numLabel}</span>}
-  <span class="qt-list-title">{title}</span>
+  <span class="qt-list-title-cell">
+    <span class="qt-list-title">{title}</span>
+    {version && <span class="qt-list-version">{version}</span>}
+  </span>
   <span class="qt-list-cat">
     {cat && <span class="qt-list-cat-key">[{cat.toUpperCase()}]</span>}
     {sub && <span class="qt-list-cat-sub"> {sub}</span>}
@@ -67,6 +71,13 @@ const numLabel = num != null ? String(num).padStart(3, '0') : null;
     letter-spacing: 0.04em;
   }
 
+  .qt-list-title-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
   .qt-list-title {
     font-size: 15px;
     color: var(--ink);
@@ -75,6 +86,20 @@ const numLabel = num != null ? String(num).padStart(3, '0') : null;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    min-width: 0;
+  }
+
+  .qt-list-version {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--bg-elev);
+    background: var(--accent);
+    padding: 2px 6px;
+    border-radius: 3px;
+    letter-spacing: 0.06em;
+    flex-shrink: 0;
+    line-height: 1;
   }
 
   .qt-list-cat {
@@ -111,6 +136,9 @@ const numLabel = num != null ? String(num).padStart(3, '0') : null;
     .qt-list-num,
     .qt-list-cat {
       display: none;
+    }
+    .qt-list-title-cell {
+      align-items: flex-start;
     }
     .qt-list-title {
       white-space: normal;
