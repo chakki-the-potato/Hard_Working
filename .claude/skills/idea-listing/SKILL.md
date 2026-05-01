@@ -55,7 +55,7 @@ prefix가 검출되면 **카테고리는 강제**되고, 자연어 분류 가이
      - `updatedDate`를 오늘 KST 날짜로 추가/갱신
    - 존재하지 않으면 **신규 파일 생성** 모드 (기존 흐름)
 6. **양식 reference 로드** — `.claude/skills/idea-listing/templates/{category}.md`가 존재하면 본문 작성 전에 read (없으면 skip). 양식이 없을 때는 `src/data/ideas/{category}/**/*.md` 중 최근 파일 1~2편을 read해서 톤·길이를 흉내
-7. **유사한 이전 블로그 글 검색** — `src/data/blog/**/*.md` (재귀)에서 frontmatter `title`·`tags` 기준 매칭. `rg`로 키워드 grep. 상위 1~3개 추출
+7. **유사한 이전 글 검색** — `src/data/blog/**/*.md` 와 `src/data/ideas/**/*.md` (양쪽 재귀)에서 frontmatter `title`·`tags` 기준 매칭. `rg`로 키워드 grep. 상위 1~3개 추출
 8. **외부 자료 조사** — `WebSearch` 0~3회. 라이브러리·도구·최신 트렌드면 검색, 일반 개념이면 생략
 9. **피드백 작성** — 아이디어를 더 흥미롭게·구체적으로 만들 방향 1~3개 제시
 10. **파일 작성/수정**
@@ -88,16 +88,22 @@ tags: ["TypeScript"]
 - `category`: **필수 필드**. `programming` / `design` / `thinking` / `works` 중 하나 (소문자). enum 미스매치 시 빌드 실패. 폴더 경로의 카테고리와 반드시 동일
 - `tags`: 카테고리와 별개의 자유 라벨. 영문, 첫 글자 대문자, 0~3개. 비워도 OK
 - `version`: 버전 관리 시에만 추가. 형식 `"v1.0"` (따옴표 필수). 신규 글이면 생략. 처음 버전 업데이트가 발생하는 시점에 기존 파일에 `v1.0` → 이후 `v1.1`로 작성
+- `draft`: optional, 기본 false. 인박스에서 숨기고 싶은 메모일 때만 `true`로
 
 ### 추가하지 말 것
 
-ideas 컬렉션 스키마는 다음 필드를 지원하지 않는다. frontmatter에 절대 넣지 않는다.
+ideas 컬렉션 스키마(`src/content.config.ts`)는 다음 필드를 지원하지 않는다. frontmatter에 절대 넣지 않는다.
 
 - `description` (blog 전용)
 - `demoUrl` / `repoUrl` / `role` / `period` / `outcome` (blog의 works 전용 optional 메타)
-- `heroImage` 등
+- `heroImage` (blog 전용)
 
-works 카테고리 아이디어라도 위 메타 필드는 ideas frontmatter에 넣지 않고, 필요하면 본문에 평문으로 적는다.
+works 카테고리 아이디어라도 위 메타 필드는 ideas frontmatter에 넣지 않고, 필요하면 본문에 평문으로 적는다. 정식 발행 시 blog로 옮길 때 frontmatter로 승격한다.
+
+ideas 스키마가 지원하는 optional 필드 (필요 시 사용):
+- `updatedDate` (버전 업데이트 시)
+- `version` (버전 업데이트 시)
+- `draft` (인박스에서 숨기고 싶을 때)
 
 ## 카테고리 분류 가이드 (자연어 fallback용)
 
@@ -145,7 +151,7 @@ src/data/ideas/works/{project-slug}/{detail-slug}.md
 - 파일명에 날짜 prefix 없음
 - slug는 영문 hyphenated (예: `satisfies-operator`, `oss-release-timing`)
 - slug 충돌 검사는 동일 카테고리 폴더 안에서만 수행
-- 동일 카테고리 내 충돌 시 `-2`, `-3` 등 숫자 붙이기
+- 동일 카테고리 내 충돌 시 5b 버전 업데이트 정책에 따름
 
 ### works — 프로젝트별 폴더 구조
 
@@ -198,8 +204,8 @@ src/data/ideas/works/
 - [제목](URL) — 한줄 설명
 
 ## 유사한 이전 글
-- [블로그 제목](/Hard_Working/posts/{category}/{slug}/) — 어떤 점이 겹치는지
-- [블로그 제목](/Hard_Working/posts/{category}/{slug}/) — 어떤 점이 겹치는지
+- [블로그 글 제목](/Hard_Working/posts/{category}/{slug}/) — 어떤 점이 겹치는지
+- [이전 아이디어 제목](/Hard_Working/ideas/{category}/{slug}/) — 어떤 점이 겹치는지
 
 ## 피드백 / 더 발전시킨다면
 - 발전 방향 1
@@ -210,7 +216,7 @@ src/data/ideas/works/
 
 - **본문(섹션 헤더 없음)**: 1~3문장. 아이디어 자체를 풀어 씀. 너무 길면 안 됨 — "러프 메모"라는 본질 유지
 - **관련 자료**: 외부 링크. 자료가 없으면 섹션 통째로 생략
-- **유사한 이전 글**: 같은 블로그 내 글. 매칭되는 글이 없으면 섹션 통째로 생략. 링크는 `/Hard_Working/posts/{category}/{slug}/` 형식 (base URL 포함, post.id가 이미 `{category}/{slug}` 형태이므로 그대로 활용)
+- **유사한 이전 글**: 같은 블로그 내 글(blog 또는 ideas). 매칭되는 글이 없으면 섹션 통째로 생략. 링크 형식은 아래 "유사 글 검색 가이드" 참조
 - **피드백 / 더 발전시킨다면**: 항상 1~3개 작성. **이 섹션이 가장 중요** — 사용자가 아이디어를 다듬는 데 실제로 도움이 되어야 함
 
 ### 카테고리별 가벼운 노트
@@ -218,22 +224,29 @@ src/data/ideas/works/
 - `programming`: 코드 블록을 쓸 일이 거의 없지만, 쓴다면 **언어 태그 필수** (` ```ts `, ` ```bash `). 빈 ` ``` `는 단색 회색이라 절대 사용 안 함
 - `design`: 색·치수·간격 같은 구체 숫자 한두 개를 본문에 넣으면 메모가 풍성해짐 (예: "채도를 15~25% 낮추는 패턴")
 - `thinking`: 1인칭 회피가 기본이지만, 1~2문장 회고는 OK. 단정보다 관찰·가설로 적기
-- `works`: "만들 결과물 컨셉 + 가설" 위주. 메타(데모 URL·역할·기간)는 ideas 스키마가 지원하지 않으므로 본문에 평문으로 적고, 정식 발행 시 `[blog/works]`로 옮길 때 frontmatter로 승격
+- `works`: "만들 결과물 컨셉 + 가설" 위주. 메타(데모 URL·역할·기간)는 ideas 스키마가 지원하지 않으므로 본문에 평문으로 적는다. 정식 발행 시 blog-draft 스킬에서 `category: works`로 옮겨 frontmatter 메타 필드(`demoUrl`, `repoUrl`, `role`, `period`, `outcome`)로 승격한다
 
 ## 유사 글 검색 가이드
 
-`src/data/blog/**/*.md` (재귀)에서:
+`src/data/blog/**/*.md` 와 `src/data/ideas/**/*.md` (양쪽 다 재귀)에서 검색한다.
+
+검색 절차:
 
 1. 아이디어의 핵심 키워드(2~3개)로 frontmatter `title` grep
 2. frontmatter `category` / `tags`가 일치하는 글 우선
-3. 본문에서도 키워드 검색 (`rg -l "키워드" src/data/blog/`)
-4. 상위 1~3개만 선정. 약하게 매칭되는 건 차라리 섹션 생략
+3. 본문에서도 키워드 검색 (`rg -l "키워드" src/data/blog/ src/data/ideas/`)
+4. 상위 1~3개만 선정. 약하게 매칭되는 건 차라리 섹션 생략. blog와 ideas를 섞어서 가져와도 OK
 
-링크 형식 검증:
+링크 형식 (둘이 다름):
 
-- 파일 경로 `src/data/blog/programming/2026/foo-bar.md` → `/Hard_Working/posts/programming/foo-bar/`
-- 즉, `{category}/{slug}` 부분만 떼어 base URL과 결합 (year는 URL에 들어가지 않음)
-- 절대 `/posts/foo-bar/`나 `/posts/2026/foo-bar/`로 쓰지 말 것 (base URL 빠지거나 year가 URL에 새면 깨짐)
+- blog 글: 파일 경로 `src/data/blog/programming/2026/foo-bar.md` → `/Hard_Working/posts/programming/foo-bar/`
+  → 즉, `{category}/{slug}` 부분만 떼어 base URL과 결합 (year는 URL에 들어가지 않음)
+- idea 글 (programming/design/thinking): 파일 경로 `src/data/ideas/programming/2026/bar-baz.md` → `/Hard_Working/ideas/programming/bar-baz/`
+  → 마찬가지로 `{category}/{slug}` 부분만 결합
+- works 글 (ideas): 파일 경로 `src/data/ideas/works/auto-tracking/overview.md` → `/Hard_Working/ideas/works/auto-tracking/overview/`
+  → year가 없는 구조라 전체 경로(`works/{project}/{detail}`)를 그대로 결합
+
+절대 `/posts/foo-bar/`나 `/posts/2026/foo-bar/`로 쓰지 말 것 (base URL 빠지거나 year가 URL에 새면 깨짐).
 
 ## 외부 자료 조사 가이드
 
@@ -258,6 +271,7 @@ idea({category}/{Tag1}): {title}
 ```
 
 규칙:
+
 - `{category}`: frontmatter `category` 값 그대로 (소문자, programming/design/thinking/works 중 하나)
 - `{Tag1}`: frontmatter `tags[0]` (있으면)
 - `tags`가 비어 있으면 `idea({category}): {title}` 로 (괄호 유지)
@@ -267,6 +281,7 @@ idea({category}/{Tag1}): {title}
 - **`git commit` 직후 자동으로 `git push origin main` 실행** — Claude가 push까지 책임진다
 
 예시:
+
 - `idea(programming/TypeScript): satisfies 연산자로 안전한 const`
 - `idea(design): 다크 모드 채도 토큰 네이밍 패턴`
 - `idea(thinking): OSS 공개 시점 판단 메모`
@@ -296,6 +311,7 @@ idea({category}/{Tag1}): {title}
 
 - 정식 블로그 초안 작성 — `blog-draft` 스킬의 역할
 - 이미지 생성·검색
-- frontmatter에 스키마 외 필드 추가 (`description`, `draft`, `updatedDate`, works 메타 등)
-- 기존 아이디어 수정 (덮어쓰기 위험)
+- frontmatter에 스키마 외 필드 추가 — 지원 필드 목록은 위 "추가하지 말 것" 섹션 참조
+- 기존 아이디어를 *임의로* 덮어쓰기 — 버전 업데이트는 5b 단계의 정책에 따라서만 수행 (동일 slug 충돌 시에만)
 - 여러 아이디어 동시 작성
+- 글 작성 외 작업 — 코드 수정, 설정 파일 수정, 다른 스킬 수정, 워크플로우 수정 등 절대 금지 (이 스킬은 오직 src/data/ideas/ 아래 마크다운 파일만 만들거나 수정한다)
