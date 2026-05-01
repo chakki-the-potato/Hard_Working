@@ -4,6 +4,7 @@ description: "Python 데이터 분석의 핵심 라이브러리 pandas를 활용
 pubDate: 2026-02-05
 category: programming
 tags: ["Backend"]
+version: "v1.0"
 ---
 
 ## pandas 설치

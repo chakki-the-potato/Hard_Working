@@ -4,6 +4,7 @@ description: "Claude Code의 .claude 디렉토리 안 폴더 이름은 agents, c
 pubDate: 2026-04-27
 category: programming
 tags: ["Claude Code"]
+version: "v1.0"
 ---
 
 `.claude` 디렉토리는 Claude Code가 프로젝트별 설정과 도구를 읽어오는 곳입니다. 공식 문서와 실제 동작 방식을 보면 폴더 이름에 일관된 규칙이 있습니다. `skill`인지 `skills`인지, `agent`인지 `agents`인지 헷갈릴 수 있는데, 답은 하나입니다.

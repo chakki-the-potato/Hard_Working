@@ -4,6 +4,7 @@ description: "내 컴퓨터에서는 되는데 서버에서 안 된다? Docker�
 pubDate: 2026-01-25
 category: programming
 tags: ["DevOps"]
+version: "v1.0"
 ---
 
 ## Docker란?

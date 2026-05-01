@@ -4,6 +4,7 @@ description: "서버 없이 API를 만드는 서버리스 아키텍처. AWS Lamb
 pubDate: 2026-01-28
 category: programming
 tags: ["Backend"]
+version: "v1.0"
 ---
 
 ## 서버리스의 장단점

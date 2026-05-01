@@ -4,6 +4,7 @@ description: "npx ccusage 명령어로 Claude Code 사용량을 일별·월별·
 pubDate: 2026-04-29T01:00:50+09:00
 category: programming
 tags: ["Tools"]
+version: "v1.0"
 ---
 
 Claude Code를 본격적으로 쓰기 시작하면 자연스럽게 드는 궁금증이 하나 있습니다. "나 도대체 얼마나 쓰고 있는 거지?" 대시보드나 별도 모니터링 없이도 로컬 JSONL 로그만으로 사용량을 분석해주는 CLI 도구가 있더라고요. `ccusage`입니다.

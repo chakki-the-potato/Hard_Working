@@ -4,6 +4,7 @@ description: "백엔드를 직접 구축하지 않고 빠르게 서비스를 만
 pubDate: 2026-04-28
 category: programming
 tags: ["Tools", "Backend"]
+version: "v1.0"
 ---
 
 사이드 프로젝트나 MVP를 빠르게 개발할 때 백엔드 서버를 처음부터 구축하면 시간이 오래 걸립니다. BaaS(Backend-as-a-Service)는 인증, 데이터베이스, 파일 스토리지, 실시간 기능 같은 백엔드 기능을 API로 제공해 개발 속도를 크게 높여줍니다. 2026년 기준 가장 많이 쓰이는 서비스를 정리합니다.

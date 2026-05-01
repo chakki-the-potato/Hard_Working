@@ -4,6 +4,7 @@ description: "시작은 하지만 완성을 못하는 사이드 프로젝트의 
 pubDate: 2026-02-01
 category: thinking
 tags: ["Startup"]
+version: "v1.0"
 ---
 
 ## 99%의 사이드 프로젝트는 미완성으로 끝난다

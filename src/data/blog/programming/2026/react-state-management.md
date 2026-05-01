@@ -4,6 +4,7 @@ description: "React 프로젝트에서 전역 상태 관리를 어떻게 할지 
 pubDate: 2026-02-10
 category: programming
 tags: ["Frontend"]
+version: "v1.0"
 ---
 
 ## 왜 상태 관리 라이브러리가 필요한가

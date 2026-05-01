@@ -8,6 +8,7 @@ demoUrl: https://chakki-the-potato.github.io/Hard_Working/
 repoUrl: https://github.com/chakki-the-potato/Hard_Working
 role: Solo developer
 period: 2026.04 ~
+version: "v1.0"
 ---
 
 앞 글에서 "학습·포트폴리오·생각을 한 공간에 모은다"는 정체성을 적었습니다. 이번 글은 그 정체성을 어떻게 코드와 폴더 구조로 풀어냈는지에 대한 빌드로그입니다. 만들면서 내린 결정을 잊기 전에 적어둡니다.

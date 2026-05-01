@@ -4,6 +4,7 @@ description: "아이디어에서 MVP까지, 스타트업 초기 단계에서 반
 pubDate: 2026-02-20
 category: thinking
 tags: ["Startup"]
+version: "v1.0"
 ---
 
 ## 왜 대부분의 스타트업은 실패하는가

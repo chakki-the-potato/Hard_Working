@@ -4,6 +4,7 @@ description: "서버 작업할 때마다 검색하는 Linux 명령어를 한 곳
 pubDate: 2026-01-18
 category: programming
 tags: ["DevOps"]
+version: "v1.0"
 ---
 
 ## 파일 & 디렉토리

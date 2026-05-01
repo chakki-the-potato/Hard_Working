@@ -4,6 +4,7 @@ description: "EC2, S3, RDS, Lambda까지 개발자가 실무에서 자주 쓰는
 pubDate: 2026-02-22
 category: programming
 tags: ["Backend"]
+version: "v1.0"
 ---
 
 ## AWS를 배워야 하는 이유

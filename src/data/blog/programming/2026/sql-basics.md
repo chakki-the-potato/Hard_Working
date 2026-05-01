@@ -4,6 +4,7 @@ description: "SELECT부터 JOIN, 서브쿼리, 윈도우 함수까지. 실무에
 pubDate: 2026-01-22
 category: programming
 tags: ["Backend"]
+version: "v1.0"
 ---
 
 ## 기본 SELECT

@@ -7,6 +7,7 @@ demoUrl: https://chakki-the-potato.github.io/Hard_Working/
 repoUrl: https://github.com/chakki-the-potato/Hard_Working
 role: Solo developer
 period: 2026.04 ~
+version: "v1.0"
 ---
 
 학습한 내용을 적어두지 않으면 한 달 뒤에 다 잊어버립니다. 그렇다고 노트 앱에만 쌓아두면 그 노트도 결국 저만 보는 무덤이 됩니다. 그래서 이 블로그를 시작했습니다.
