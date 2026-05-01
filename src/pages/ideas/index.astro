@@ -28,7 +28,7 @@ const categoryChips = CATEGORIES.filter(
   (slug) => populatedCategories.has(slug) || ALWAYS_VISIBLE_CATEGORIES.has(slug),
 ).map((slug) => ({
   label: categoryLabel(slug),
-  href: `${base}posts/category/${slug}/`,
+  href: slug === 'works' ? `${base}ideas/works/` : `${base}posts/category/${slug}/`,
 }));
 ---
 
@@ -73,6 +73,7 @@ const categoryChips = CATEGORIES.filter(
             tags={entry.data.tags}
             num={numberMap.get(entry.id)}
             routeBase="ideas"
+            version={entry.data.version}
           />
         ))}
       </div>

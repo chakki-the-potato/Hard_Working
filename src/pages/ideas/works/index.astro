@@ -1,0 +1,308 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PostListRow from '../../../components/PostListRow.astro';
+
+const base = import.meta.env.BASE_URL;
+
+const worksIdeas = await getCollection(
+  'ideas',
+  ({ data }) => !data.draft && data.category === 'works',
+);
+
+type Entry = (typeof worksIdeas)[number];
+
+const groups = new Map<string, Entry[]>();
+for (const entry of worksIdeas) {
+  const segments = entry.id.split('/');
+  // id forms:
+  //   works/{project}/{detail} → grouped by {project}
+  //   works/{slug}              → legacy single-note project, grouped by {slug}
+  const projectSlug = segments.length >= 3 ? segments[1] : segments[1] ?? '_legacy';
+  const list = groups.get(projectSlug) ?? [];
+  list.push(entry);
+  groups.set(projectSlug, list);
+}
+
+const projectGroups = [...groups.entries()]
+  .map(([slug, entries]) => {
+    const sorted = [...entries].sort(
+      (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+    );
+    return {
+      slug,
+      entries: sorted,
+      latest: sorted[0]?.data.pubDate,
+    };
+  })
+  .sort((a, b) => (b.latest?.valueOf() ?? 0) - (a.latest?.valueOf() ?? 0));
+
+const totalNotes = worksIdeas.length;
+const lastUpdate = projectGroups[0]?.latest;
+const lastUpdateLabel = lastUpdate
+  ? `${lastUpdate.getFullYear()}.${String(lastUpdate.getMonth() + 1).padStart(2, '0')}.${String(lastUpdate.getDate()).padStart(2, '0')}`
+  : '';
+
+function projectLabel(slug: string): string {
+  if (slug === '_legacy') return 'Legacy';
+  return slug
+    .split('-')
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+}
+---
+
+<BaseLayout
+  title="Works — Ideas — Hard_Working"
+  description="프로젝트별 작업 아이디어"
+  noPadding={true}
+>
+  <section class="qt-list-hero">
+    <span class="qt-mono qt-list-mono">// IDEAS / WORKS</span>
+    <h1 class="qt-list-title">
+      <span class="qt-list-hash">#</span>{' '}Works
+    </h1>
+    <span class="qt-mono qt-list-meta">
+      {projectGroups.length} PROJECTS · {totalNotes} NOTES{lastUpdateLabel ? ` · LAST_UPDATE ${lastUpdateLabel}` : ''}
+    </span>
+  </section>
+
+  <section class="qt-list-chips">
+    <div class="qt-tag-chips" role="navigation" aria-label="Ideas 네비게이션">
+      <a href={`${base}ideas/`} class="qt-chip">전체 Ideas</a>
+      <a href={`${base}ideas/works/`} class="qt-chip is-active" aria-current="page">Works</a>
+      <a href={`${base}posts/category/works/`} class="qt-chip">Works (Blog)</a>
+    </div>
+  </section>
+
+  <div class="qt-list-body">
+    <div class="qt-list-main">
+      {projectGroups.length === 0 && (
+        <div class="qt-list-empty">
+          <span class="qt-mono qt-list-empty-mark">// EMPTY</span>
+          <p>아직 works 아이디어가 없습니다.</p>
+        </div>
+      )}
+
+      {projectGroups.map((group) => (
+        <section class="qt-project-group">
+          <header class="qt-project-head">
+            <span class="qt-mono qt-project-mono">// PROJECT</span>
+            <h2 class="qt-project-title">{projectLabel(group.slug)}</h2>
+            <span class="qt-mono qt-project-meta">
+              {group.entries.length} NOTE{group.entries.length === 1 ? '' : 'S'}
+            </span>
+          </header>
+
+          <div class="qt-list-thead">
+            <span>TITLE</span>
+            <span>CAT/SUB</span>
+            <span class="qt-list-thead-right">DATE</span>
+          </div>
+
+          <div class="qt-list-rows">
+            {group.entries.map((entry) => (
+              <PostListRow
+                id={entry.id}
+                title={entry.data.title}
+                pubDate={entry.data.pubDate}
+                category={entry.data.category}
+                tags={entry.data.tags}
+                showMono={false}
+                routeBase="ideas"
+                version={entry.data.version}
+              />
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .qt-mono {
+    font-family: var(--font-mono);
+  }
+
+  .qt-list-hero {
+    padding: 64px 36px 28px;
+    border-bottom: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .qt-list-mono {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    margin-bottom: 14px;
+  }
+
+  .qt-list-title {
+    font-size: calc(64px * var(--h-scale));
+    font-weight: 800;
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: -0.045em;
+    line-height: 1;
+  }
+
+  .qt-list-hash {
+    color: var(--accent);
+  }
+
+  .qt-list-meta {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 14px;
+    letter-spacing: 0.06em;
+  }
+
+  .qt-list-chips {
+    padding: 20px 36px;
+    border-bottom: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .qt-tag-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .qt-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 11px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    border-radius: 4px;
+    color: var(--muted);
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+  }
+
+  .qt-chip:hover {
+    opacity: 0.78;
+  }
+
+  .qt-chip.is-active {
+    color: var(--bg-elev);
+    background: var(--ink);
+    border-color: var(--ink);
+    font-weight: 600;
+  }
+
+  .qt-list-body {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 36px 0;
+  }
+
+  .qt-list-main {
+    min-width: 0;
+  }
+
+  .qt-project-group {
+    padding: 28px 0 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .qt-project-group:last-child {
+    border-bottom: none;
+  }
+
+  .qt-project-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+
+  .qt-project-mono {
+    font-size: 10px;
+    color: var(--subtle);
+    letter-spacing: 0.12em;
+  }
+
+  .qt-project-title {
+    font-size: calc(22px * var(--h-scale));
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  .qt-project-meta {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  .qt-list-thead {
+    display: grid;
+    grid-template-columns: 1fr 130px 90px;
+    gap: 18px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-strong);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+  }
+
+  .qt-list-thead-right {
+    text-align: right;
+  }
+
+  .qt-list-empty {
+    padding: 60px 0;
+    text-align: center;
+    color: var(--muted);
+  }
+
+  .qt-list-empty-mark {
+    display: block;
+    font-size: 11px;
+    color: var(--subtle);
+    letter-spacing: 0.12em;
+    margin-bottom: 8px;
+  }
+
+  .qt-list-empty p {
+    margin: 0;
+    font-size: 14px;
+  }
+
+  @media (max-width: 720px) {
+    .qt-list-hero {
+      padding: 40px 20px 20px;
+    }
+    .qt-list-chips,
+    .qt-list-body {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+    .qt-list-title {
+      font-size: calc(40px * var(--h-scale));
+    }
+    .qt-list-thead {
+      display: none;
+    }
+    .qt-project-meta {
+      margin-left: 0;
+    }
+  }
+</style>
