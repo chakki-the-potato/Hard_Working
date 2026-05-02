@@ -2,13 +2,43 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PostListRow from '../../../components/PostListRow.astro';
+import SidebarActivity, { type ActivityEntry } from '../../../components/widgets/SidebarActivity.astro';
+import { CATEGORIES, categoryLabel, type Category } from '../../../lib/categories';
 
 const base = import.meta.env.BASE_URL;
 
-const worksIdeas = await getCollection(
-  'ideas',
-  ({ data }) => !data.draft && data.category === 'works',
-);
+const allIdeas = await getCollection('ideas', ({ data }) => !data.draft);
+const ALWAYS_VISIBLE_CATEGORIES = new Set<Category>(['works']);
+const ideaCategoryCounts = new Map<Category, number>();
+for (const entry of allIdeas) {
+  ideaCategoryCounts.set(
+    entry.data.category,
+    (ideaCategoryCounts.get(entry.data.category) ?? 0) + 1,
+  );
+}
+const sidebarCategories = CATEGORIES.filter(
+  (slug) => ideaCategoryCounts.has(slug) || ALWAYS_VISIBLE_CATEGORIES.has(slug),
+).map((slug) => ({
+  slug,
+  label: categoryLabel(slug),
+  count: ideaCategoryCounts.get(slug) ?? 0,
+  href: slug === 'works' ? `${base}ideas/works/` : `${base}posts/category/${slug}/`,
+}));
+
+const worksIdeas = allIdeas.filter((entry) => entry.data.category === 'works');
+
+const allBlogPosts = await getCollection('blog', ({ data }) => !data.draft);
+const recentWorksPosts: ActivityEntry[] = allBlogPosts
+  .filter((p) => p.data.category === 'works')
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3)
+  .map((p) => ({
+    kind: 'blog',
+    title: p.data.title,
+    href: `${base}posts/${p.id}/`,
+    date: p.data.pubDate,
+    category: p.data.category,
+  }));
 
 type Entry = (typeof worksIdeas)[number];
 
@@ -118,6 +148,33 @@ function projectLabel(slug: string): string {
         </section>
       ))}
     </div>
+
+    {sidebarCategories.length > 0 && (
+      <aside class="qt-list-aside">
+        <div class="qt-aside-inner">
+          <a href={`${base}ideas/`} class="qt-aside-parent">
+            // IDEAS
+          </a>
+          <div class="qt-aside-list">
+            {sidebarCategories.map((c) => (
+              <a
+                href={c.href}
+                class:list={['qt-aside-item', { 'is-active': c.slug === 'works' }]}
+                aria-current={c.slug === 'works' ? 'page' : undefined}
+              >
+                <span class="qt-aside-name">{c.label}</span>
+                <span class="qt-aside-count">{c.count}</span>
+              </a>
+            ))}
+          </div>
+          {recentWorksPosts.length > 0 && (
+            <div class="qt-aside-section">
+              <SidebarActivity heading="// LATEST POSTS" entries={recentWorksPosts} />
+            </div>
+          )}
+        </div>
+      </aside>
+    )}
   </div>
 </BaseLayout>
 
@@ -207,10 +264,86 @@ function projectLabel(slug: string): string {
     max-width: 1200px;
     margin: 0 auto;
     padding: 24px 36px 0;
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 56px;
+  }
+
+  .qt-list-body:not(:has(.qt-list-aside)) {
+    grid-template-columns: 1fr;
   }
 
   .qt-list-main {
     min-width: 0;
+  }
+
+  /* 사이드바 */
+  .qt-aside-parent {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: 0.12em;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-strong);
+  }
+
+  .qt-aside-parent:hover {
+    color: var(--accent-ink);
+  }
+
+  .qt-aside-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .qt-aside-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 0.12s, color 0.12s;
+    color: var(--muted);
+  }
+
+  .qt-aside-item:hover {
+    background: var(--bg-alt);
+    color: var(--ink);
+  }
+
+  .qt-aside-item.is-active {
+    background: var(--ink);
+    color: var(--bg-elev);
+  }
+
+  .qt-aside-item.is-active .qt-aside-count {
+    color: var(--bg-elev);
+    opacity: 0.7;
+  }
+
+  .qt-aside-name {
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .qt-aside-count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--subtle);
+    letter-spacing: 0.04em;
+  }
+
+  .qt-aside-section {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-hair, var(--border));
   }
 
   .qt-project-group {
@@ -284,6 +417,27 @@ function projectLabel(slug: string): string {
   .qt-list-empty p {
     margin: 0;
     font-size: 14px;
+  }
+
+  @media (max-width: 900px) {
+    .qt-list-body {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .qt-list-aside {
+      order: -1;
+      margin-bottom: 8px;
+    }
+    .qt-aside-list {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .qt-aside-item {
+      padding: 6px 12px;
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+    }
   }
 
   @media (max-width: 720px) {

@@ -4,6 +4,7 @@ import BaseLayout from './BaseLayout.astro';
 import PostListRow from '../components/PostListRow.astro';
 import TagNav from '../components/TagNav.astro';
 import Pagination from '../components/Pagination.astro';
+import SidebarActivity, { type ActivityEntry } from '../components/widgets/SidebarActivity.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import {
   ALWAYS_VISIBLE_TAGS_PER_CATEGORY,
@@ -121,6 +122,21 @@ const sidebarTags = activeCategory
   : [];
 const activeTagLabel = mode.kind === 'tag' ? mode.tag : undefined;
 
+const allIdeas = await getCollection('ideas', ({ data }) => !data.draft);
+const recentCategoryIdeas: ActivityEntry[] = activeCategory
+  ? allIdeas
+      .filter((i) => i.data.category === activeCategory)
+      .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+      .slice(0, 3)
+      .map((i) => ({
+        kind: 'idea',
+        title: i.data.title,
+        href: `${base}ideas/${i.id}/`,
+        date: i.data.pubDate,
+        category: i.data.category,
+      }))
+  : [];
+
 // 글 번호 매기기 — 발행일 오름차순 1..N (가장 먼저 쓴 글이 №001)
 const numberMap = new Map<string, number>();
 [...sortedAll].reverse().forEach((p, i) => numberMap.set(p.id, i + 1));
@@ -182,22 +198,29 @@ const numberMap = new Map<string, number>();
 
     {activeCategory && sidebarTags.length > 0 && (
       <aside class="qt-list-aside">
-        <a
-          href={`${base}posts/category/${activeCategory}/`}
-          class:list={['qt-aside-parent', { 'is-active': mode.kind === 'category' && mode.category === activeCategory }]}
-        >
-          // {categoryLabel(activeCategory).toUpperCase()}
-        </a>
-        <div class="qt-aside-list">
-          {sidebarTags.map(({ tag, count }) => (
-            <a
-              href={`${base}tags/${tag}/`}
-              class:list={['qt-aside-item', { 'is-active': mode.kind === 'tag' && mode.tag === tag }]}
-            >
-              <span class="qt-aside-name">{tag}</span>
-              <span class="qt-aside-count">{count}</span>
-            </a>
-          ))}
+        <div class="qt-aside-inner">
+          <a
+            href={`${base}posts/category/${activeCategory}/`}
+            class:list={['qt-aside-parent', { 'is-active': mode.kind === 'category' && mode.category === activeCategory }]}
+          >
+            // {categoryLabel(activeCategory).toUpperCase()}
+          </a>
+          <div class="qt-aside-list">
+            {sidebarTags.map(({ tag, count }) => (
+              <a
+                href={`${base}tags/${tag}/`}
+                class:list={['qt-aside-item', { 'is-active': mode.kind === 'tag' && mode.tag === tag }]}
+              >
+                <span class="qt-aside-name">{tag}</span>
+                <span class="qt-aside-count">{count}</span>
+              </a>
+            ))}
+          </div>
+          {recentCategoryIdeas.length > 0 && (
+            <div class="qt-aside-section">
+              <SidebarActivity heading="// FROM IDEAS" entries={recentCategoryIdeas} />
+            </div>
+          )}
         </div>
       </aside>
     )}
@@ -259,7 +282,6 @@ const numberMap = new Map<string, number>();
     display: grid;
     grid-template-columns: 1fr 220px;
     gap: 56px;
-    align-items: start;
   }
 
   .qt-list-body:not(:has(.qt-list-aside)) {
@@ -306,11 +328,6 @@ const numberMap = new Map<string, number>();
   }
 
   /* 사이드바 */
-  .qt-list-aside {
-    position: sticky;
-    top: 80px;
-  }
-
   .qt-aside-parent {
     display: block;
     font-family: var(--font-mono);
@@ -373,6 +390,12 @@ const numberMap = new Map<string, number>();
     letter-spacing: 0.04em;
   }
 
+  .qt-aside-section {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-hair, var(--border));
+  }
+
   /* 반응형 */
   @media (max-width: 900px) {
     .qt-list-body {
@@ -380,7 +403,6 @@ const numberMap = new Map<string, number>();
       gap: 24px;
     }
     .qt-list-aside {
-      position: static;
       order: -1;
       margin-bottom: 8px;
     }
