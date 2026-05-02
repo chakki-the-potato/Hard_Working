@@ -4,6 +4,7 @@ import BaseLayout from './BaseLayout.astro';
 import PostListRow from '../components/PostListRow.astro';
 import ReadingProgress from '../components/ReadingProgress.astro';
 import { categoryLabel, type Category } from '../lib/categories';
+import { projectLabel } from '../lib/projects';
 
 interface ArchiveBanner {
   version: string;
@@ -87,6 +88,14 @@ const sortedByNum = [...sortedAll].reverse();
 const idx = sortedByNum.findIndex((p) => p.id === id);
 const prevPost = idx > 0 ? sortedByNum[idx - 1] : null;
 const nextPost = idx >= 0 && idx < sortedByNum.length - 1 ? sortedByNum[idx + 1] : null;
+
+// Back link target — project posts go up to /projects/{slug}/, others to /posts/category/{cat}/.
+const idSegments = id.split('/');
+const projectSlug = idSegments.length === 3 ? idSegments[1] : null;
+const parentLabel = projectSlug ? projectLabel(projectSlug) : categoryLabel(category);
+const parentHref = projectSlug
+  ? `${base}projects/${projectSlug}/`
+  : `${base}posts/category/${category}/`;
 ---
 
 <BaseLayout title={title} description={description} noPadding={true}>
@@ -98,6 +107,7 @@ const nextPost = idx >= 0 && idx < sortedByNum.length - 1 ? sortedByNum[idx + 1]
     </section>
 
     <article class="qt-post">
+      <a href={parentHref} class="qt-post-back-top">← {parentLabel}</a>
       {archiveBanner && (
         <aside class="qt-post-archive-banner" role="note">
           <span class="qt-post-archive-banner-text">
@@ -245,6 +255,22 @@ const nextPost = idx >= 0 && idx < sortedByNum.length - 1 ? sortedByNum[idx + 1]
     max-width: var(--content-w);
     margin: 0 auto;
     padding: 32px 28px 0;
+  }
+
+  .qt-post-back-top {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    margin-bottom: 18px;
+    transition: color 0.12s;
+  }
+
+  .qt-post-back-top:hover {
+    color: var(--ink);
   }
 
   .qt-post-mono {

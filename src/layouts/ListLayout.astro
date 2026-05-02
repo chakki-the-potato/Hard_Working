@@ -11,6 +11,7 @@ import {
   categoryLabel,
   type Category,
 } from '../lib/categories';
+import { extractProjectSlug, projectLabel } from '../lib/projects';
 
 type ListMode =
   | { kind: 'all' }
@@ -53,20 +54,37 @@ const heroMono = mode.kind === 'category' ? '// CATEGORY' : '// TAG / FILTER';
 
 // 전체 카운트 + 사이드바 데이터
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const projectMetas = await getCollection('projects');
+const projectMetaBySlug = new Map(projectMetas.map((m) => [m.id, m]));
 const tagCounts = new Map<string, number>();
 const categoryCounts = new Map<Category, number>();
+// Tag counts per category come from non-project posts only — project posts feed
+// the // PROJECTS section instead, so they shouldn't double-count under tags.
 const tagsPerCategory = new Map<Category, Map<string, number>>();
+const projectsPerCategory = new Map<Category, Map<string, number>>();
 for (const p of allPosts) {
   const cat = p.data.category;
   categoryCounts.set(cat, (categoryCounts.get(cat) ?? 0) + 1);
-  let perCat = tagsPerCategory.get(cat);
-  if (!perCat) {
-    perCat = new Map<string, number>();
-    tagsPerCategory.set(cat, perCat);
-  }
   for (const t of p.data.tags) {
     tagCounts.set(t, (tagCounts.get(t) ?? 0) + 1);
-    perCat.set(t, (perCat.get(t) ?? 0) + 1);
+  }
+  const projectSlug = extractProjectSlug(p);
+  if (projectSlug) {
+    let perCatProj = projectsPerCategory.get(cat);
+    if (!perCatProj) {
+      perCatProj = new Map<string, number>();
+      projectsPerCategory.set(cat, perCatProj);
+    }
+    perCatProj.set(projectSlug, (perCatProj.get(projectSlug) ?? 0) + 1);
+    continue;
+  }
+  let perCatTag = tagsPerCategory.get(cat);
+  if (!perCatTag) {
+    perCatTag = new Map<string, number>();
+    tagsPerCategory.set(cat, perCatTag);
+  }
+  for (const t of p.data.tags) {
+    perCatTag.set(t, (perCatTag.get(t) ?? 0) + 1);
   }
 }
 
@@ -119,6 +137,15 @@ const sidebarTags = activeCategory
   ? [...(tagsPerCategory.get(activeCategory) ?? new Map()).entries()]
       .sort((a, b) => b[1] - a[1])
       .map(([tag, count]) => ({ tag, count }))
+  : [];
+const sidebarProjects = activeCategory
+  ? [...(projectsPerCategory.get(activeCategory) ?? new Map()).entries()]
+      .map(([slug, count]) => ({
+        slug,
+        label: projectMetaBySlug.get(slug)?.data.title ?? projectLabel(slug),
+        count,
+      }))
+      .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label))
   : [];
 const activeTagLabel = mode.kind === 'tag' ? mode.tag : undefined;
 
@@ -196,7 +223,7 @@ const numberMap = new Map<string, number>();
       />
     </div>
 
-    {activeCategory && sidebarTags.length > 0 && (
+    {activeCategory && (sidebarProjects.length > 0 || sidebarTags.length > 0) && (
       <aside class="qt-list-aside">
         <div class="qt-aside-inner">
           <a
@@ -205,17 +232,40 @@ const numberMap = new Map<string, number>();
           >
             // {categoryLabel(activeCategory).toUpperCase()}
           </a>
-          <div class="qt-aside-list">
-            {sidebarTags.map(({ tag, count }) => (
-              <a
-                href={`${base}tags/${tag}/`}
-                class:list={['qt-aside-item', { 'is-active': mode.kind === 'tag' && mode.tag === tag }]}
-              >
-                <span class="qt-aside-name">{tag}</span>
-                <span class="qt-aside-count">{count}</span>
-              </a>
-            ))}
-          </div>
+          {sidebarProjects.length > 0 && (
+            <div class="qt-aside-section">
+              <a href={`${base}projects/`} class="qt-aside-section-head qt-aside-section-link">// PROJECTS</a>
+              <div class="qt-aside-list">
+                {sidebarProjects.map(({ slug, label, count }) => (
+                  <a
+                    href={`${base}projects/${slug}/`}
+                    class="qt-aside-item qt-aside-item-project"
+                  >
+                    <span class="qt-aside-name">
+                      <span class="qt-aside-arrow" aria-hidden="true">▸</span>{' '}{label}
+                    </span>
+                    <span class="qt-aside-count">{count}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+          {sidebarTags.length > 0 && (
+            <div class="qt-aside-section">
+              <span class="qt-aside-section-head">// TAGS</span>
+              <div class="qt-aside-list">
+                {sidebarTags.map(({ tag, count }) => (
+                  <a
+                    href={`${base}tags/${tag}/`}
+                    class:list={['qt-aside-item', { 'is-active': mode.kind === 'tag' && mode.tag === tag }]}
+                  >
+                    <span class="qt-aside-name">{tag}</span>
+                    <span class="qt-aside-count">{count}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
           {recentCategoryIdeas.length > 0 && (
             <div class="qt-aside-section">
               <SidebarActivity heading="// FROM IDEAS" entries={recentCategoryIdeas} />
@@ -394,6 +444,41 @@ const numberMap = new Map<string, number>();
     margin-top: 28px;
     padding-top: 20px;
     border-top: 1px solid var(--border-hair, var(--border));
+  }
+
+  .qt-aside-section:first-of-type {
+    margin-top: 4px;
+    padding-top: 0;
+    border-top: none;
+  }
+
+  .qt-aside-section-head {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--subtle);
+    letter-spacing: 0.12em;
+    margin-bottom: 6px;
+    padding-left: 10px;
+  }
+
+  a.qt-aside-section-link {
+    text-decoration: none;
+    transition: color 0.12s;
+  }
+
+  a.qt-aside-section-link:hover {
+    color: var(--accent-ink);
+  }
+
+  .qt-aside-arrow {
+    color: var(--accent);
+    font-size: 11px;
+    margin-right: 1px;
+  }
+
+  .qt-aside-item-project.is-active .qt-aside-arrow {
+    color: var(--bg-elev);
   }
 
   /* 반응형 */

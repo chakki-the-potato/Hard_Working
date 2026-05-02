@@ -2,7 +2,6 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PostListRow from '../../../components/PostListRow.astro';
-import SidebarActivity, { type ActivityEntry } from '../../../components/widgets/SidebarActivity.astro';
 import { CATEGORIES, categoryLabel, type Category } from '../../../lib/categories';
 
 const base = import.meta.env.BASE_URL;
@@ -26,19 +25,6 @@ const sidebarCategories = CATEGORIES.filter(
 }));
 
 const worksIdeas = allIdeas.filter((entry) => entry.data.category === 'works');
-
-const allBlogPosts = await getCollection('blog', ({ data }) => !data.draft);
-const recentWorksPosts: ActivityEntry[] = allBlogPosts
-  .filter((p) => p.data.category === 'works')
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 3)
-  .map((p) => ({
-    kind: 'blog',
-    title: p.data.title,
-    href: `${base}posts/${p.id}/`,
-    date: p.data.pubDate,
-    category: p.data.category,
-  }));
 
 type Entry = (typeof worksIdeas)[number];
 
@@ -167,11 +153,6 @@ function projectLabel(slug: string): string {
               </a>
             ))}
           </div>
-          {recentWorksPosts.length > 0 && (
-            <div class="qt-aside-section">
-              <SidebarActivity heading="// LATEST POSTS" entries={recentWorksPosts} />
-            </div>
-          )}
         </div>
       </aside>
     )}
@@ -338,12 +319,6 @@ function projectLabel(slug: string): string {
     font-size: 11px;
     color: var(--subtle);
     letter-spacing: 0.04em;
-  }
-
-  .qt-aside-section {
-    margin-top: 28px;
-    padding-top: 20px;
-    border-top: 1px solid var(--border-hair, var(--border));
   }
 
   .qt-project-group {

@@ -228,6 +228,19 @@ version: "v1.0"
 - 각 결정 섹션에는: 선택지 → 무엇을 골랐는지 → 트레이드오프 → 실제 운영 결과
 - 끝에 "되돌린 시도" 또는 "앞으로 손볼 것" 섹션 권장
 - frontmatter에 `demoUrl` / `repoUrl` / `role` / `period`(가능하면 `outcome`)를 채움
+- **이미지 자리** (사용자가 나중에 채움 — 초안에선 마커만):
+  - 본문 내 도식·스크린샷·플로우 차트가 들어갈 자리엔 design 가이드와 동일한 마커 사용:
+    ```html
+    <!-- 여기에 OOO 이미지 삽입 (예: public/images/posts/{project}/{slug}/architecture.png) -->
+    ```
+  - 이미지 파일 경로 컨벤션: `public/images/posts/{project}/{slug}/{name}.png`. 마크다운/frontmatter 참조 시엔 BASE_URL 포함 (`/Hard_Working/images/posts/{project}/{slug}/{name}.png`)
+  - `heroImage`는 사용자가 직접 채울 영역이라 신규 초안 frontmatter엔 키 자체를 넣지 않음. 대신 본문 맨 위에 다음 HTML 주석으로 채우는 방법을 안내:
+    ```html
+    <!-- HERO 이미지 추가 시:
+         1. public/images/posts/{project}/{slug}/hero.png 파일 업로드
+         2. frontmatter에 heroImage: "/Hard_Working/images/posts/{project}/{slug}/hero.png" 추가
+         3. 이 주석 삭제 -->
+    ```
 
 ## 코드 블록 작성 규칙
 

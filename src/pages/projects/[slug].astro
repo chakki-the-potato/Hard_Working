@@ -61,6 +61,7 @@ const seoDescription = summaryText ?? `${title} 프로젝트의 모든 글`;
 
 <BaseLayout title={seoTitle} description={seoDescription} noPadding={true}>
   <section class="qt-list-hero">
+    <a href={`${base}projects/`} class="qt-back-link">← Projects</a>
     <span class="qt-mono qt-list-mono">// PROJECT</span>
     <h1 class="qt-list-title">
       <span class="qt-list-hash">#</span>{' '}{title}
@@ -175,6 +176,22 @@ const seoDescription = summaryText ?? `${title} 프로젝트의 모든 글`;
     color: var(--muted);
     letter-spacing: 0.12em;
     margin-bottom: 14px;
+  }
+
+  .qt-back-link {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    margin-bottom: 14px;
+    transition: color 0.12s;
+  }
+
+  .qt-back-link:hover {
+    color: var(--ink);
   }
 
   .qt-list-title {

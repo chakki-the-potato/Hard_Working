@@ -2,7 +2,6 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostListRow from '../../components/PostListRow.astro';
-import SidebarActivity, { type ActivityEntry } from '../../components/widgets/SidebarActivity.astro';
 import { CATEGORIES, categoryLabel, type Category } from '../../lib/categories';
 
 const base = import.meta.env.BASE_URL;
@@ -47,17 +46,6 @@ const sidebarCategories = CATEGORIES.filter(
   count: ideaCategoryCounts.get(slug) ?? 0,
   href: slug === 'works' ? `${base}ideas/works/` : `${base}posts/category/${slug}/`,
 }));
-
-const recentPosts: ActivityEntry[] = [...allBlogPosts]
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 3)
-  .map((p) => ({
-    kind: 'blog',
-    title: p.data.title,
-    href: `${base}posts/${p.id}/`,
-    date: p.data.pubDate,
-    category: p.data.category,
-  }));
 ---
 
 <BaseLayout title="Ideas — Hard_Working" description="러프하게 떠오른 아이디어들" noPadding={true}>
@@ -128,11 +116,6 @@ const recentPosts: ActivityEntry[] = [...allBlogPosts]
               </a>
             ))}
           </div>
-          {recentPosts.length > 0 && (
-            <div class="qt-aside-section">
-              <SidebarActivity heading="// LATEST POSTS" entries={recentPosts} />
-            </div>
-          )}
         </div>
       </aside>
     )}
@@ -299,12 +282,6 @@ const recentPosts: ActivityEntry[] = [...allBlogPosts]
     font-size: 11px;
     color: var(--subtle);
     letter-spacing: 0.04em;
-  }
-
-  .qt-aside-section {
-    margin-top: 28px;
-    padding-top: 20px;
-    border-top: 1px solid var(--border-hair, var(--border));
   }
 
   .qt-list-thead {
