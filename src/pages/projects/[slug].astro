@@ -1,0 +1,452 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostListRow from '../../components/PostListRow.astro';
+import {
+  getPostsByProject,
+  getProjectSummaries,
+  projectLabel,
+  type ProjectSummary,
+} from '../../lib/projects';
+
+export async function getStaticPaths() {
+  const summaries = await getProjectSummaries();
+  return summaries.map((summary) => ({
+    params: { slug: summary.slug },
+    props: { summary },
+  }));
+}
+
+interface Props {
+  summary: ProjectSummary;
+}
+
+const { summary } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+const postsByProject = await getPostsByProject();
+const posts = postsByProject.get(summary.slug) ?? [];
+
+const meta = summary.meta;
+const title = meta?.data.title ?? projectLabel(summary.slug);
+const summaryText = meta?.data.summary;
+const period = meta?.data.period;
+const repoUrl = meta?.data.repoUrl;
+const demoUrl = meta?.data.demoUrl;
+const status = meta?.data.status ?? 'active';
+
+let Content: any = null;
+if (meta) {
+  const rendered = await render(meta);
+  Content = rendered.Content;
+}
+
+const lastUpdate = posts[0]?.data.pubDate;
+const lastUpdateLabel = lastUpdate
+  ? `${lastUpdate.getFullYear()}.${String(lastUpdate.getMonth() + 1).padStart(2, '0')}.${String(lastUpdate.getDate()).padStart(2, '0')}`
+  : '';
+
+function statusLabel(s: typeof status): string {
+  if (s === 'archived') return 'ARCHIVED';
+  if (s === 'paused') return 'PAUSED';
+  return 'ACTIVE';
+}
+
+const allSummaries = await getProjectSummaries();
+const sidebarItems = allSummaries.filter((p) => p.count > 0 || p.meta);
+
+const seoTitle = `${title} — Projects — Hard_Working`;
+const seoDescription = summaryText ?? `${title} 프로젝트의 모든 글`;
+---
+
+<BaseLayout title={seoTitle} description={seoDescription} noPadding={true}>
+  <section class="qt-list-hero">
+    <span class="qt-mono qt-list-mono">// PROJECT</span>
+    <h1 class="qt-list-title">
+      <span class="qt-list-hash">#</span>{' '}{title}
+    </h1>
+    {summaryText && <p class="qt-project-summary">{summaryText}</p>}
+    <span class="qt-mono qt-list-meta">
+      <span class="qt-status-pill" data-status={status}>{statusLabel(status)}</span>
+      {posts.length} POST{posts.length === 1 ? '' : 'S'}
+      {period ? ` · ${period}` : ''}
+      {lastUpdateLabel ? ` · LAST_UPDATE ${lastUpdateLabel}` : ''}
+    </span>
+
+    {(repoUrl || demoUrl) && (
+      <div class="qt-project-links">
+        {repoUrl && (
+          <a class="qt-chip" href={repoUrl} target="_blank" rel="noopener noreferrer">
+            REPO →
+          </a>
+        )}
+        {demoUrl && (
+          <a class="qt-chip" href={demoUrl} target="_blank" rel="noopener noreferrer">
+            DEMO →
+          </a>
+        )}
+      </div>
+    )}
+
+    {!meta && (
+      <p class="qt-project-orphan">
+        // META MISSING — <code>src/data/projects/{summary.slug}.md</code>를 추가하면 메타데이터가 표시됩니다.
+      </p>
+    )}
+  </section>
+
+  <div class="qt-list-body">
+    <div class="qt-list-main">
+      {Content && (
+        <article class="qt-project-body">
+          <Content />
+        </article>
+      )}
+
+      <div class="qt-project-section">
+        <div class="qt-list-thead">
+          <span>TITLE</span>
+          <span>CAT/SUB</span>
+          <span class="qt-list-thead-right">DATE</span>
+        </div>
+
+        <div class="qt-list-rows">
+          {posts.map((post) => (
+            <PostListRow
+              id={post.id}
+              title={post.data.title}
+              pubDate={post.data.pubDate}
+              category={post.data.category}
+              tags={post.data.tags}
+              showMono={false}
+              version={post.data.version}
+            />
+          ))}
+        </div>
+
+        {posts.length === 0 && (
+          <div class="qt-list-empty">
+            <span class="qt-mono qt-list-empty-mark">// EMPTY</span>
+            <p>이 프로젝트에 연결된 글이 아직 없습니다.</p>
+          </div>
+        )}
+      </div>
+    </div>
+
+    {sidebarItems.length > 0 && (
+      <aside class="qt-list-aside">
+        <div class="qt-aside-inner">
+          <a href={`${base}projects/`} class="qt-aside-parent">
+            // PROJECTS
+          </a>
+          <div class="qt-aside-list">
+            {sidebarItems.map((project) => (
+              <a
+                href={`${base}projects/${project.slug}/`}
+                class:list={['qt-aside-item', { 'is-active': project.slug === summary.slug }]}
+                aria-current={project.slug === summary.slug ? 'page' : undefined}
+              >
+                <span class="qt-aside-name">{project.label}</span>
+                <span class="qt-aside-count">{project.count}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </aside>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  .qt-mono {
+    font-family: var(--font-mono);
+  }
+
+  .qt-list-hero {
+    padding: 64px 36px 28px;
+    border-bottom: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .qt-list-mono {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    margin-bottom: 14px;
+  }
+
+  .qt-list-title {
+    font-size: calc(56px * var(--h-scale));
+    font-weight: 800;
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: -0.045em;
+    line-height: 1.05;
+  }
+
+  .qt-list-hash {
+    color: var(--accent);
+  }
+
+  .qt-project-summary {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--muted);
+    margin: 18px 0 0;
+    max-width: 720px;
+  }
+
+  .qt-list-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 18px;
+    letter-spacing: 0.06em;
+  }
+
+  .qt-status-pill {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: var(--bg-alt);
+    color: var(--accent);
+  }
+
+  .qt-status-pill[data-status='archived'] {
+    color: var(--subtle);
+  }
+
+  .qt-status-pill[data-status='paused'] {
+    color: var(--muted);
+  }
+
+  .qt-project-links {
+    display: flex;
+    gap: 6px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .qt-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 11px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    border-radius: 4px;
+    color: var(--muted);
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+  }
+
+  .qt-chip:hover {
+    opacity: 0.78;
+  }
+
+  .qt-project-orphan {
+    margin-top: 16px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--subtle);
+    letter-spacing: 0.04em;
+  }
+
+  .qt-project-orphan code {
+    font-family: var(--font-mono);
+    background: var(--bg-alt);
+    padding: 2px 5px;
+    border-radius: 3px;
+    color: var(--ink);
+  }
+
+  .qt-list-body {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 36px 56px;
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 56px;
+  }
+
+  .qt-list-body:not(:has(.qt-list-aside)) {
+    grid-template-columns: 1fr;
+  }
+
+  .qt-list-main {
+    min-width: 0;
+  }
+
+  .qt-project-body {
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border-hair);
+    margin-bottom: 28px;
+    color: var(--ink);
+    line-height: 1.7;
+  }
+
+  .qt-project-body :global(h2) {
+    font-size: 22px;
+    font-weight: 700;
+    margin-top: 28px;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+
+  .qt-project-body :global(p) {
+    font-size: 15px;
+    color: var(--muted);
+    margin: 12px 0;
+  }
+
+  .qt-project-body :global(a) {
+    color: var(--accent-ink);
+  }
+
+  .qt-project-section {
+    padding-top: 4px;
+  }
+
+  .qt-list-thead {
+    display: grid;
+    grid-template-columns: 1fr 130px 90px;
+    gap: 18px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-strong);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+  }
+
+  .qt-list-thead-right {
+    text-align: right;
+  }
+
+  .qt-list-empty {
+    padding: 60px 0;
+    text-align: center;
+    color: var(--muted);
+  }
+
+  .qt-list-empty-mark {
+    display: block;
+    font-size: 11px;
+    color: var(--subtle);
+    letter-spacing: 0.12em;
+    margin-bottom: 8px;
+  }
+
+  /* 사이드바 */
+  .qt-aside-parent {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: 0.12em;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-strong);
+  }
+
+  .qt-aside-parent:hover {
+    color: var(--accent-ink);
+  }
+
+  .qt-aside-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .qt-aside-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 0.12s, color 0.12s;
+    color: var(--muted);
+  }
+
+  .qt-aside-item:hover {
+    background: var(--bg-alt);
+    color: var(--ink);
+  }
+
+  .qt-aside-item.is-active {
+    background: var(--ink);
+    color: var(--bg-elev);
+  }
+
+  .qt-aside-item.is-active .qt-aside-count {
+    color: var(--bg-elev);
+    opacity: 0.7;
+  }
+
+  .qt-aside-name {
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .qt-aside-count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--subtle);
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 900px) {
+    .qt-list-body {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .qt-list-aside {
+      order: -1;
+      margin-bottom: 8px;
+    }
+    .qt-aside-list {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .qt-aside-item {
+      padding: 6px 12px;
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+    }
+  }
+
+  @media (max-width: 720px) {
+    .qt-list-hero {
+      padding: 40px 20px 20px;
+    }
+    .qt-list-body {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+    .qt-list-title {
+      font-size: calc(36px * var(--h-scale));
+    }
+    .qt-list-thead {
+      display: none;
+    }
+  }
+</style>

@@ -1,5 +1,6 @@
 import { getCollection } from 'astro:content';
 import { CATEGORIES, type Category } from './categories';
+import { getProjectSummaries, type ProjectSummary } from './projects';
 import type { ActivityEntry } from '../components/widgets/SidebarActivity.astro';
 import type { IdeaCard } from '../components/widgets/IdeasStrip.astro';
 
@@ -11,6 +12,7 @@ export interface HomeData {
   topTags: Array<{ tag: string; count: number }>;
   recentActivity: ActivityEntry[];
   recentIdeas: IdeaCard[];
+  projectSummaries: ProjectSummary[];
 }
 
 export async function loadHomeData(): Promise<HomeData> {
@@ -71,6 +73,8 @@ export async function loadHomeData(): Promise<HomeData> {
     category: i.data.category,
   }));
 
+  const projectSummaries = await getProjectSummaries();
+
   return {
     totalArticles: sortedPosts.length,
     totalTags: tagSet.size,
@@ -79,5 +83,6 @@ export async function loadHomeData(): Promise<HomeData> {
     topTags,
     recentActivity,
     recentIdeas,
+    projectSummaries,
   };
 }

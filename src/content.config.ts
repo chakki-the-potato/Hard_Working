@@ -35,6 +35,7 @@ const blog = defineCollection({
     period: z.string().optional(),
     outcome: z.string().optional(),
     version: z.string().optional(),
+    project: z.string().optional(),
   }),
 });
 
@@ -74,4 +75,23 @@ const blogVersions = defineCollection({
   }),
 });
 
-export const collections = { blog, ideas, blogVersions };
+// Project metadata collection.
+// File path: src/data/projects/{slug}.md
+// Generated id (default glob, no flatten): {slug}
+const projects = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/data/projects' }),
+  schema: z.object({
+    title: z.string(),
+    summary: z.string(),
+    status: z.enum(['active', 'archived', 'paused']).default('active'),
+    period: z.string().optional(),
+    repoUrl: z.string().url().optional(),
+    demoUrl: z.string().url().optional(),
+    heroImage: z.string().optional(),
+    primaryCategory: z.enum(CATEGORIES).optional(),
+    order: z.number().optional(),
+    tags: z.array(z.string()).default([]),
+  }),
+});
+
+export const collections = { blog, ideas, blogVersions, projects };

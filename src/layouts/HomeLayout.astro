@@ -5,11 +5,13 @@ import PostListRow from '../components/PostListRow.astro';
 import HeroDriftBg from '../components/HeroDriftBg.astro';
 import SidebarAbout from '../components/widgets/SidebarAbout.astro';
 import SidebarCategoryStats from '../components/widgets/SidebarCategoryStats.astro';
+import SidebarProjectStats from '../components/widgets/SidebarProjectStats.astro';
 import SidebarTagCloud from '../components/widgets/SidebarTagCloud.astro';
 import SidebarActivity from '../components/widgets/SidebarActivity.astro';
 import IdeasStrip from '../components/widgets/IdeasStrip.astro';
 import type { ActivityEntry } from '../components/widgets/SidebarActivity.astro';
 import type { IdeaCard } from '../components/widgets/IdeasStrip.astro';
+import type { ProjectSummary } from '../lib/projects';
 import { SITE_TITLE, SITE_DESCRIPTION, FEATURED_COUNT, POSTS_PER_PAGE } from '../consts';
 import type { Category } from '../lib/categories';
 
@@ -42,6 +44,7 @@ interface Props {
   topTags: Array<{ tag: string; count: number }>;
   recentActivity: ActivityEntry[];
   recentIdeas: IdeaCard[];
+  projectSummaries: ProjectSummary[];
 }
 
 const {
@@ -54,6 +57,7 @@ const {
   topTags,
   recentActivity,
   recentIdeas,
+  projectSummaries,
 } = Astro.props;
 
 const pad2 = (n: number) => String(n).padStart(2, '0');
@@ -173,6 +177,7 @@ const archiveStartIndex = FEATURED_COUNT + (archivePage.currentPage - 1) * POSTS
     <aside class="qt-home-aside" aria-label="사이드바">
       <SidebarAbout />
       <SidebarCategoryStats counts={categoryCounts} />
+      <SidebarProjectStats projects={projectSummaries} />
       {topTags.length > 0 && <SidebarTagCloud tags={topTags} />}
       {recentActivity.length > 0 && <SidebarActivity entries={recentActivity} />}
     </aside>

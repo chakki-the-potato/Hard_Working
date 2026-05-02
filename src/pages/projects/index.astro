@@ -1,0 +1,352 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getProjectSummaries } from '../../lib/projects';
+
+const base = import.meta.env.BASE_URL;
+
+const summaries = await getProjectSummaries();
+const projects = summaries.filter((p) => p.count > 0 || p.meta);
+const totalPosts = projects.reduce((sum, p) => sum + p.count, 0);
+const lastUpdate = projects
+  .map((p) => p.latest)
+  .filter((d): d is Date => Boolean(d))
+  .sort((a, b) => b.valueOf() - a.valueOf())[0];
+
+const lastUpdateLabel = lastUpdate
+  ? `${lastUpdate.getFullYear()}.${String(lastUpdate.getMonth() + 1).padStart(2, '0')}.${String(lastUpdate.getDate()).padStart(2, '0')}`
+  : '';
+
+function statusLabel(status: 'active' | 'archived' | 'paused' | undefined): string {
+  if (status === 'archived') return 'ARCHIVED';
+  if (status === 'paused') return 'PAUSED';
+  return 'ACTIVE';
+}
+---
+
+<BaseLayout
+  title="Projects — Hard_Working"
+  description="프로젝트별로 묶어 본 빌드 로그와 글들"
+  noPadding={true}
+>
+  <section class="qt-list-hero">
+    <span class="qt-mono qt-list-mono">// PROJECTS</span>
+    <h1 class="qt-list-title">
+      <span class="qt-list-hash">#</span>{' '}Projects
+    </h1>
+    <span class="qt-mono qt-list-meta">
+      {projects.length} PROJECTS · {totalPosts} POSTS{lastUpdateLabel ? ` · LAST_UPDATE ${lastUpdateLabel}` : ''}
+    </span>
+  </section>
+
+  <div class="qt-list-body">
+    <div class="qt-list-main">
+      {projects.length === 0 && (
+        <div class="qt-list-empty">
+          <span class="qt-mono qt-list-empty-mark">// EMPTY</span>
+          <p>아직 등록된 프로젝트가 없습니다.</p>
+        </div>
+      )}
+
+      <div class="qt-project-grid">
+        {projects.map((project) => (
+          <a class="qt-project-card" href={`${base}projects/${project.slug}/`}>
+            <div class="qt-project-card-head">
+              <span class="qt-mono qt-project-status" data-status={project.meta?.data.status ?? 'active'}>
+                {statusLabel(project.meta?.data.status)}
+              </span>
+              <span class="qt-mono qt-project-count">
+                {String(project.count).padStart(2, '0')} POST{project.count === 1 ? '' : 'S'}
+              </span>
+            </div>
+            <h2 class="qt-project-card-title">{project.label}</h2>
+            {project.meta?.data.summary && (
+              <p class="qt-project-card-summary">{project.meta.data.summary}</p>
+            )}
+            <div class="qt-project-card-meta">
+              {project.meta?.data.period && (
+                <span class="qt-mono">{project.meta.data.period}</span>
+              )}
+              {!project.meta && (
+                <span class="qt-mono qt-project-card-orphan">// META MISSING</span>
+              )}
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    {projects.length > 0 && (
+      <aside class="qt-list-aside">
+        <div class="qt-aside-inner">
+          <a href={`${base}projects/`} class="qt-aside-parent is-active" aria-current="page">
+            // PROJECTS
+          </a>
+          <div class="qt-aside-list">
+            {projects.map((project) => (
+              <a href={`${base}projects/${project.slug}/`} class="qt-aside-item">
+                <span class="qt-aside-name">{project.label}</span>
+                <span class="qt-aside-count">{project.count}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </aside>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  .qt-mono {
+    font-family: var(--font-mono);
+  }
+
+  .qt-list-hero {
+    padding: 64px 36px 28px;
+    border-bottom: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .qt-list-mono {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    margin-bottom: 14px;
+  }
+
+  .qt-list-title {
+    font-size: calc(64px * var(--h-scale));
+    font-weight: 800;
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: -0.045em;
+    line-height: 1;
+  }
+
+  .qt-list-hash {
+    color: var(--accent);
+  }
+
+  .qt-list-meta {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 14px;
+    letter-spacing: 0.06em;
+  }
+
+  .qt-list-body {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 36px 56px;
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 56px;
+  }
+
+  .qt-list-body:not(:has(.qt-list-aside)) {
+    grid-template-columns: 1fr;
+  }
+
+  .qt-list-main {
+    min-width: 0;
+  }
+
+  .qt-list-empty {
+    padding: 60px 0;
+    text-align: center;
+    color: var(--muted);
+  }
+
+  .qt-list-empty-mark {
+    display: block;
+    font-size: 11px;
+    color: var(--subtle);
+    letter-spacing: 0.12em;
+    margin-bottom: 8px;
+  }
+
+  .qt-project-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .qt-project-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px 22px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg-elev);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+
+  .qt-project-card:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-1px);
+  }
+
+  .qt-project-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .qt-project-status {
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    font-weight: 700;
+  }
+
+  .qt-project-status[data-status='archived'] {
+    color: var(--subtle);
+  }
+
+  .qt-project-status[data-status='paused'] {
+    color: var(--muted);
+  }
+
+  .qt-project-count {
+    font-size: 10px;
+    color: var(--subtle);
+    letter-spacing: 0.06em;
+  }
+
+  .qt-project-card-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  .qt-project-card-summary {
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  .qt-project-card-meta {
+    margin-top: auto;
+    padding-top: 6px;
+    font-size: 11px;
+    color: var(--subtle);
+    letter-spacing: 0.06em;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .qt-project-card-orphan {
+    color: var(--subtle);
+    opacity: 0.7;
+  }
+
+  /* 사이드바 */
+  .qt-aside-parent {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: 0.12em;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-strong);
+  }
+
+  .qt-aside-parent:hover {
+    color: var(--accent-ink);
+  }
+
+  .qt-aside-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .qt-aside-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 0.12s, color 0.12s;
+    color: var(--muted);
+  }
+
+  .qt-aside-item:hover {
+    background: var(--bg-alt);
+    color: var(--ink);
+  }
+
+  .qt-aside-item.is-active {
+    background: var(--ink);
+    color: var(--bg-elev);
+  }
+
+  .qt-aside-item.is-active .qt-aside-count {
+    color: var(--bg-elev);
+    opacity: 0.7;
+  }
+
+  .qt-aside-name {
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .qt-aside-count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--subtle);
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 900px) {
+    .qt-list-body {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .qt-list-aside {
+      order: -1;
+      margin-bottom: 8px;
+    }
+    .qt-aside-list {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .qt-aside-item {
+      padding: 6px 12px;
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+    }
+    .qt-project-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .qt-list-hero {
+      padding: 40px 20px 20px;
+    }
+    .qt-list-body {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+    .qt-list-title {
+      font-size: calc(40px * var(--h-scale));
+    }
+  }
+</style>
