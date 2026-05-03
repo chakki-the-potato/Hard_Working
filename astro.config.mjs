@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
+import rehypeExternalLinks from 'rehype-external-links';
 import redirectMap from './scripts/redirect-map.json' with { type: 'json' };
 
 export default defineConfig({
@@ -12,6 +13,9 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
   markdown: {
+    rehypePlugins: [
+      [rehypeExternalLinks, { target: '_blank', rel: ['noopener', 'noreferrer'] }],
+    ],
     shikiConfig: {
       themes: {
         light: 'github-light',
