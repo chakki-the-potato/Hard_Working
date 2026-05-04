@@ -126,8 +126,6 @@ const parentHref = projectSlug
           <a href={`${base}posts/versions/${id}/`} class="qt-post-history-link">버전 히스토리 →</a>
         )}
       </div>
-      <p class="qt-post-lede">{description}</p>
-
       {hasWorksMeta && (
         <dl class="qt-post-works-meta" aria-label="Works metadata">
           {role && (
@@ -368,15 +366,6 @@ const parentHref = projectSlug
     border-bottom-color: var(--accent);
   }
 
-  .qt-post-lede {
-    font-size: 19px;
-    line-height: 1.65;
-    color: var(--ink);
-    margin: 32px 0;
-    font-weight: 600;
-    letter-spacing: -0.015em;
-  }
-
   .qt-post-works-meta {
     display: grid;
     grid-template-columns: max-content 1fr;
@@ -549,9 +538,6 @@ const parentHref = projectSlug
     }
     .qt-post-title {
       font-size: calc(28px * var(--h-scale));
-    }
-    .qt-post-lede {
-      font-size: 17px;
     }
     .qt-post-history-link {
       margin-left: 0;
