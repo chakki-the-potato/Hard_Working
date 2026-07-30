@@ -12,7 +12,7 @@ test("command palette supports open, search, keyboard navigation, and close", as
 
   expect(items.length).toBeGreaterThan(1);
   await page.goto("/");
-  await page.keyboard.press("Meta+k");
+  await page.locator("[data-cmdk-trigger]").first().click();
 
   await expect(page.locator("#qt-cmdk")).toBeVisible();
   await expect(page.locator("#qt-cmdk-input")).toBeFocused();
@@ -62,7 +62,7 @@ test("search page filters immediately from the URL query", async ({
 
 test("404 search action opens the command palette", async ({ page }) => {
   await page.goto("/posts/missing-public-page");
-  await page.locator(".not-found-actions [data-cmdk-trigger]").click();
+  await page.locator(".qt-404-actions [data-cmdk-trigger]").click();
 
   await expect(page.locator("#qt-cmdk")).toBeVisible();
 });

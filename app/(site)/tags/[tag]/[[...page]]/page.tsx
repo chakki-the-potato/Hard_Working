@@ -5,7 +5,11 @@ import {
   paginate,
   parsePathPage,
 } from "@/lib/content/pagination";
-import { listPublishedPosts } from "@/lib/content/public-queries";
+import {
+  listPublishedIdeas,
+  listPublishedPosts,
+  listPublishedProjects,
+} from "@/lib/content/public-queries";
 import { POSTS_PER_PAGE } from "@/lib/site";
 
 type TagPageProps = Readonly<{
@@ -31,8 +35,15 @@ export default async function TagPage({ params }: TagPageProps) {
     notFound();
   }
 
-  const posts = (await listPublishedPosts()).filter((post) =>
-    post.tags.some((itemTag) => itemTag.name === tag),
+  const [allPosts, ideas, projects] = await Promise.all([
+    listPublishedPosts(),
+    listPublishedIdeas(),
+    listPublishedProjects(),
+  ]);
+  const posts = allPosts.filter((post) =>
+    post.tags.some(
+      (itemTag) => itemTag.name === tag || itemTag.slug === tag,
+    ),
   );
   const result = paginate(posts, pageNumber, POSTS_PER_PAGE);
 
@@ -40,17 +51,49 @@ export default async function TagPage({ params }: TagPageProps) {
     notFound();
   }
 
+  const activeTag =
+    posts.flatMap((post) => post.tags).find(
+      (itemTag) => itemTag.name === tag || itemTag.slug === tag,
+    )?.name ?? tag;
+  const categoryCounts = new Map<string, number>();
+  for (const post of posts) {
+    if (post.category) {
+      categoryCounts.set(
+        post.category.slug,
+        (categoryCounts.get(post.category.slug) ?? 0) + 1,
+      );
+    }
+  }
+  const activeCategory = [...categoryCounts.entries()].sort(
+    (left, right) => right[1] - left[1],
+  )[0]?.[0];
+  const activeCategoryLabel = allPosts.find(
+    (post) => post.category?.slug === activeCategory,
+  )?.category?.name;
+
   return (
     <ContentList
       currentPage={result.currentPage}
+      filterContext={
+        activeCategory && activeCategoryLabel
+          ? {
+              activeCategory,
+              activeCategoryLabel,
+              activeTag,
+              allPosts,
+              ideas,
+              projects,
+            }
+          : undefined
+      }
       items={result.items}
-      kicker="// TAG"
+      kicker="// TAG / FILTER"
       pageHref={(targetPage) =>
         targetPage === 1
           ? `/tags/${encodeURIComponent(tag)}`
           : `/tags/${encodeURIComponent(tag)}/${targetPage}`
       }
-      title={`#${tag}`}
+      title={`#${activeTag}`}
       totalCount={posts.length}
       totalPages={result.totalPages}
     />

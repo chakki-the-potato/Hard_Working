@@ -5,7 +5,11 @@ import {
   paginate,
   parsePathPage,
 } from "@/lib/content/pagination";
-import { listPublishedPosts } from "@/lib/content/public-queries";
+import {
+  listPublishedIdeas,
+  listPublishedPosts,
+  listPublishedProjects,
+} from "@/lib/content/public-queries";
 import { POSTS_PER_PAGE } from "@/lib/site";
 
 const CATEGORY_LABELS: Readonly<Record<string, string>> = {
@@ -42,7 +46,12 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     notFound();
   }
 
-  const posts = (await listPublishedPosts()).filter(
+  const [allPosts, ideas, projects] = await Promise.all([
+    listPublishedPosts(),
+    listPublishedIdeas(),
+    listPublishedProjects(),
+  ]);
+  const posts = allPosts.filter(
     (post) => post.category?.slug === category,
   );
   const result = paginate(posts, pageNumber, POSTS_PER_PAGE);
@@ -54,15 +63,21 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   return (
     <ContentList
       currentPage={result.currentPage}
-      description={`${label} 카테고리에 쌓인 기록입니다.`}
+      filterContext={{
+        activeCategory: category,
+        activeCategoryLabel: label,
+        allPosts,
+        ideas,
+        projects,
+      }}
       items={result.items}
-      kicker={`// CATEGORY / ${category.toUpperCase()}`}
+      kicker="// CATEGORY"
       pageHref={(targetPage) =>
         targetPage === 1
           ? `/posts/category/${category}`
           : `/posts/category/${category}/${targetPage}`
       }
-      title={label}
+      title={`#${label}`}
       totalCount={posts.length}
       totalPages={result.totalPages}
     />

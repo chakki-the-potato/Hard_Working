@@ -1,6 +1,17 @@
-import Link from "next/link";
+import { ListNavigation } from "@/components/site/list-navigation";
+import { ListPagination } from "@/components/site/list-pagination";
+import { ListSidebar } from "@/components/site/list-sidebar";
 import { PostListRow } from "@/components/site/post-list-row";
 import type { PublicContentItem } from "@/lib/content/public-types";
+
+export type ListFilterContext = Readonly<{
+  activeCategory: string;
+  activeCategoryLabel: string;
+  activeTag?: string;
+  allPosts: readonly PublicContentItem[];
+  ideas: readonly PublicContentItem[];
+  projects: readonly PublicContentItem[];
+}>;
 
 export type ListViewProps = Readonly<{
   kicker: string;
@@ -11,7 +22,20 @@ export type ListViewProps = Readonly<{
   totalPages?: number;
   totalCount?: number;
   pageHref?: (page: number) => string;
+  filterContext?: ListFilterContext;
 }>;
+
+function formatDate(value: string): string {
+  return new Intl.DateTimeFormat("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: "Asia/Seoul",
+  })
+    .format(new Date(value))
+    .replace(/\.\s*/g, ".")
+    .replace(/\.$/, "");
+}
 
 export function ListView({
   kicker,
@@ -22,8 +46,15 @@ export function ListView({
   totalPages = 1,
   totalCount = items.length,
   pageHref,
+  filterContext,
 }: ListViewProps) {
-  const latestUpdate = items[0]?.updatedAt;
+  const latestUpdate = filterContext?.allPosts[0]?.publishedAt ?? items[0]?.publishedAt;
+  const globalNumberById = new Map(
+    filterContext?.allPosts.map((item, index, allItems) => [
+      item.id,
+      allItems.length - index,
+    ]) ?? [],
+  );
 
   return (
     <main>
@@ -33,6 +64,7 @@ export function ListView({
           {title.startsWith("#") ? (
             <>
               <span className="qt-list-hash">#</span>
+              {" "}
               {title.slice(1)}
             </>
           ) : (
@@ -42,15 +74,21 @@ export function ListView({
         <span className="qt-mono qt-list-meta">
           {totalCount} ARTICLES
           {latestUpdate
-            ? ` · LAST_UPDATE ${new Intl.DateTimeFormat("ko-KR", {
-                dateStyle: "short",
-                timeZone: "Asia/Seoul",
-              }).format(new Date(latestUpdate))}`
+            ? ` · LAST_UPDATE ${formatDate(latestUpdate)}`
             : ""}
         </span>
         {description ? <p className="qt-list-desc">{description}</p> : null}
       </section>
-      <section className="qt-list-chips" aria-hidden="true" />
+      <section className="qt-list-chips">
+        {filterContext ? (
+          <ListNavigation
+            activeCategory={filterContext.activeCategory}
+            activeTag={filterContext.activeTag}
+            posts={filterContext.allPosts}
+            projects={filterContext.projects}
+          />
+        ) : null}
+      </section>
       <div className="qt-list-body">
         <section className="qt-list-main" aria-label={`${title} 목록`}>
           {items.length > 0 ? (
@@ -66,7 +104,11 @@ export function ListView({
               <PostListRow
                 item={item}
                 key={item.id}
-                number={totalCount - (currentPage - 1) * 12 - index}
+                number={
+                  globalNumberById.get(item.id) ??
+                  totalCount - (currentPage - 1) * 12 - index
+                }
+                showVersion={item.kind !== "post"}
               />
             ))}
           </div>
@@ -76,25 +118,24 @@ export function ListView({
               <p>해당하는 글이 아직 없어요.</p>
             </div>
           ) : null}
-          {pageHref && totalPages > 1 ? (
-            <nav aria-label="페이지 이동" className="qt-pagination">
-              {currentPage > 1 ? (
-                <Link href={pageHref(currentPage - 1)}>← PREV</Link>
-              ) : (
-                <span />
-              )}
-              <span>
-                {String(currentPage).padStart(2, "0")} /{" "}
-                {String(totalPages).padStart(2, "0")}
-              </span>
-              {currentPage < totalPages ? (
-                <Link href={pageHref(currentPage + 1)}>NEXT →</Link>
-              ) : (
-                <span />
-              )}
-            </nav>
+          {pageHref ? (
+            <ListPagination
+              currentPage={currentPage}
+              pageHref={pageHref}
+              totalPages={totalPages}
+            />
           ) : null}
         </section>
+        {filterContext ? (
+          <ListSidebar
+            activeCategory={filterContext.activeCategory}
+            activeCategoryLabel={filterContext.activeCategoryLabel}
+            activeTag={filterContext.activeTag}
+            ideas={filterContext.ideas}
+            posts={filterContext.allPosts}
+            projects={filterContext.projects}
+          />
+        ) : null}
       </div>
     </main>
   );

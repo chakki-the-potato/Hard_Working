@@ -174,9 +174,26 @@ export function ArticleView({
             )}
           </section>
           <ArticleNavigation neighbors={neighbors} />
-          <Link className="qt-post-back" href={parentPath}>
-            ← {parentLabel} 목록으로
-          </Link>
+          <div className="qt-post-back-wrap">
+            <Link className="qt-post-back" href="/">
+              <svg
+                aria-hidden="true"
+                fill="none"
+                height="14"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                width="14"
+              >
+                <path
+                  d="M15 19l-7-7 7-7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              목록으로
+            </Link>
+          </div>
         </article>
       </div>
     </main>

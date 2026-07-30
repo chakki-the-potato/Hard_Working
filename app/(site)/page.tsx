@@ -11,12 +11,12 @@ import {
 } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: SITE_TITLE,
+  title: { absolute: SITE_TITLE },
   description: SITE_DESCRIPTION,
 };
 
 export default async function HomePage() {
-  const { posts, ideas, projects, categoryStats, tagStats } =
+  const { posts, ideas, projects, categoryStats, tagStats, recentActivity } =
     await getHomeViewData();
 
   return (
@@ -27,6 +27,7 @@ export default async function HomePage() {
       ideas={ideas}
       posts={posts}
       projects={projects}
+      recentActivity={recentActivity}
       tagStats={tagStats}
     />
   );

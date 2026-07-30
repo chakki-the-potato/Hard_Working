@@ -13,6 +13,7 @@ type HomeViewProps = Readonly<{
   projects: readonly PublicContentItem[];
   categoryStats: readonly PublicContentStat[];
   tagStats: readonly PublicContentStat[];
+  recentActivity: readonly PublicContentItem[];
   featuredCount: number;
   archiveCount: number;
 }>;
@@ -23,12 +24,17 @@ export function HomeView({
   projects,
   categoryStats,
   tagStats,
+  recentActivity,
   featuredCount,
   archiveCount,
 }: HomeViewProps) {
   const featured = posts.slice(0, featuredCount);
   const archive = posts.slice(featuredCount, featuredCount + archiveCount);
-  const recentIdeas = ideas.slice(0, 4);
+  const recentIdeas = ideas.slice(0, 3);
+  const archivePageCount = Math.max(
+    1,
+    Math.ceil(Math.max(0, posts.length - featuredCount) / archiveCount),
+  );
   const totalTags = new Set(
     posts.flatMap((post) => post.tags.map((tag) => tag.slug)),
   ).size;
@@ -43,8 +49,8 @@ export function HomeView({
         </div>
         <div className="qt-hero-inner">
           <aside className="qt-hero-mark" aria-hidden="true">
-            <span>/STUDY</span>
-            <span>JOURNAL</span>
+            <span className="qt-hero-mark-num">/STUDY</span>
+            <span className="qt-hero-mark-year">JOURNAL</span>
           </aside>
           <div className="qt-hero-syslog">
             SYS_LOG
@@ -103,24 +109,46 @@ export function HomeView({
 
           <section className="qt-strip">
             <div className="qt-strip-head">
-              <h2>// IDEAS / SCRATCHPAD</h2>
-              <Link href="/ideas">VIEW ALL →</Link>
+              <h2 className="qt-strip-mono">// IDEAS · SCRATCHPAD</h2>
+              <Link className="qt-strip-more" href="/ideas">
+                ALL →
+              </Link>
             </div>
-            <div className="qt-strip-list">
-              {recentIdeas.map((idea) => (
-                <Link href={idea.path} key={idea.id}>
-                  <span>{idea.title}</span>
-                  <span>↗</span>
+            <div className="qt-strip-rail">
+              {recentIdeas.map((idea, index) => (
+                <Link className="qt-strip-card" href={idea.path} key={idea.id}>
+                  <span className="qt-strip-num">
+                    № {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="qt-strip-cat">
+                    [{idea.category?.name.toUpperCase() ?? "IDEA"}]
+                  </span>
+                  <h3 className="qt-strip-title">{idea.title}</h3>
+                  <time
+                    className="qt-strip-date"
+                    dateTime={idea.publishedAt}
+                  >
+                    {new Intl.DateTimeFormat("ko-KR", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      timeZone: "Asia/Seoul",
+                    })
+                      .format(new Date(idea.publishedAt))
+                      .replace(/\.\s*/g, ".")
+                      .replace(/\.$/, "")}
+                  </time>
                 </Link>
               ))}
-              {recentIdeas.length === 0 ? <span>아직 등록된 아이디어가 없습니다.</span> : null}
             </div>
           </section>
 
           <section className="qt-archive-wrap">
             <div className="qt-section-head qt-section-archive">
               <h2 className="qt-section-mono">// ARCHIVE</h2>
-              <span className="qt-section-count">PAGE 01</span>
+              <span className="qt-section-count">
+                PAGE 01 OF {String(archivePageCount).padStart(2, "0")}
+              </span>
             </div>
             <div className="qt-archive-list">
               {archive.map((post, index) => (
@@ -131,12 +159,29 @@ export function HomeView({
                 />
               ))}
             </div>
+            <nav aria-label="페이지 이동" className="qt-archive-pager">
+              <span className="qt-pager-arrow is-disabled">← PREV</span>
+              <span className="qt-pager-mono">
+                01 / {String(archivePageCount).padStart(2, "0")}
+              </span>
+              {archivePageCount > 1 ? (
+                <Link className="qt-pager-arrow is-next" href="/page/2">
+                  NEXT →
+                </Link>
+              ) : (
+                <span className="qt-pager-arrow is-next is-disabled">
+                  NEXT →
+                </span>
+              )}
+            </nav>
           </section>
         </div>
         <aside className="qt-home-aside" aria-label="사이드바">
           <SidebarWidgets
             categoryStats={categoryStats}
+            posts={posts}
             projects={projects}
+            recentActivity={recentActivity}
             tagStats={tagStats}
           />
         </aside>

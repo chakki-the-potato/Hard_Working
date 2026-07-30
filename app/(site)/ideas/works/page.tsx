@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
-import { ContentRow } from "@/components/site/content-row";
-import { listWorksIdeaGroups } from "@/lib/content/public-queries";
+import { WorksIdeasView } from "@/components/site/works-ideas-view";
+import {
+  listPublishedIdeas,
+  listWorksIdeaGroups,
+} from "@/lib/content/public-queries";
 
 export const metadata: Metadata = {
   title: "Works — Ideas",
@@ -8,39 +11,10 @@ export const metadata: Metadata = {
 };
 
 export default async function WorksIdeasPage() {
-  const groups = await listWorksIdeaGroups();
-  const totalNotes = groups.reduce(
-    (total, group) => total + group.items.length,
-    0,
-  );
+  const [groups, ideas] = await Promise.all([
+    listWorksIdeaGroups(),
+    listPublishedIdeas(),
+  ]);
 
-  return (
-    <main>
-      <section className="qt-list-hero">
-        <span className="qt-mono qt-list-mono">// IDEAS / WORKS</span>
-        <h1 className="qt-list-title">
-          <span className="qt-list-hash">#</span>Works
-        </h1>
-        <small className="qt-mono qt-list-meta">
-          {groups.length} PROJECTS · {totalNotes} NOTES
-        </small>
-      </section>
-
-      <section className="qt-project-groups" aria-label="Works 아이디어 목록">
-        {groups.map((group) => (
-          <section className="qt-project-group" key={group.slug}>
-            <header className="qt-project-group-head">
-              <span className="qt-mono">// PROJECT</span>
-              <h2>{group.label}</h2>
-            </header>
-            <div className="qt-list-rows">
-              {group.items.map((item) => (
-                <ContentRow item={item} key={item.id} />
-              ))}
-            </div>
-          </section>
-        ))}
-      </section>
-    </main>
-  );
+  return <WorksIdeasView groups={groups} ideas={ideas} />;
 }

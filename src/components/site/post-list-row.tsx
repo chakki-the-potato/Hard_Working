@@ -4,6 +4,7 @@ import type { PublicContentItem } from "@/lib/content/public-types";
 type PostListRowProps = Readonly<{
   item: PublicContentItem;
   number?: number;
+  showVersion?: boolean;
 }>;
 
 function formatDate(value: string): string {
@@ -18,7 +19,11 @@ function formatDate(value: string): string {
     .replace(/\.$/, "");
 }
 
-export function PostListRow({ item, number }: PostListRowProps) {
+export function PostListRow({
+  item,
+  number,
+  showVersion = false,
+}: PostListRowProps) {
   const numberLabel =
     number === undefined ? null : String(number).padStart(3, "0");
   const category = item.category?.name ?? "";
@@ -34,7 +39,7 @@ export function PostListRow({ item, number }: PostListRowProps) {
       ) : null}
       <span className="qt-list-title-cell">
         <span className="qt-list-title">{item.title}</span>
-        {item.versionLabel ? (
+        {showVersion && item.versionLabel ? (
           <span className="qt-list-version">{item.versionLabel}</span>
         ) : null}
       </span>

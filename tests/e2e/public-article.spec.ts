@@ -31,7 +31,7 @@ test("article keeps legacy metadata, body, progress, and navigation", async ({
 test("project detail uses the same legacy article frame", async ({ page }) => {
   await page.goto("/projects");
   const projectHref = await page
-    .locator(".qt-project-grid .project-card")
+    .locator(".qt-project-grid .qt-project-card")
     .first()
     .getAttribute("href");
 

@@ -17,6 +17,7 @@ export type PublicContentItem = Readonly<{
   slug: string;
   path: string;
   parentItemId: string | null;
+  createdAt: string;
   title: string;
   description: string | null;
   summary: string | null;

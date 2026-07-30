@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ContentList } from "@/components/site/content-list";
+import { IdeasListView } from "@/components/site/ideas-list-view";
 import { listPublishedIdeas } from "@/lib/content/public-queries";
 
 export const metadata: Metadata = {
@@ -10,13 +10,5 @@ export const metadata: Metadata = {
 export default async function IdeasPage() {
   const ideas = await listPublishedIdeas();
 
-  return (
-    <ContentList
-      description="아직 다듬지 않은 생각과 실험을 모아둡니다."
-      items={ideas}
-      kicker="// IDEAS / SCRATCHPAD"
-      title="Idea"
-      totalCount={ideas.length}
-    />
-  );
+  return <IdeasListView ideas={ideas} />;
 }

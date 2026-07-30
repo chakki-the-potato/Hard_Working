@@ -36,6 +36,7 @@ type PublicContentRow = Readonly<{
     slug: string;
     path: string;
     parent_item_id: string | null;
+    created_at: string;
   }>;
   category: Readonly<{
     name: string;
@@ -131,6 +132,7 @@ function mapContentRow(row: PublicContentRow): PublicContentItem {
     slug: row.item.slug,
     path: row.item.path,
     parentItemId: row.item.parent_item_id,
+    createdAt: row.item.created_at,
     title: row.title,
     description: row.description,
     summary: row.summary,
@@ -160,7 +162,7 @@ export const listPublishedContent = cache(
         supabase
           .from("content_versions")
           .select(
-            "id, content_item_id, version_label, title, description, summary, body_markdown, demo_url, repository_url, role, period, outcome, published_at, updated_at, item:content_items!inner(id, kind, slug, path, parent_item_id), category:categories(name, slug), content_version_tags(sort_order, tag:tags(name, slug)), project_version_details(status, sort_order)",
+            "id, content_item_id, version_label, title, description, summary, body_markdown, demo_url, repository_url, role, period, outcome, published_at, updated_at, item:content_items!inner(id, kind, slug, path, parent_item_id, created_at), category:categories(name, slug), content_version_tags(sort_order, tag:tags(name, slug)), project_version_details(status, sort_order)",
           )
           .eq("state", "published")
           .order("published_at", { ascending: false })
@@ -181,7 +183,14 @@ export async function listPublishedPosts(): Promise<
 export async function listPublishedIdeas(): Promise<
   readonly PublicContentItem[]
 > {
-  return (await listPublishedContent()).filter((item) => item.kind === "idea");
+  return (await listPublishedContent())
+    .filter((item) => item.kind === "idea")
+    .sort(
+      (left, right) =>
+        new Date(right.publishedAt).valueOf() -
+          new Date(left.publishedAt).valueOf() ||
+        right.title.localeCompare(left.title, "ko"),
+    );
 }
 
 export async function listPublishedProjects(): Promise<
@@ -198,7 +207,14 @@ export async function listPublishedProjects(): Promise<
 export async function getHomeViewData(): Promise<PublicHomeViewData> {
   const items = await listPublishedContent();
   const posts = items.filter((item) => item.kind === "post");
-  const ideas = items.filter((item) => item.kind === "idea");
+  const ideas = items
+    .filter((item) => item.kind === "idea")
+    .sort(
+      (left, right) =>
+        new Date(right.publishedAt).valueOf() -
+          new Date(left.publishedAt).valueOf() ||
+        right.title.localeCompare(left.title, "ko"),
+    );
   const categoryCounts = new Map<string, { label: string; count: number }>();
   const tagCounts = new Map<string, { label: string; count: number }>();
 
@@ -233,14 +249,18 @@ export async function getHomeViewData(): Promise<PublicHomeViewData> {
       .sort((left, right) => right.count - left.count),
     tagStats: [...tagCounts.entries()]
       .map(([slug, stat]) => ({ slug, ...stat }))
-      .sort((left, right) => right.count - left.count),
+      .sort(
+        (left, right) =>
+          right.count - left.count ||
+          left.label.localeCompare(right.label),
+      ),
     recentActivity: [...posts, ...ideas]
       .sort(
         (left, right) =>
           new Date(right.publishedAt).valueOf() -
           new Date(left.publishedAt).valueOf(),
       )
-      .slice(0, 5),
+      .slice(0, 6),
   };
 }
 
@@ -288,7 +308,9 @@ export async function listWorksIdeaGroups(): Promise<
       const sortedItems = [...items].sort(
         (left, right) =>
           new Date(right.publishedAt).valueOf() -
-          new Date(left.publishedAt).valueOf(),
+            new Date(left.publishedAt).valueOf() ||
+          new Date(left.createdAt).valueOf() -
+            new Date(right.createdAt).valueOf(),
       );
 
       return {
@@ -301,7 +323,8 @@ export async function listWorksIdeaGroups(): Promise<
     .sort(
       (left, right) =>
         new Date(right.latestPublishedAt).valueOf() -
-        new Date(left.latestPublishedAt).valueOf(),
+          new Date(left.latestPublishedAt).valueOf() ||
+        left.label.localeCompare(right.label),
     );
 }
 
