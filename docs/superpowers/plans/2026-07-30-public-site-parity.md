@@ -458,15 +458,15 @@ rtk git commit -m "feat(site): restore legacy motion effects"
 - Consumes: 기존 BaseHead metadata, 공개 route inventory, Tasks 1~6의 UI.
 - Produces: 최종 URL·metadata·브라우저 회귀 검증 결과.
 
-- [ ] **Step 1: SEO와 출력 계약 테스트를 작성한다.**
+- [x] **Step 1: SEO와 출력 계약 테스트를 작성한다.**
 
 title, description, canonical, Open Graph, RSS 항목 수, sitemap URL, 404 검색 버튼, 주요 영구 리다이렉트를 검사한다.
 
-- [ ] **Step 2: 시각 스모크 대상을 고정한다.**
+- [x] **Step 2: 시각 스모크 대상을 고정한다.**
 
 홈, 글 상세, 카테고리, 태그, Ideas, Ideas/Works, Projects, 검색, 404를 1440×1000과 390×844에서 캡처한다. 캡처는 `output/playwright/parity/`에 저장하고 커밋하지 않는다.
 
-- [ ] **Step 3: 전체 로컬 검증을 실행한다.**
+- [x] **Step 3: 전체 로컬 검증을 실행한다.**
 
 ```bash
 rtk npm run typecheck:next
@@ -476,18 +476,18 @@ rtk npx playwright test
 
 Expected: 타입 오류 0, build exit 0, Playwright 실패 0.
 
-- [ ] **Step 4: 기존 Astro 기준 화면과 캡처를 나란히 비교한다.**
+- [x] **Step 4: 기존 Astro 기준 화면과 캡처를 나란히 비교한다.**
 
 Header, Hero, 글 목록, 사이드바, 본문 너비, 타이포그래피, Footer, 모바일 줄바꿈과 간격 차이가 없을 때만 통과로 기록한다.
 
-- [ ] **Step 5: SEO·회귀 변경을 커밋한다.**
+- [x] **Step 5: SEO·회귀 변경을 커밋한다.**
 
 ```bash
 rtk git add app/layout.tsx app/sitemap.ts app/rss.xml/route.ts 'app/(site)/not-found.tsx' tests/e2e/public-seo.spec.ts tests/e2e/public-visual-smoke.spec.ts package.json
 rtk git commit -m "test(site): cover public parity workflows"
 ```
 
-- [ ] **Step 6: 전체 로컬 검증 결과를 기록한다.**
+- [x] **Step 6: 전체 로컬 검증 결과를 기록한다.**
 
 Tasks 1~7의 URL, 상호작용, SEO, 데스크톱·모바일 캡처 결과가 모두 통과했는지 확인한다. Astro 제거는 이 결과가 통과한 경우에만 진행한다.
 
@@ -513,7 +513,7 @@ Tasks 1~7의 URL, 상호작용, SEO, 데스크톱·모바일 캡처 결과가 �
 - Consumes: Tasks 1~7에서 검증된 Next.js 공개 사이트와 Supabase 콘텐츠.
 - Produces: Astro 런타임, 빌드 스크립트, GitHub Pages 배포가 없는 Next.js 전용 저장소.
 
-- [ ] **Step 1: Astro 참조가 남아 있는지 검사한다.**
+- [x] **Step 1: Astro 참조가 남아 있는지 검사한다.**
 
 Run:
 
@@ -523,15 +523,15 @@ rtk rg -n "astro|@astrojs|astro:" package.json tsconfig.json src .github
 
 Expected: 삭제 대상과 Astro 전용 설정만 출력된다.
 
-- [ ] **Step 2: Astro 런타임과 공개 페이지 소스를 제거한다.**
+- [x] **Step 2: Astro 런타임과 공개 페이지 소스를 제거한다.**
 
 Next.js가 사용하는 `src/lib`, `src/components/site`, `app`, `public`, Supabase 마이그레이션은 유지한다. Astro 전용 config, page, layout, component, GitHub Pages workflow만 삭제한다.
 
-- [ ] **Step 3: Astro 의존성과 스크립트를 제거한다.**
+- [x] **Step 3: Astro 의존성과 스크립트를 제거한다.**
 
 `astro`, `@astrojs/rss`, `@astrojs/sitemap`, `@tailwindcss/vite`, Astro 전용 `dev:astro`, `build:astro`, `preview`, `astro` 스크립트를 제거한다. Next.js `dev`, `build`, `start`, `typecheck:next`는 유지한다.
 
-- [ ] **Step 4: Astro 참조가 0개인지 확인한다.**
+- [x] **Step 4: Astro 참조가 0개인지 확인한다.**
 
 Run:
 
@@ -541,7 +541,7 @@ rtk rg -n "astro|@astrojs|astro:" package.json tsconfig.json src .github
 
 Expected: exit 1과 출력 0줄.
 
-- [ ] **Step 5: Next.js 전체 검증을 다시 실행한다.**
+- [x] **Step 5: Next.js 전체 검증을 다시 실행한다.**
 
 ```bash
 rtk npm run typecheck:next
@@ -551,7 +551,7 @@ rtk npx playwright test
 
 Expected: 타입 오류 0, build exit 0, Playwright 실패 0.
 
-- [ ] **Step 6: Astro 제거를 커밋한다.**
+- [x] **Step 6: Astro 제거를 커밋한다.**
 
 ```bash
 rtk git add astro.config.mjs src/pages src/layouts src/components src/content.config.ts src/styles/global.css .github/workflows/deploy.yml package.json package-lock.json tsconfig.json .gitignore

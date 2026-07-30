@@ -13,8 +13,7 @@ export default defineConfig({
   webServer: process.env.PLAYWRIGHT_BASE_URL
     ? undefined
     : {
-        command:
-          "npm run dev:next -- --hostname 127.0.0.1 --port 3100",
+        command: "npm run dev -- --hostname 127.0.0.1 --port 3100",
         reuseExistingServer: true,
         timeout: 120_000,
         url: baseURL,

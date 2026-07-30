@@ -4,43 +4,29 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "next dev",
-    "dev:astro": "astro dev",
-    "dev:next": "next dev",
     "build": "next build",
-    "build:astro": "astro build",
-    "build:next": "next build",
-    "preview": "astro preview",
     "start": "next start",
-    "start:next": "next start",
     "test:e2e": "playwright test",
     "test:e2e:parity": "playwright test tests/e2e/public-visual-smoke.spec.ts",
-    "typecheck:next": "node -e \"require('node:fs').rmSync('.next/dev/types', { recursive: true, force: true })\" && next typegen && tsc --noEmit -p tsconfig.next.json",
-    "astro": "astro"
+    "typecheck:next": "node -e \"require('node:fs').rmSync('.next/dev/types', { recursive: true, force: true })\" && next typegen && tsc --noEmit -p tsconfig.next.json"
   },
   "dependencies": {
-    "@astrojs/rss": "^4.0.0",
-    "@astrojs/sitemap": "^3.0.0",
     "@fontsource/jetbrains-mono": "^5.2.8",
     "@supabase/ssr": "0.12.4",
     "@supabase/supabase-js": "2.111.0",
-    "astro": "^5.2.0",
     "fuse.js": "^7.0.0",
     "gray-matter": "4.0.3",
     "next": "16.2.12",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-markdown": "10.1.0",
-    "rehype-external-links": "^3.0.0",
     "remark-gfm": "4.0.1"
   },
   "devDependencies": {
     "@playwright/test": "1.61.0",
-    "@tailwindcss/typography": "^0.5.19",
-    "@tailwindcss/vite": "^4.2.4",
     "@types/node": "26.1.2",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
-    "tailwindcss": "^4.2.4",
     "typescript": "5.9.3"
   }
 }

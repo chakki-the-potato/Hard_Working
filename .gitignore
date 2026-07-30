@@ -1,7 +1,6 @@
 node_modules/
-dist/
-.astro/
 .next/
+.vercel/
 *.tsbuildinfo
 .DS_Store
 screenshots/
