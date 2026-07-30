@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ContentRow } from "@/components/site/content-row";
-import { MarkdownContent } from "@/components/site/markdown-content";
+import { ArticleView } from "@/components/site/article-view";
 import {
+  getContentNeighbors,
   getPublishedContentByPath,
   listPublishedPosts,
 } from "@/lib/content/public-queries";
@@ -34,36 +34,15 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     notFound();
   }
 
-  const posts = (await listPublishedPosts()).filter(
+  const [posts, neighbors] = await Promise.all([
+    listPublishedPosts(),
+    getContentNeighbors(project),
+  ]);
+  const related = posts.filter(
     (post) => post.parentItemId === project.id,
   );
 
   return (
-    <main>
-      <section className="list-hero">
-        <span className="mono-label">
-          // PROJECT · {project.projectStatus?.toUpperCase()}
-        </span>
-        <h1>
-          <span>#</span> {project.title}
-        </h1>
-        <p>{project.summary}</p>
-        <small>
-          {posts.length} POSTS
-          {project.period ? ` · ${project.period}` : ""}
-        </small>
-      </section>
-
-      <section className="project-detail">
-        {project.bodyMarkdown ? (
-          <MarkdownContent markdown={project.bodyMarkdown} />
-        ) : null}
-        <div className="content-rows">
-          {posts.map((post) => (
-            <ContentRow item={post} key={post.id} />
-          ))}
-        </div>
-      </section>
-    </main>
+    <ArticleView item={project} neighbors={neighbors} related={related} />
   );
 }

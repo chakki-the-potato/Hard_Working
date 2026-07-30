@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ArticleView } from "@/components/site/article-view";
 import {
   getPublishedContentByPath,
+  getContentNeighbors,
   listPublishedIdeas,
 } from "@/lib/content/public-queries";
 
@@ -40,6 +41,7 @@ export default async function IdeaPage({ params }: IdeaPageProps) {
         item.category?.slug === idea.category?.slug,
     )
     .slice(0, 3);
+  const neighbors = await getContentNeighbors(idea);
 
-  return <ArticleView item={idea} related={related} />;
+  return <ArticleView item={idea} neighbors={neighbors} related={related} />;
 }

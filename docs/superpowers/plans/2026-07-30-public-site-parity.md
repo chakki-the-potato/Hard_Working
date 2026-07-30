@@ -275,7 +275,7 @@ rtk git commit -m "feat(site): match legacy home and list views"
 - Consumes: `PostLayout.astro`, ReadingProgress, 현재 공개 콘텐츠와 같은 종류의 이전·다음 콘텐츠.
 - Produces: `getContentNeighbors()`와 기존 상세 화면·읽기 진행률.
 
-- [ ] **Step 1: 상세 화면 회귀 테스트를 작성한다.**
+- [x] **Step 1: 상세 화면 회귀 테스트를 작성한다.**
 
 ```ts
 test("article keeps legacy metadata and navigation", async ({ page }) => {
@@ -286,7 +286,7 @@ test("article keeps legacy metadata and navigation", async ({ page }) => {
 });
 ```
 
-- [ ] **Step 2: 현재 상세 화면에서 테스트가 실패하는지 확인한다.**
+- [x] **Step 2: 현재 상세 화면에서 테스트가 실패하는지 확인한다.**
 
 Run:
 
@@ -294,19 +294,19 @@ Run:
 rtk npx playwright test tests/e2e/public-article.spec.ts
 ```
 
-- [ ] **Step 3: 이전·다음 콘텐츠 조회를 추가한다.**
+- [x] **Step 3: 이전·다음 콘텐츠 조회를 추가한다.**
 
 동일한 kind 안에서 `published_at` 정렬을 사용하고 공개된 항목만 반환한다. 게시글, Ideas, Projects가 서로의 이웃으로 섞이지 않게 한다.
 
-- [ ] **Step 4: PostLayout 구조와 CSS를 React로 이식한다.**
+- [x] **Step 4: PostLayout 구조와 CSS를 React로 이식한다.**
 
 제목, 설명, 날짜, 카테고리, 태그, 프로젝트 메타데이터, 저장소·데모 링크, 버전 링크, Markdown 본문, 이전·다음 링크 순서를 유지한다.
 
-- [ ] **Step 5: 읽기 진행률을 독립 Client Component로 구현한다.**
+- [x] **Step 5: 읽기 진행률을 독립 Client Component로 구현한다.**
 
 scroll과 resize listener는 mount 시 한 번 등록하고 unmount 시 제거한다. `requestAnimationFrame`으로 갱신하고 reduced motion에서는 transition을 제거한다.
 
-- [ ] **Step 6: 상세 화면 테스트를 통과시킨다.**
+- [x] **Step 6: 상세 화면 테스트를 통과시킨다.**
 
 Run:
 
@@ -316,7 +316,7 @@ rtk npx playwright test tests/e2e/public-article.spec.ts
 
 Expected: 게시글·Idea·Project 상세, 이전·다음 링크, 진행률, 외부 링크가 통과한다.
 
-- [ ] **Step 7: 상세 화면 동일화를 커밋한다.**
+- [x] **Step 7: 상세 화면 동일화를 커밋한다.**
 
 ```bash
 rtk git add src/components/site/article-view.tsx src/components/site/markdown-content.tsx src/components/site/article-navigation.tsx src/components/site/reading-progress.tsx 'app/(site)/styles/article.css' 'app/(site)/posts/[...path]/page.tsx' 'app/(site)/ideas/[...path]/page.tsx' 'app/(site)/projects/[slug]/page.tsx' src/lib/content/public-queries.ts tests/e2e/public-article.spec.ts

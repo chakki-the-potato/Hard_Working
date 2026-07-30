@@ -2,6 +2,7 @@ import type { PostgrestError } from "@supabase/supabase-js";
 import { cache } from "react";
 import type {
   PublicContentItem,
+  PublicContentNeighbors,
   PublicContentRedirect,
   PublicContentVersionSummary,
   PublicHomeViewData,
@@ -311,6 +312,28 @@ export async function getPublishedContentByPath(
     (await listPublishedContent()).find((item) => item.path === contentPath) ??
     null
   );
+}
+
+export async function getContentNeighbors(
+  current: PublicContentItem,
+): Promise<PublicContentNeighbors> {
+  const items = (await listPublishedContent())
+    .filter((item) => item.kind === current.kind)
+    .sort(
+      (left, right) =>
+        new Date(left.publishedAt).valueOf() -
+        new Date(right.publishedAt).valueOf(),
+    );
+  const currentIndex = items.findIndex((item) => item.id === current.id);
+
+  return {
+    previous: currentIndex > 0 ? items[currentIndex - 1] : null,
+    next:
+      currentIndex >= 0 && currentIndex < items.length - 1
+        ? items[currentIndex + 1]
+        : null,
+    currentNumber: currentIndex >= 0 ? currentIndex + 1 : 0,
+  };
 }
 
 const listPublicVersionSummaries = cache(

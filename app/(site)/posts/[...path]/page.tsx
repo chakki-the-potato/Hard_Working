@@ -3,6 +3,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { ArticleView } from "@/components/site/article-view";
 import {
   getPublishedContentByPath,
+  getContentNeighbors,
   listPublishedPosts,
   listPublicRedirects,
 } from "@/lib/content/public-queries";
@@ -58,6 +59,7 @@ export default async function PostPage({ params }: PostPageProps) {
         item.category?.slug === post.category?.slug,
     )
     .slice(0, 3);
+  const neighbors = await getContentNeighbors(post);
 
-  return <ArticleView item={post} related={related} />;
+  return <ArticleView item={post} neighbors={neighbors} related={related} />;
 }

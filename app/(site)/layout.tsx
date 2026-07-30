@@ -6,6 +6,7 @@ import "./styles/shell.css";
 import "./styles/responsive.css";
 import "./styles/home.css";
 import "./styles/list.css";
+import "./styles/article.css";
 
 type SiteLayoutProps = Readonly<{
   children: ReactNode;

@@ -8,7 +8,7 @@ type MarkdownContentProps = Readonly<{
 
 export function MarkdownContent({ markdown }: MarkdownContentProps) {
   return (
-    <div className="prose">
+    <div className="qt-post-content prose">
       <ReactMarkdown
         components={{
           a({ href, children }) {

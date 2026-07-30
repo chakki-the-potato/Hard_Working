@@ -56,6 +56,12 @@ export type PublicContentStat = Readonly<{
   count: number;
 }>;
 
+export type PublicContentNeighbors = Readonly<{
+  previous: PublicContentItem | null;
+  next: PublicContentItem | null;
+  currentNumber: number;
+}>;
+
 export type SearchIndexItem = Readonly<{
   id: string;
   title: string;
