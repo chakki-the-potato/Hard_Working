@@ -51,7 +51,7 @@ async function wait(delayMs: number): Promise<void> {
   });
 }
 
-async function runQueryWithRetry<T>(
+export async function runAdminQueryWithRetry<T>(
   operation: () => PromiseLike<QueryResult<T>>,
   operationName: string,
 ): Promise<T> {
@@ -87,7 +87,7 @@ async function runQueryWithRetry<T>(
 export async function listCategories(
   supabase: ServerSupabaseClient,
 ): Promise<readonly CategoryOption[]> {
-  return runQueryWithRetry(
+  return runAdminQueryWithRetry(
     () =>
       supabase
         .from("categories")
@@ -101,7 +101,7 @@ export async function listCategories(
 export async function listAdminPosts(
   supabase: ServerSupabaseClient,
 ): Promise<readonly AdminPostListItem[]> {
-  const items = await runQueryWithRetry(
+  const items = await runAdminQueryWithRetry(
     () =>
       supabase
         .from("content_items")
@@ -117,7 +117,7 @@ export async function listAdminPosts(
   }
 
   const itemIds = items.map((item) => item.id);
-  const versions = await runQueryWithRetry(
+  const versions = await runAdminQueryWithRetry(
     () =>
       supabase
         .from("content_versions")
@@ -152,7 +152,7 @@ export async function getPostDraft(
   itemId: string,
 ): Promise<PostDraft | null> {
   const [items, drafts, publishedVersions] = await Promise.all([
-    runQueryWithRetry(
+    runAdminQueryWithRetry(
       () =>
         supabase
           .from("content_items")
@@ -163,7 +163,7 @@ export async function getPostDraft(
           .returns<PostItemRow[]>(),
       "get post item",
     ),
-    runQueryWithRetry(
+    runAdminQueryWithRetry(
       () =>
         supabase
           .from("content_versions")
@@ -174,7 +174,7 @@ export async function getPostDraft(
           .returns<PostDraftRow[]>(),
       "get post draft",
     ),
-    runQueryWithRetry(
+    runAdminQueryWithRetry(
       () =>
         supabase
           .from("content_versions")

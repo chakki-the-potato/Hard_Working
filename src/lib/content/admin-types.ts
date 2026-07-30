@@ -51,3 +51,8 @@ export type SavePostResult = Readonly<{
   draftVersionId: string;
   publishedVersionId: string | null;
 }>;
+
+export type AdminMutationActionState = Readonly<{
+  status: "idle" | "error";
+  message: string | null;
+}>;

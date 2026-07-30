@@ -9,9 +9,27 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminPage() {
+type AdminPageProps = Readonly<{
+  searchParams: Promise<{
+    result?: string;
+  }>;
+}>;
+
+const RESULT_MESSAGES: Readonly<Record<string, string>> = {
+  deleted: "글을 삭제했습니다.",
+  "deleted-with-storage-warning":
+    "글은 삭제했지만 일부 Storage 파일 정리가 완료되지 않았습니다.",
+};
+
+export default async function AdminPage({ searchParams }: AdminPageProps) {
   const { supabase, user } = await requireAdminSession();
-  const posts = await listAdminPosts(supabase);
+  const [posts, query] = await Promise.all([
+    listAdminPosts(supabase),
+    searchParams,
+  ]);
+  const resultMessage = query.result
+    ? RESULT_MESSAGES[query.result]
+    : undefined;
 
   return (
     <main className="admin-workspace">
@@ -36,6 +54,12 @@ export default async function AdminPage() {
           </Link>
         </div>
       </header>
+
+      {resultMessage ? (
+        <p className="admin-notice" role="status">
+          {resultMessage}
+        </p>
+      ) : null}
 
       <section className="admin-section" aria-label="글 목록">
         {posts.length === 0 ? (

@@ -2,11 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireAdminSession } from "@/lib/auth/require-admin";
+import { listPostAssets } from "@/lib/content/admin-asset-queries";
 import {
   getPostDraft,
   listCategories,
 } from "@/lib/content/admin-queries";
 import { isUuid } from "@/lib/content/admin-validation";
+import { PostAssetManager } from "../../_components/post-asset-manager";
+import { PostDeleteForm } from "../../_components/post-delete-form";
 import { PostEditorForm } from "../../_components/post-editor-form";
 
 export const metadata: Metadata = {
@@ -27,6 +30,10 @@ type EditPostPageProps = Readonly<{
 const RESULT_MESSAGES: Readonly<Record<string, string>> = {
   saved: "초안을 저장했습니다.",
   published: "글을 발행하고 다음 수정을 위한 새 초안을 만들었습니다.",
+  "asset-uploaded": "이미지를 업로드했습니다.",
+  "asset-deleted": "이미지를 삭제했습니다.",
+  "asset-deleted-with-storage-warning":
+    "이미지 정보는 삭제했지만 Storage 파일 정리가 완료되지 않았습니다.",
 };
 
 export default async function EditPostPage({
@@ -40,9 +47,10 @@ export default async function EditPostPage({
   }
 
   const { supabase } = await requireAdminSession();
-  const [draft, categories, query] = await Promise.all([
+  const [draft, categories, assets, query] = await Promise.all([
     getPostDraft(supabase, id),
     listCategories(supabase),
+    listPostAssets(supabase, id),
     searchParams,
   ]);
 
@@ -82,6 +90,8 @@ export default async function EditPostPage({
         categories={categories}
         initialValues={draft.values}
       />
+      <PostAssetManager itemId={id} assets={assets} />
+      <PostDeleteForm itemId={id} title={draft.values.title} />
     </main>
   );
 }
