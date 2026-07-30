@@ -16,6 +16,7 @@ export default async function IdeasPage() {
       items={ideas}
       kicker="// IDEAS / SCRATCHPAD"
       title="Idea"
+      totalCount={ideas.length}
     />
   );
 }

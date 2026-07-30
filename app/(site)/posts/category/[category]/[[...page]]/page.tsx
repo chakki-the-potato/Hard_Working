@@ -63,6 +63,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           : `/posts/category/${category}/${targetPage}`
       }
       title={label}
+      totalCount={posts.length}
       totalPages={result.totalPages}
     />
   );

@@ -4,6 +4,7 @@ import type {
   PublicContentItem,
   PublicContentRedirect,
   PublicContentVersionSummary,
+  PublicHomeViewData,
   PublicVersionHistoryPage,
   SearchIndexItem,
   WorksIdeaGroup,
@@ -191,6 +192,55 @@ export async function listPublishedProjects(): Promise<
       (left, right) =>
         (left.projectSortOrder ?? 0) - (right.projectSortOrder ?? 0),
     );
+}
+
+export async function getHomeViewData(): Promise<PublicHomeViewData> {
+  const items = await listPublishedContent();
+  const posts = items.filter((item) => item.kind === "post");
+  const ideas = items.filter((item) => item.kind === "idea");
+  const categoryCounts = new Map<string, { label: string; count: number }>();
+  const tagCounts = new Map<string, { label: string; count: number }>();
+
+  for (const post of posts) {
+    if (post.category) {
+      const current = categoryCounts.get(post.category.slug);
+      categoryCounts.set(post.category.slug, {
+        label: post.category.name,
+        count: (current?.count ?? 0) + 1,
+      });
+    }
+    for (const tag of post.tags) {
+      const current = tagCounts.get(tag.slug);
+      tagCounts.set(tag.slug, {
+        label: tag.name,
+        count: (current?.count ?? 0) + 1,
+      });
+    }
+  }
+
+  return {
+    posts,
+    ideas,
+    projects: items
+      .filter((item) => item.kind === "project")
+      .sort(
+        (left, right) =>
+          (left.projectSortOrder ?? 0) - (right.projectSortOrder ?? 0),
+      ),
+    categoryStats: [...categoryCounts.entries()]
+      .map(([slug, stat]) => ({ slug, ...stat }))
+      .sort((left, right) => right.count - left.count),
+    tagStats: [...tagCounts.entries()]
+      .map(([slug, stat]) => ({ slug, ...stat }))
+      .sort((left, right) => right.count - left.count),
+    recentActivity: [...posts, ...ideas]
+      .sort(
+        (left, right) =>
+          new Date(right.publishedAt).valueOf() -
+          new Date(left.publishedAt).valueOf(),
+      )
+      .slice(0, 5),
+  };
 }
 
 export async function listSearchIndex(): Promise<

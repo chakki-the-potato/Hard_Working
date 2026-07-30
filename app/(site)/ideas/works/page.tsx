@@ -16,24 +16,28 @@ export default async function WorksIdeasPage() {
 
   return (
     <main>
-      <section className="list-hero">
-        <span className="mono-label">// IDEAS / WORKS</span>
-        <h1>
-          <span>#</span> Works
+      <section className="qt-list-hero">
+        <span className="qt-mono qt-list-mono">// IDEAS / WORKS</span>
+        <h1 className="qt-list-title">
+          <span className="qt-list-hash">#</span>Works
         </h1>
-        <small>
+        <small className="qt-mono qt-list-meta">
           {groups.length} PROJECTS · {totalNotes} NOTES
         </small>
       </section>
 
-      <section className="content-list" aria-label="Works 아이디어 목록">
+      <section className="qt-project-groups" aria-label="Works 아이디어 목록">
         {groups.map((group) => (
-          <section key={group.slug}>
-            <span className="mono-label">// PROJECT</span>
-            <h2>{group.label}</h2>
-            {group.items.map((item) => (
-              <ContentRow item={item} key={item.id} />
-            ))}
+          <section className="qt-project-group" key={group.slug}>
+            <header className="qt-project-group-head">
+              <span className="qt-mono">// PROJECT</span>
+              <h2>{group.label}</h2>
+            </header>
+            <div className="qt-list-rows">
+              {group.items.map((item) => (
+                <ContentRow item={item} key={item.id} />
+              ))}
+            </div>
           </section>
         ))}
       </section>

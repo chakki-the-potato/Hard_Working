@@ -214,11 +214,11 @@ rtk git commit -m "feat(site): restore legacy public shell"
 - Consumes: `HomeLayout.astro`, `ListLayout.astro`, PostCard, PostListRow, SidebarAbout, SidebarActivity, SidebarCategoryStats, SidebarProjectStats, SidebarTagCloud, IdeasStrip의 구조와 Supabase 집계.
 - Produces: 홈·목록·사이드바의 기존 DOM과 표시 데이터.
 
-- [ ] **Step 1: 목록별 표시 계약 테스트를 작성한다.**
+- [x] **Step 1: 목록별 표시 계약 테스트를 작성한다.**
 
 홈의 Hero, 최신 글, Ideas Strip, 사이드바 위젯과 카테고리·태그·Ideas·Projects 목록의 제목·건수·페이지 이동을 검사한다.
 
-- [ ] **Step 2: 현재 Next 화면에서 `qt-*` 계약이 실패하는지 확인한다.**
+- [x] **Step 2: 현재 Next 화면에서 `qt-*` 계약이 실패하는지 확인한다.**
 
 Run:
 
@@ -226,19 +226,19 @@ Run:
 rtk npx playwright test tests/e2e/public-lists.spec.ts
 ```
 
-- [ ] **Step 3: 필요한 공개 집계를 쿼리 계층에 추가한다.**
+- [x] **Step 3: 필요한 공개 집계를 쿼리 계층에 추가한다.**
 
 카테고리별 글 수, 태그별 글 수, 프로젝트 진행 정보, 최근 활동, 최신 Ideas를 하나의 페이지 조립 결과로 반환한다. 페이지 컴포넌트에서 개별 Supabase 쿼리를 조립하지 않는다.
 
-- [ ] **Step 4: Astro 목록 구조를 책임별 React 컴포넌트로 옮긴다.**
+- [x] **Step 4: Astro 목록 구조를 책임별 React 컴포넌트로 옮긴다.**
 
 `HomeView`는 홈 조립, `ListView`는 공통 목록 조립, `PostListRow`는 한 행, `SidebarWidgets`는 서버에서 받은 집계를 표시한다. 이벤트와 애니메이션은 포함하지 않는다.
 
-- [ ] **Step 5: 홈·목록 CSS를 이식한다.**
+- [x] **Step 5: 홈·목록 CSS를 이식한다.**
 
 Astro component style의 실제 값을 `home.css`와 `list.css`로 옮기고 기존 `qt-*` selector를 유지한다.
 
-- [ ] **Step 6: 목록 기능 테스트를 통과시킨다.**
+- [x] **Step 6: 목록 기능 테스트를 통과시킨다.**
 
 Run:
 
@@ -248,7 +248,7 @@ rtk npx playwright test tests/e2e/public-lists.spec.ts
 
 Expected: 홈, 페이지 2, 카테고리, 태그, Ideas, Ideas/Works, Projects가 데스크톱·모바일에서 통과한다.
 
-- [ ] **Step 7: 홈·목록 동일화를 커밋한다.**
+- [x] **Step 7: 홈·목록 동일화를 커밋한다.**
 
 ```bash
 rtk git add 'app/(site)' src/components/site/home-view.tsx src/components/site/list-view.tsx src/components/site/post-list-row.tsx src/components/site/sidebar-widgets.tsx src/lib/content/public-queries.ts tests/e2e/public-lists.spec.ts

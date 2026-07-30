@@ -18,14 +18,14 @@ export default async function ProjectsPage() {
 
   return (
     <main>
-      <section className="list-hero">
-        <span className="mono-label">// PROJECTS</span>
-        <h1>
-          <span>#</span> Projects
+      <section className="qt-list-hero">
+        <span className="qt-mono qt-list-mono">// PROJECTS</span>
+        <h1 className="qt-list-title">
+          <span className="qt-list-hash">#</span>Projects
         </h1>
-        <p>만든 결과물과 그 과정에서 남긴 기록입니다.</p>
+        <p className="qt-list-desc">만든 결과물과 그 과정에서 남긴 기록입니다.</p>
       </section>
-      <section className="project-grid">
+      <section className="qt-project-grid">
         {projects.map((project) => {
           const postCount = posts.filter(
             (post) => post.parentItemId === project.id,

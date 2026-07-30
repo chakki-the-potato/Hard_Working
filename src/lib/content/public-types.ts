@@ -41,6 +41,21 @@ export type PublicContentRedirect = Readonly<{
   statusCode: 301 | 308;
 }>;
 
+export type PublicHomeViewData = Readonly<{
+  posts: readonly PublicContentItem[];
+  ideas: readonly PublicContentItem[];
+  projects: readonly PublicContentItem[];
+  categoryStats: readonly PublicContentStat[];
+  tagStats: readonly PublicContentStat[];
+  recentActivity: readonly PublicContentItem[];
+}>;
+
+export type PublicContentStat = Readonly<{
+  slug: string;
+  label: string;
+  count: number;
+}>;
+
 export type SearchIndexItem = Readonly<{
   id: string;
   title: string;

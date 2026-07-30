@@ -31,6 +31,7 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
       kicker="// ARCHIVE"
       pageHref={(targetPage) => (targetPage === 1 ? "/" : `/page/${targetPage}`)}
       title="모든 기록"
+      totalCount={posts.length}
       totalPages={result.totalPages}
     />
   );
