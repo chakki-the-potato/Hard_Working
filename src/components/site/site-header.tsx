@@ -99,8 +99,8 @@ export function SiteHeader() {
             소개
           </Link>
 
-          <Link className="qt-subscribe" href="/rss.xml">
-            구독
+          <Link className="qt-subscribe" href="/admin/login">
+            관리자
           </Link>
         </div>
       </div>
