@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { AdminWriteAction } from "@/components/site/admin-write-action";
 import { SITE_NAME, SITE_TITLE } from "@/lib/site";
 
 const NAVIGATION = [
@@ -99,9 +100,7 @@ export function SiteHeader() {
             소개
           </Link>
 
-          <Link className="qt-subscribe" href="/admin/login">
-            관리자
-          </Link>
+          <AdminWriteAction />
         </div>
       </div>
     </header>

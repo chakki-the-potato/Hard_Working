@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import "./admin.css";
+import "@/components/editor/editor.css";
 
 type AdminLayoutProps = Readonly<{
   children: ReactNode;

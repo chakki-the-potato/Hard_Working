@@ -43,6 +43,7 @@
 
 @media (max-width: 420px) {
   .qt-subscribe {
-    display: none;
+    margin-left: 0;
+    padding: 8px;
   }
 }

@@ -7,14 +7,17 @@ import type {
   PostEditorValues,
 } from "@/lib/content/admin-types";
 import { savePostAction } from "@/lib/content/admin-actions";
+import type { EditorDestination } from "@/lib/content/editor-destination";
 
 type PostEditorFormProps = Readonly<{
   categories: readonly CategoryOption[];
+  destination?: EditorDestination;
   initialValues: PostEditorValues;
 }>;
 
 export function PostEditorForm({
   categories,
+  destination = "admin",
   initialValues,
 }: PostEditorFormProps) {
   const initialState: PostEditorActionState = {
@@ -31,6 +34,11 @@ export function PostEditorForm({
   return (
     <form action={formAction} className="admin-editor">
       <input name="itemId" type="hidden" value={state.values.itemId ?? ""} />
+      <input
+        name="editorDestination"
+        type="hidden"
+        value={destination}
+      />
 
       {state.message ? (
         <p className="admin-notice" role="alert">

@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { PostAssetManager } from "@/components/editor/post-asset-manager";
+import { PostDeleteForm } from "@/components/editor/post-delete-form";
+import { PostEditorForm } from "@/components/editor/post-editor-form";
 import { requireAdminSession } from "@/lib/auth/require-admin";
 import { listPostAssets } from "@/lib/content/admin-asset-queries";
 import {
@@ -8,9 +11,6 @@ import {
   listCategories,
 } from "@/lib/content/admin-queries";
 import { isUuid } from "@/lib/content/admin-validation";
-import { PostAssetManager } from "../../_components/post-asset-manager";
-import { PostDeleteForm } from "../../_components/post-delete-form";
-import { PostEditorForm } from "../../_components/post-editor-form";
 
 export const metadata: Metadata = {
   title: "글 수정",

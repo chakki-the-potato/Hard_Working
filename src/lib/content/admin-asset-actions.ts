@@ -10,6 +10,11 @@ import {
 } from "@/lib/content/admin-asset-validation";
 import { removeStorageObjects } from "@/lib/content/admin-storage";
 import type { AdminMutationActionState } from "@/lib/content/admin-types";
+import {
+  getEditorFormPath,
+  getEditorPostPath,
+  parseEditorDestination,
+} from "@/lib/content/editor-destination";
 
 type ContentItemIdentityRow = Readonly<{
   id: string;
@@ -43,13 +48,23 @@ export async function uploadAssetAction(
   formData: FormData,
 ): Promise<AdminMutationActionState> {
   const parsed = await parseUploadAssetFormData(formData);
+  const destination = parseEditorDestination(formData);
 
   if (!parsed.ok) {
     return parsed.state;
   }
 
-  const { supabase, user } = await requireAdminSession();
+  if (!destination) {
+    return {
+      status: "error",
+      message: "작성 화면 정보를 확인할 수 없습니다.",
+    };
+  }
+
   const { itemId, altText, file, storagePath } = parsed.input;
+  const { supabase, user } = await requireAdminSession(
+    getEditorFormPath(destination, itemId),
+  );
   const { data: items, error: itemError } = await supabase
     .from("content_items")
     .select("id")
@@ -137,7 +152,10 @@ export async function uploadAssetAction(
   }
 
   revalidatePath(`/admin/posts/${itemId}`);
-  redirect(`/admin/posts/${itemId}?result=asset-uploaded`);
+  revalidatePath(`/write/${itemId}`);
+  redirect(
+    `${getEditorPostPath(destination, itemId)}?result=asset-uploaded`,
+  );
 }
 
 export async function deleteAssetAction(
@@ -145,6 +163,7 @@ export async function deleteAssetAction(
   formData: FormData,
 ): Promise<AdminMutationActionState> {
   const parsed = parseAssetIdentity(formData);
+  const destination = parseEditorDestination(formData);
 
   if (!parsed.ok) {
     return {
@@ -153,8 +172,17 @@ export async function deleteAssetAction(
     };
   }
 
-  const { supabase } = await requireAdminSession();
+  if (!destination) {
+    return {
+      status: "error",
+      message: "작성 화면 정보를 확인할 수 없습니다.",
+    };
+  }
+
   const { itemId, assetId } = parsed;
+  const { supabase } = await requireAdminSession(
+    getEditorFormPath(destination, itemId),
+  );
   const { data: assets, error: assetError } = await supabase
     .from("content_assets")
     .select("id, bucket_id, storage_path")
@@ -213,8 +241,9 @@ export async function deleteAssetAction(
   logStorageCleanupFailures("delete content asset object", itemId, failures);
 
   revalidatePath(`/admin/posts/${itemId}`);
+  revalidatePath(`/write/${itemId}`);
   redirect(
-    `/admin/posts/${itemId}?result=${
+    `${getEditorPostPath(destination, itemId)}?result=${
       failures.length > 0 ? "asset-deleted-with-storage-warning" : "asset-deleted"
     }`,
   );

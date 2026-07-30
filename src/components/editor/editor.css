@@ -86,13 +86,13 @@
 }
 
 .admin-button-danger {
-  border-color: #b42318;
-  background: #b42318;
-  color: #fff;
+  border-color: var(--accent-ink);
+  background: var(--accent-ink);
+  color: var(--bg-elev);
 }
 
 .admin-button-danger:hover:not(:disabled) {
-  background: #912018;
+  background: var(--ink);
 }
 
 .admin-button-compact {
@@ -419,7 +419,7 @@
 .admin-danger-zone {
   grid-template-columns: 1fr auto;
   align-items: end;
-  border-color: #f0b4ad;
+  border-color: var(--accent);
 }
 
 .admin-danger-zone .admin-section-title {

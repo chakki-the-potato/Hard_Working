@@ -9,11 +9,18 @@ import "./styles/list.css";
 import "./styles/article.css";
 import "./styles/search.css";
 import "./styles/effects.css";
+import "./styles/writer.css";
 
 type SiteLayoutProps = Readonly<{
   children: ReactNode;
+  writer: ReactNode;
 }>;
 
-export default function SiteLayout({ children }: SiteLayoutProps) {
-  return <PublicShell>{children}</PublicShell>;
+export default function SiteLayout({ children, writer }: SiteLayoutProps) {
+  return (
+    <PublicShell>
+      {children}
+      {writer}
+    </PublicShell>
+  );
 }

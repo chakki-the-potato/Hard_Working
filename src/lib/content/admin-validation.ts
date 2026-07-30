@@ -4,6 +4,7 @@ import type {
   PostEditorValues,
   SavePostInput,
 } from "@/lib/content/admin-types";
+import { parseEditorDestination } from "@/lib/content/editor-destination";
 
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -43,7 +44,20 @@ export function parsePostFormData(formData: FormData): ParsePostFormResult {
     bodyMarkdown: getFormString(formData, "bodyMarkdown"),
   };
   const publish = getFormString(formData, "intent") === "publish";
+  const destination = parseEditorDestination(formData);
   const fieldErrors: Partial<Record<PostEditorField, string>> = {};
+
+  if (!destination) {
+    return {
+      ok: false,
+      state: {
+        status: "error",
+        message: "작성 화면 정보를 확인할 수 없습니다.",
+        fieldErrors,
+        values,
+      },
+    };
+  }
 
   if (values.itemId && !isUuid(values.itemId)) {
     return {
@@ -101,6 +115,7 @@ export function parsePostFormData(formData: FormData): ParsePostFormResult {
     input: {
       values,
       publish,
+      destination,
     },
   };
 }

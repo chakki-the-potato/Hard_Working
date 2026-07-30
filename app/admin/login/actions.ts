@@ -2,6 +2,10 @@
 
 import { redirect } from "next/navigation";
 import { hasAdminRole } from "@/lib/auth/admin";
+import {
+  getAdminLoginPath,
+  getSafeReturnPath,
+} from "@/lib/auth/return-path";
 import { createClient } from "@/lib/supabase/server";
 
 const MAX_EMAIL_LENGTH = 254;
@@ -10,9 +14,10 @@ const MAX_PASSWORD_LENGTH = 1024;
 export async function signInWithPassword(formData: FormData) {
   const emailValue = formData.get("email");
   const passwordValue = formData.get("password");
+  const returnTo = getSafeReturnPath(formData.get("returnTo"));
 
   if (typeof emailValue !== "string" || typeof passwordValue !== "string") {
-    redirect("/admin/login?error=invalid_credentials");
+    redirect(getAdminLoginPath(returnTo, "invalid_credentials"));
   }
 
   const email = emailValue.trim();
@@ -25,7 +30,7 @@ export async function signInWithPassword(formData: FormData) {
     !password ||
     password.length > MAX_PASSWORD_LENGTH
   ) {
-    redirect("/admin/login?error=invalid_credentials");
+    redirect(getAdminLoginPath(returnTo, "invalid_credentials"));
   }
 
   const supabase = await createClient();
@@ -39,13 +44,13 @@ export async function signInWithPassword(formData: FormData) {
       code: error.code,
       status: error.status,
     });
-    redirect("/admin/login?error=invalid_credentials");
+    redirect(getAdminLoginPath(returnTo, "invalid_credentials"));
   }
 
   if (!hasAdminRole(data.user)) {
     await supabase.auth.signOut();
-    redirect("/admin/login?error=unauthorized");
+    redirect(getAdminLoginPath(returnTo, "unauthorized"));
   }
 
-  redirect("/admin");
+  redirect(returnTo);
 }

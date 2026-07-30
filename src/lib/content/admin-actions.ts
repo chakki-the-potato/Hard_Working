@@ -8,6 +8,10 @@ import type {
   SavePostResult,
 } from "@/lib/content/admin-types";
 import { parsePostFormData } from "@/lib/content/admin-validation";
+import {
+  getEditorFormPath,
+  getEditorPostPath,
+} from "@/lib/content/editor-destination";
 
 type SavePostRpcRow = Readonly<{
   item_id: string;
@@ -40,8 +44,10 @@ export async function savePostAction(
     return parsed.state;
   }
 
-  const { supabase } = await requireAdminSession();
-  const { values, publish } = parsed.input;
+  const { values, publish, destination } = parsed.input;
+  const { supabase } = await requireAdminSession(
+    getEditorFormPath(destination, values.itemId),
+  );
   const { data, error } = await supabase.rpc("save_post_draft", {
     p_item_id: values.itemId,
     p_slug: values.slug,
@@ -98,7 +104,10 @@ export async function savePostAction(
 
   revalidatePath("/admin");
   revalidatePath(`/admin/posts/${result.itemId}`);
+  revalidatePath(`/write/${result.itemId}`);
   redirect(
-    `/admin/posts/${result.itemId}?result=${publish ? "published" : "saved"}`,
+    `${getEditorPostPath(destination, result.itemId)}?result=${
+      publish ? "published" : "saved"
+    }`,
   );
 }

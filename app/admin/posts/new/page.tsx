@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PostEditorForm } from "@/components/editor/post-editor-form";
 import { requireAdminSession } from "@/lib/auth/require-admin";
 import { listCategories } from "@/lib/content/admin-queries";
-import { PostEditorForm } from "../../_components/post-editor-form";
 
 export const metadata: Metadata = {
   title: "새 글 작성",

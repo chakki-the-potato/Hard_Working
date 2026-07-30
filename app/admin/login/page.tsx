@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getSafeReturnPath } from "@/lib/auth/return-path";
 import { signInWithPassword } from "./actions";
 
 export const metadata: Metadata = {
@@ -8,6 +9,7 @@ export const metadata: Metadata = {
 type LoginPageProps = Readonly<{
   searchParams: Promise<{
     error?: string;
+    next?: string;
   }>;
 }>;
 
@@ -17,8 +19,9 @@ const ERROR_MESSAGES: Readonly<Record<string, string>> = {
 };
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
-  const { error } = await searchParams;
+  const { error, next } = await searchParams;
   const errorMessage = error ? ERROR_MESSAGES[error] : undefined;
+  const returnTo = getSafeReturnPath(next);
 
   return (
     <main className="shell">
@@ -36,6 +39,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         ) : null}
 
         <form action={signInWithPassword} className="form">
+          <input name="returnTo" type="hidden" value={returnTo} />
           <label className="field" htmlFor="email">
             <span className="field-label">이메일</span>
             <input

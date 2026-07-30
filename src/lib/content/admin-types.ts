@@ -44,6 +44,7 @@ export type PostDraft = Readonly<{
 export type SavePostInput = Readonly<{
   values: PostEditorValues;
   publish: boolean;
+  destination: "admin" | "writer";
 }>;
 
 export type SavePostResult = Readonly<{

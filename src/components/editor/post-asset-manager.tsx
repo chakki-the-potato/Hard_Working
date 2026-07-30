@@ -8,14 +8,17 @@ import {
 } from "@/lib/content/admin-asset-actions";
 import type { AdminContentAsset } from "@/lib/content/admin-asset-types";
 import type { AdminMutationActionState } from "@/lib/content/admin-types";
+import type { EditorDestination } from "@/lib/content/editor-destination";
 
 type PostAssetManagerProps = Readonly<{
   itemId: string;
   assets: readonly AdminContentAsset[];
+  destination?: EditorDestination;
 }>;
 
 type AssetDeleteFormProps = Readonly<{
   asset: AdminContentAsset;
+  destination: EditorDestination;
   itemId: string;
 }>;
 
@@ -54,7 +57,11 @@ function AssetDeleteButton() {
   );
 }
 
-function AssetDeleteForm({ asset, itemId }: AssetDeleteFormProps) {
+function AssetDeleteForm({
+  asset,
+  destination,
+  itemId,
+}: AssetDeleteFormProps) {
   const [state, formAction] = useActionState(
     deleteAssetAction,
     INITIAL_MUTATION_STATE,
@@ -72,6 +79,11 @@ function AssetDeleteForm({ asset, itemId }: AssetDeleteFormProps) {
       >
         <input name="itemId" type="hidden" value={itemId} />
         <input name="assetId" type="hidden" value={asset.id} />
+        <input
+          name="editorDestination"
+          type="hidden"
+          value={destination}
+        />
         <AssetDeleteButton />
       </form>
       {state.message ? (
@@ -86,6 +98,7 @@ function AssetDeleteForm({ asset, itemId }: AssetDeleteFormProps) {
 export function PostAssetManager({
   itemId,
   assets,
+  destination = "admin",
 }: PostAssetManagerProps) {
   const [state, formAction, isPending] = useActionState(
     uploadAssetAction,
@@ -126,6 +139,11 @@ export function PostAssetManager({
 
       <form action={formAction} className="admin-asset-upload">
         <input name="itemId" type="hidden" value={itemId} />
+        <input
+          name="editorDestination"
+          type="hidden"
+          value={destination}
+        />
 
         {state.message ? (
           <p className="admin-notice" role="alert">
@@ -202,7 +220,11 @@ export function PostAssetManager({
                         ? "복사 실패"
                       : "Markdown 복사"}
                   </button>
-                  <AssetDeleteForm asset={asset} itemId={itemId} />
+                  <AssetDeleteForm
+                    asset={asset}
+                    destination={destination}
+                    itemId={itemId}
+                  />
                 </div>
               </div>
             </li>
