@@ -8,6 +8,7 @@ import "./styles/home.css";
 import "./styles/list.css";
 import "./styles/article.css";
 import "./styles/search.css";
+import "./styles/effects.css";
 
 type SiteLayoutProps = Readonly<{
   children: ReactNode;

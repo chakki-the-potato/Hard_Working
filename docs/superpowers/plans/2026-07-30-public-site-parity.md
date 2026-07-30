@@ -406,11 +406,11 @@ rtk git commit -m "feat(search): restore live search and command palette"
 - Consumes: BackgroundFx, AmbientLogs, HeroDriftBg, HomeLayout의 기존 브라우저 동작.
 - Produces: reduced-motion을 지키는 독립 Client Components.
 
-- [ ] **Step 1: 효과의 존재와 접근성 테스트를 작성한다.**
+- [x] **Step 1: 효과의 존재와 접근성 테스트를 작성한다.**
 
 기본 환경에서는 효과 요소가 렌더링되고, reduced motion 환경에서는 움직임용 style 값이 갱신되지 않는지 검사한다.
 
-- [ ] **Step 2: 현재 Next 화면에서 테스트가 실패하는지 확인한다.**
+- [x] **Step 2: 현재 Next 화면에서 테스트가 실패하는지 확인한다.**
 
 Run:
 
@@ -418,15 +418,15 @@ Run:
 rtk npx playwright test tests/e2e/public-effects.spec.ts
 ```
 
-- [ ] **Step 3: 각 효과를 독립 컴포넌트로 이식한다.**
+- [x] **Step 3: 각 효과를 독립 컴포넌트로 이식한다.**
 
 배경, 로그, Hero drift, 홈 스크롤 복원은 서로 상태나 listener를 공유하지 않는다. 각 컴포넌트가 자신이 등록한 listener와 animation frame을 직접 정리한다.
 
-- [ ] **Step 4: 기존 CSS와 반응형 조건을 이식한다.**
+- [x] **Step 4: 기존 CSS와 반응형 조건을 이식한다.**
 
 색상, opacity, blur, 위치, breakpoint를 기존 값 그대로 사용한다.
 
-- [ ] **Step 5: 효과 E2E 테스트를 통과시킨다.**
+- [x] **Step 5: 효과 E2E 테스트를 통과시킨다.**
 
 Run:
 
@@ -434,7 +434,7 @@ Run:
 rtk npx playwright test tests/e2e/public-effects.spec.ts
 ```
 
-- [ ] **Step 6: 시각 효과 동일화를 커밋한다.**
+- [x] **Step 6: 시각 효과 동일화를 커밋한다.**
 
 ```bash
 rtk git add src/components/site/background-effects.tsx src/components/site/ambient-logs.tsx src/components/site/hero-drift-background.tsx src/components/site/home-scroll-effects.tsx src/components/site/public-shell.tsx src/components/site/home-view.tsx 'app/(site)/styles/effects.css' tests/e2e/public-effects.spec.ts

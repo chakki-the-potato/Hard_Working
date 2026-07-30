@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { HeroDriftBackground } from "@/components/site/hero-drift-background";
+import { HomeScrollEffects } from "@/components/site/home-scroll-effects";
 import { PostCard } from "@/components/site/post-card";
 import { PostListRow } from "@/components/site/post-list-row";
 import { SidebarWidgets } from "@/components/site/sidebar-widgets";
@@ -34,8 +36,11 @@ export function HomeView({
 
   return (
     <main>
+      <HomeScrollEffects />
       <section className="qt-hero" id="qt-hero">
-        <div className="qt-hero-bg-wrap" id="qt-hero-bg-wrap" />
+        <div className="qt-hero-bg-wrap" id="qt-hero-bg-wrap">
+          <HeroDriftBackground />
+        </div>
         <div className="qt-hero-inner">
           <aside className="qt-hero-mark" aria-hidden="true">
             <span>/STUDY</span>

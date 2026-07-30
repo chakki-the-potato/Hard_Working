@@ -7,11 +7,7 @@
 .qt-hero-bg-wrap {
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(var(--border-hair) 1px, transparent 1px),
-    linear-gradient(90deg, var(--border-hair) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: linear-gradient(to bottom, black, transparent);
+  will-change: transform;
 }
 
 .qt-hero-inner {
