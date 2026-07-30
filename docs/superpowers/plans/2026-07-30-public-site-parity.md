@@ -339,11 +339,11 @@ rtk git commit -m "feat(site): restore legacy article experience"
 - Consumes: `/api/search.json`, Fuse.js, `CmdK.astro`, `search.astro`.
 - Produces: 기존 threshold `0.35` 검색과 키보드 탐색.
 
-- [ ] **Step 1: 검색 상호작용 테스트를 작성한다.**
+- [x] **Step 1: 검색 상호작용 테스트를 작성한다.**
 
 Cmd/Ctrl+K 열기, ESC 닫기, 위·아래 선택, Enter 이동, 404 화면의 검색 버튼, 검색 페이지 입력 즉시 결과 갱신을 검사한다.
 
-- [ ] **Step 2: 현재 Next 화면에서 테스트가 실패하는지 확인한다.**
+- [x] **Step 2: 현재 Next 화면에서 테스트가 실패하는지 확인한다.**
 
 Run:
 
@@ -351,7 +351,7 @@ Run:
 rtk npx playwright test tests/e2e/public-search.spec.ts
 ```
 
-- [ ] **Step 3: 기존 Fuse.js 옵션을 그대로 이식한다.**
+- [x] **Step 3: 기존 Fuse.js 옵션을 그대로 이식한다.**
 
 ```ts
 const fuse = new Fuse(items, {
@@ -365,15 +365,15 @@ const fuse = new Fuse(items, {
 });
 ```
 
-- [ ] **Step 4: SearchPalette를 독립 Client Component로 구현한다.**
+- [x] **Step 4: SearchPalette를 독립 Client Component로 구현한다.**
 
 전역 keydown listener와 body scroll lock을 mount·unmount에 맞춰 정리한다. 결과 HTML 문자열 조립 대신 React 렌더링으로 XSS 경계를 제거한다.
 
-- [ ] **Step 5: 검색 페이지를 실시간 검색으로 복원한다.**
+- [x] **Step 5: 검색 페이지를 실시간 검색으로 복원한다.**
 
 서버 제출형 검색 결과는 최초 URL 진입 호환성을 위해 유지하고, 클라이언트 입력 시 동일 Fuse 인덱스로 즉시 결과를 갱신한다.
 
-- [ ] **Step 6: 검색 E2E 테스트를 통과시킨다.**
+- [x] **Step 6: 검색 E2E 테스트를 통과시킨다.**
 
 Run:
 
@@ -381,7 +381,7 @@ Run:
 rtk npx playwright test tests/e2e/public-search.spec.ts
 ```
 
-- [ ] **Step 7: 검색 동일화를 커밋한다.**
+- [x] **Step 7: 검색 동일화를 커밋한다.**
 
 ```bash
 rtk git add src/components/site/search-palette.tsx src/components/site/search-page-client.tsx 'app/(site)/styles/search.css' 'app/(site)/layout.tsx' 'app/(site)/search/page.tsx' tests/e2e/public-search.spec.ts
