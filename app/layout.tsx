@@ -8,10 +8,17 @@ export const metadata: Metadata = {
   title: { default: SITE_NAME, template: `%s | ${SITE_NAME}` },
   description: SITE_DESCRIPTION,
   alternates: { canonical: "/" },
+  icons: { icon: "/favicon.ico" },
   openGraph: {
     type: "website",
+    url: "/",
     locale: "ko_KR",
     siteName: SITE_NAME,
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary",
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
   },

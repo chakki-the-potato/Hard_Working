@@ -5,7 +5,14 @@ import { getSiteUrl } from "@/lib/site";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = getSiteUrl();
   const content = await listPublishedContent();
-  const staticPaths = ["/", "/about", "/ideas", "/projects", "/search"];
+  const staticPaths = [
+    "/",
+    "/about",
+    "/ideas",
+    "/ideas/works",
+    "/projects",
+    "/search",
+  ];
 
   return [
     ...staticPaths.map((path) => ({

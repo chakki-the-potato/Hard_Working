@@ -13,6 +13,7 @@
     "start": "next start",
     "start:next": "next start",
     "test:e2e": "playwright test",
+    "test:e2e:parity": "playwright test tests/e2e/public-visual-smoke.spec.ts",
     "typecheck:next": "node -e \"require('node:fs').rmSync('.next/dev/types', { recursive: true, force: true })\" && next typegen && tsc --noEmit -p tsconfig.next.json",
     "astro": "astro"
   },
