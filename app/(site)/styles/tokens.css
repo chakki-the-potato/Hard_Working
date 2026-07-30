@@ -1,0 +1,41 @@
+:root {
+  --h-scale: 1;
+  --font-sans: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR",
+    -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "D2Coding", ui-monospace, SFMono-Regular,
+    monospace;
+  --color-heading: var(--ink);
+  --color-body: var(--body);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-bg: var(--bg);
+  --color-bg-footer: var(--bg-elev);
+  --color-bg-badge: var(--bg-alt);
+  --color-cta: var(--ink);
+  --color-cta-hover: #1f2937;
+  --color-border: var(--border);
+  --color-badge-blue: var(--accent-soft);
+  --color-badge-blue-text: var(--accent-ink);
+  --color-badge-green: var(--accent-soft);
+  --color-badge-green-text: var(--accent-ink);
+  --bg-primary: var(--bg);
+  --bg-secondary: var(--bg-alt);
+  --text-primary: var(--ink);
+  --text-secondary: var(--muted);
+  --accent-hover: var(--accent-ink);
+  --border-color: var(--border);
+  --card-bg: var(--bg-elev);
+  --card-shadow: none;
+  --card-shadow-hover: none;
+}
+
+.qt-public-shell {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.qt-page {
+  width: 100%;
+  flex: 1;
+}

@@ -137,7 +137,7 @@ rtk git commit -m "fix(cms): restore legacy public routes"
 - Consumes: `src/styles/global.css`, `src/layouts/BaseLayout.astro`, `src/components/Header.astro`, `src/components/Footer.astro`.
 - Produces: 모든 공개 페이지가 공유하는 기존 `qt-*` 셸과 디자인 토큰.
 
-- [ ] **Step 1: 공개 셸 구조 테스트를 작성한다.**
+- [x] **Step 1: 공개 셸 구조 테스트를 작성한다.**
 
 ```ts
 test("public shell keeps legacy structure", async ({ page }) => {
@@ -150,7 +150,7 @@ test("public shell keeps legacy structure", async ({ page }) => {
 });
 ```
 
-- [ ] **Step 2: 현재 Next 셸에서 테스트가 실패하는지 확인한다.**
+- [x] **Step 2: 현재 Next 셸에서 테스트가 실패하는지 확인한다.**
 
 Run:
 
@@ -160,19 +160,19 @@ rtk npx playwright test tests/e2e/public-shell.spec.ts
 
 Expected: 기존 `qt-*` 셸이 없어 실패한다.
 
-- [ ] **Step 3: Astro 디자인 토큰을 `tokens.css`로 옮긴다.**
+- [x] **Step 3: Astro 디자인 토큰을 `tokens.css`로 옮긴다.**
 
 색상, 타이포그래피, 너비, 간격, 테두리, 그림자 변수를 이름과 값 변경 없이 옮긴다. Astro scoped selector는 옮기지 않고 공통 변수만 분리한다.
 
-- [ ] **Step 4: Header·Footer·BaseLayout DOM을 React로 옮긴다.**
+- [x] **Step 4: Header·Footer·BaseLayout DOM을 React로 옮긴다.**
 
 `PublicShell`은 UI 조립만 담당하고 데이터 조회나 브라우저 이벤트를 포함하지 않는다. Header와 Footer는 기존 class, 링크 순서, 접근성 라벨을 유지한다.
 
-- [ ] **Step 5: 공개 CSS를 책임별 파일로 분리한다.**
+- [x] **Step 5: 공개 CSS를 책임별 파일로 분리한다.**
 
 현재 `site.css`에 새 책임을 더하지 않는다. 토큰은 `tokens.css`, 공통 셸은 `shell.css`, 반응형 규칙은 `responsive.css`가 소유한다. `admin.css`에는 영향을 주지 않는다.
 
-- [ ] **Step 6: 데스크톱·모바일 셸 테스트를 통과시킨다.**
+- [x] **Step 6: 데스크톱·모바일 셸 테스트를 통과시킨다.**
 
 Run:
 
@@ -182,7 +182,7 @@ rtk npx playwright test tests/e2e/public-shell.spec.ts
 
 Expected: 1440px와 390px에서 Header, 본문, Footer가 모두 표시된다.
 
-- [ ] **Step 7: 기본 셸 이식을 커밋한다.**
+- [x] **Step 7: 기본 셸 이식을 커밋한다.**
 
 ```bash
 rtk git add 'app/(site)/styles' 'app/(site)/layout.tsx' 'app/(site)/site.css' src/components/site/public-shell.tsx src/components/site/site-header.tsx src/components/site/site-footer.tsx tests/e2e/public-shell.spec.ts

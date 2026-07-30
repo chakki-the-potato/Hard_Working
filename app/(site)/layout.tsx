@@ -1,18 +1,14 @@
 import type { ReactNode } from "react";
-import { SiteFooter } from "@/components/site/site-footer";
-import { SiteHeader } from "@/components/site/site-header";
+import { PublicShell } from "@/components/site/public-shell";
 import "./site.css";
+import "./styles/tokens.css";
+import "./styles/shell.css";
+import "./styles/responsive.css";
 
 type SiteLayoutProps = Readonly<{
   children: ReactNode;
 }>;
 
 export default function SiteLayout({ children }: SiteLayoutProps) {
-  return (
-    <>
-      <SiteHeader />
-      {children}
-      <SiteFooter />
-    </>
-  );
+  return <PublicShell>{children}</PublicShell>;
 }
