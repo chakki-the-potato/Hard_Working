@@ -1,9 +1,12 @@
 node_modules/
 dist/
 .astro/
+.next/
+*.tsbuildinfo
 .DS_Store
 screenshots/
 .playwright-mcp/
+.playwright-cli/
 
 # Local Claude settings
 .claude/settings.local.json
@@ -19,3 +22,4 @@ public/fonts/BMJUA_ttf.woff2
 public/fonts/BMKIRANGHAERANG-TTF.woff2
 public/fonts/BMKkubulimTTF.woff2
 public/fonts/BMYEONSUNG_ttf.woff2
+.gstack/

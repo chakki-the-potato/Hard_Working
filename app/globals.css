@@ -1,0 +1,163 @@
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/600.css";
+
+:root {
+  color-scheme: light;
+  --bg: #f4f6fa;
+  --bg-elev: #ffffff;
+  --bg-alt: #eaeef4;
+  --bg-code: #eef1f6;
+  --border: #d9dfe7;
+  --border-strong: #0b1220;
+  --border-hair: rgba(11, 18, 32, 0.08);
+  --ink: #0b1220;
+  --body: #1f2937;
+  --muted: #5b6773;
+  --subtle: #8b95a1;
+  --accent: #6366f1;
+  --accent-soft: rgba(99, 102, 241, 0.1);
+  --accent-ink: #4f46e5;
+  --content-w: 720px;
+  --font-sans: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "D2Coding", ui-monospace, SFMono-Regular,
+    monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  background: var(--bg);
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background: var(--bg);
+  color: var(--body);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+.shell {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 32px 16px;
+}
+
+.panel {
+  width: min(100%, 460px);
+  padding: 32px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-elev);
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  color: var(--accent-ink);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(28px, 6vw, 40px);
+  line-height: 1.15;
+  letter-spacing: -0.04em;
+}
+
+.description {
+  margin: 16px 0 0;
+  color: var(--muted);
+}
+
+.form {
+  display: grid;
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.field-label {
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.field-input {
+  min-height: 46px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0 16px;
+  background: var(--bg-elev);
+  color: var(--ink);
+  font: inherit;
+}
+
+.field-input:focus {
+  border-color: var(--accent);
+  outline: 3px solid var(--accent-soft);
+}
+
+.button {
+  min-height: 46px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--bg-elev);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.button:hover {
+  background: var(--body);
+}
+
+.notice {
+  margin: 24px 0 0;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-size: 13px;
+}
+
+.notice[data-tone="error"] {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+
+.meta {
+  margin-top: 24px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+@media (max-width: 420px) {
+  .panel {
+    padding: 24px 16px;
+  }
+}
