@@ -12,6 +12,7 @@
     "preview": "astro preview",
     "start": "next start",
     "start:next": "next start",
+    "test:e2e": "playwright test",
     "typecheck:next": "node -e \"require('node:fs').rmSync('.next/dev/types', { recursive: true, force: true })\" && next typegen && tsc --noEmit -p tsconfig.next.json",
     "astro": "astro"
   },
@@ -32,6 +33,7 @@
     "remark-gfm": "4.0.1"
   },
   "devDependencies": {
+    "@playwright/test": "1.61.0",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.2.4",
     "@types/node": "26.1.2",

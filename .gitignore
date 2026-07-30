@@ -5,6 +5,7 @@ dist/
 *.tsbuildinfo
 .DS_Store
 screenshots/
+output/
 .playwright-mcp/
 .playwright-cli/
 

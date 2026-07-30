@@ -3,6 +3,10 @@ import { cache } from "react";
 import type {
   PublicContentItem,
   PublicContentRedirect,
+  PublicContentVersionSummary,
+  PublicVersionHistoryPage,
+  SearchIndexItem,
+  WorksIdeaGroup,
 } from "@/lib/content/public-types";
 import { createPublicClient } from "@/lib/supabase/public";
 
@@ -56,6 +60,17 @@ type RedirectRow = Readonly<{
   item: Readonly<{
     path: string;
   }>;
+}>;
+
+type PublicVersionRow = Readonly<{
+  id: string;
+  content_item_id: string;
+  revision_number: number;
+  state: "published" | "archived";
+  version_label: string | null;
+  title: string;
+  published_at: string;
+  archived_at: string | null;
 }>;
 
 type QueryResult<T> = Readonly<{
@@ -178,6 +193,67 @@ export async function listPublishedProjects(): Promise<
     );
 }
 
+export async function listSearchIndex(): Promise<
+  readonly SearchIndexItem[]
+> {
+  return (await listPublishedPosts()).map((item) => ({
+    id: item.path.replace(/^\/posts\//, ""),
+    title: item.title,
+    description: item.description ?? item.summary ?? "",
+    category: item.category?.slug ?? "",
+    categoryLabel: item.category?.name ?? "",
+    tags: item.tags.map((tag) => tag.name),
+    pubDate: item.publishedAt,
+  }));
+}
+
+function formatGroupLabel(slug: string): string {
+  return slug
+    .split("-")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+export async function listWorksIdeaGroups(): Promise<
+  readonly WorksIdeaGroup[]
+> {
+  const worksIdeas = (await listPublishedIdeas()).filter(
+    (item) => item.category?.slug === "works",
+  );
+  const grouped = new Map<string, PublicContentItem[]>();
+
+  for (const item of worksIdeas) {
+    const pathSegments = item.path.split("/").filter(Boolean);
+    const groupSlug = pathSegments[2] ?? item.slug;
+    const groupItems = grouped.get(groupSlug) ?? [];
+
+    groupItems.push(item);
+    grouped.set(groupSlug, groupItems);
+  }
+
+  return [...grouped.entries()]
+    .map(([slug, items]) => {
+      const sortedItems = [...items].sort(
+        (left, right) =>
+          new Date(right.publishedAt).valueOf() -
+          new Date(left.publishedAt).valueOf(),
+      );
+
+      return {
+        slug,
+        label: formatGroupLabel(slug),
+        items: sortedItems,
+        latestPublishedAt: sortedItems[0].publishedAt,
+      };
+    })
+    .sort(
+      (left, right) =>
+        new Date(right.latestPublishedAt).valueOf() -
+        new Date(left.latestPublishedAt).valueOf(),
+    );
+}
+
 export async function getPublishedContentByPath(
   contentPath: string,
 ): Promise<PublicContentItem | null> {
@@ -185,6 +261,54 @@ export async function getPublishedContentByPath(
     (await listPublishedContent()).find((item) => item.path === contentPath) ??
     null
   );
+}
+
+const listPublicVersionSummaries = cache(
+  async (): Promise<readonly PublicContentVersionSummary[]> => {
+    const supabase = createPublicClient();
+    const rows = await withReadRetry(
+      () =>
+        supabase
+          .from("content_versions")
+          .select(
+            "id, content_item_id, revision_number, state, version_label, title, published_at, archived_at",
+          )
+          .in("state", ["published", "archived"])
+          .order("revision_number", { ascending: false })
+          .returns<PublicVersionRow[]>(),
+      "list public version summaries",
+    );
+
+    return rows.map((row) => ({
+      id: row.id,
+      contentItemId: row.content_item_id,
+      revisionNumber: row.revision_number,
+      state: row.state,
+      versionLabel: row.version_label,
+      title: row.title,
+      publishedAt: row.published_at,
+      archivedAt: row.archived_at,
+    }));
+  },
+);
+
+export async function getVersionHistoryPage(
+  contentPath: string,
+): Promise<PublicVersionHistoryPage | null> {
+  const current = await getPublishedContentByPath(contentPath);
+
+  if (!current || current.kind !== "post") {
+    return null;
+  }
+
+  const versions = (await listPublicVersionSummaries()).filter(
+    (version) => version.contentItemId === current.id,
+  );
+
+  return {
+    current,
+    versions,
+  };
 }
 
 export const listPublicRedirects = cache(

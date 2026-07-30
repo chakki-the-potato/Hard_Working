@@ -2,6 +2,9 @@ import type { NextConfig } from "next";
 import redirectMap from "./scripts/redirect-map.json";
 
 const nextConfig: NextConfig = {
+  turbopack: {
+    root: process.cwd(),
+  },
   typescript: {
     tsconfigPath: "tsconfig.next.json",
   },

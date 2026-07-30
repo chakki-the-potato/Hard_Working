@@ -40,3 +40,36 @@ export type PublicContentRedirect = Readonly<{
   targetPath: string;
   statusCode: 301 | 308;
 }>;
+
+export type SearchIndexItem = Readonly<{
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  categoryLabel: string;
+  tags: readonly string[];
+  pubDate: string;
+}>;
+
+export type WorksIdeaGroup = Readonly<{
+  slug: string;
+  label: string;
+  items: readonly PublicContentItem[];
+  latestPublishedAt: string;
+}>;
+
+export type PublicContentVersionSummary = Readonly<{
+  id: string;
+  contentItemId: string;
+  revisionNumber: number;
+  state: "published" | "archived";
+  versionLabel: string | null;
+  title: string;
+  publishedAt: string;
+  archivedAt: string | null;
+}>;
+
+export type PublicVersionHistoryPage = Readonly<{
+  current: PublicContentItem;
+  versions: readonly PublicContentVersionSummary[];
+}>;

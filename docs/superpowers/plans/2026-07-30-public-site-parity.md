@@ -39,11 +39,11 @@
 - Consumes: 현재 공개 콘텐츠, 카테고리, 태그, `content_versions` 데이터.
 - Produces: `listSearchIndex()`, `listWorksIdeaGroups()`, `getVersionHistoryPage()`, 기존 URL 상태 계약.
 
-- [ ] **Step 1: Playwright 개발 의존성 추가 승인을 확인한다.**
+- [x] **Step 1: Playwright 개발 의존성 추가 승인을 확인한다.**
 
 실행 전 사용자 승인 범위에 `@playwright/test` 추가가 포함되어 있는지 확인한다. 이 패키지는 테스트 전용이며 프로덕션 번들에는 포함되지 않는다.
 
-- [ ] **Step 2: 기존 URL 실패를 재현하는 E2E 테스트를 작성한다.**
+- [x] **Step 2: 기존 URL 실패를 재현하는 E2E 테스트를 작성한다.**
 
 ```ts
 import { expect, test } from "@playwright/test";
@@ -60,7 +60,7 @@ test("legacy public routes remain available", async ({ request }) => {
 });
 ```
 
-- [ ] **Step 3: 테스트가 현재 구현에서 실패하는지 확인한다.**
+- [x] **Step 3: 테스트가 현재 구현에서 실패하는지 확인한다.**
 
 Run:
 
@@ -70,7 +70,7 @@ rtk npx playwright test tests/e2e/public-routes.spec.ts
 
 Expected: 세 URL이 현재 `404`여서 실패한다.
 
-- [ ] **Step 4: Supabase 공개 조회 인터페이스를 추가한다.**
+- [x] **Step 4: Supabase 공개 조회 인터페이스를 추가한다.**
 
 ```ts
 export type SearchIndexItem = {
@@ -97,11 +97,11 @@ export type VersionHistoryPage = {
 
 `listSearchIndex()`는 공개된 post·idea·project만 반환한다. `listWorksIdeaGroups()`는 `ideas/works/{project}/{detail}` 경로의 두 번째 세그먼트로 묶는다. `getVersionHistoryPage()`는 현재 공개 버전과 공개 가능한 과거 버전만 반환한다.
 
-- [ ] **Step 5: 기존 세 URL을 구현한다.**
+- [x] **Step 5: 기존 세 URL을 구현한다.**
 
 `/api/search.json`은 기존 필드 이름과 정렬을 유지한 JSON을 반환한다. `/ideas/works`는 프로젝트별 idea 그룹을 렌더링한다. `/posts/versions/[...path]`는 현재 버전과 공개 가능한 과거 버전 목록을 보여준다.
 
-- [ ] **Step 6: URL 계약 테스트를 통과시킨다.**
+- [x] **Step 6: URL 계약 테스트를 통과시킨다.**
 
 Run:
 
@@ -111,7 +111,7 @@ rtk npx playwright test tests/e2e/public-routes.spec.ts
 
 Expected: 세 URL과 현재 `/search?q=git`이 모두 `200`.
 
-- [ ] **Step 7: URL 호환성 변경을 커밋한다.**
+- [x] **Step 7: URL 호환성 변경을 커밋한다.**
 
 ```bash
 rtk git add package.json package-lock.json playwright.config.ts tests/e2e/public-routes.spec.ts app/api/search.json/route.ts 'app/(site)/ideas/works/page.tsx' 'app/(site)/posts/versions/[...path]/page.tsx' src/lib/content/public-queries.ts src/lib/content/public-types.ts
