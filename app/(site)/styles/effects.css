@@ -50,18 +50,22 @@
 .qt-ambient-line {
   position: absolute;
   display: flex;
-  gap: 5px;
-  color: var(--subtle);
+  align-items: baseline;
+  gap: 6px;
   font-family: var(--font-mono);
   font-size: 10.5px;
+  letter-spacing: 0.02em;
+  line-height: 1;
   white-space: nowrap;
   opacity: 0;
   animation: qt-ambient-cycle var(--ad) ease-in-out infinite;
   animation-delay: var(--adelay);
+  will-change: opacity;
 }
 
 .qt-ambient-prompt {
-  color: var(--muted);
+  color: var(--subtle);
+  font-weight: 500;
 }
 
 .qt-ambient-prompt.is-cmd {
@@ -70,6 +74,11 @@
 
 .qt-ambient-prompt.is-comment {
   color: var(--subtle);
+  opacity: 0.85;
+}
+
+.qt-ambient-text {
+  color: var(--muted);
 }
 
 .qt-hero-bg {
@@ -86,20 +95,21 @@
 
 @keyframes qt-ambient-cycle {
   0%,
+  8% {
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 0.38;
+  }
+
+  32% {
+    opacity: 0.34;
+  }
+
+  42%,
   100% {
     opacity: 0;
-    transform: translateY(8px);
-  }
-
-  18%,
-  64% {
-    opacity: 0.28;
-    transform: translateY(0);
-  }
-
-  82% {
-    opacity: 0;
-    transform: translateY(-6px);
   }
 }
 
@@ -136,6 +146,10 @@
 @media (max-width: 720px) {
   .qt-ambient-line:nth-child(n + 8) {
     display: none;
+  }
+
+  .qt-ambient-line {
+    font-size: 10px;
   }
 }
 

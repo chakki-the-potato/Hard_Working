@@ -36,11 +36,13 @@ html {
 }
 
 body {
+  position: relative;
   min-height: 100vh;
   margin: 0;
   background: var(--bg);
   color: var(--body);
   font-family: var(--font-sans);
+  isolation: isolate;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
