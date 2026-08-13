@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { ArticleView } from "@/components/site/article-view";
+import { ProjectHypothesesSection } from "@/components/hypotheses/project-hypotheses-section";
 import {
   getContentNeighbors,
   getPublishedContentByPath,
   listPublishedPosts,
   listPublicRedirects,
 } from "@/lib/content/public-queries";
+import { listPublicHypothesesByProject } from "@/lib/hypotheses/public-queries";
 
 type ProjectPageProps = Readonly<{
   params: Promise<{ slug: string }>;
@@ -44,15 +46,21 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     notFound();
   }
 
-  const [posts, neighbors] = await Promise.all([
+  const [posts, neighbors, hypotheses] = await Promise.all([
     listPublishedPosts(),
     getContentNeighbors(project),
+    listPublicHypothesesByProject(project.id),
   ]);
   const related = posts.filter(
     (post) => post.parentItemId === project.id,
   );
 
   return (
-    <ArticleView item={project} neighbors={neighbors} related={related} />
+    <ArticleView
+      beforeRelated={<ProjectHypothesesSection hypotheses={hypotheses} />}
+      item={project}
+      neighbors={neighbors}
+      related={related}
+    />
   );
 }

@@ -10,6 +10,7 @@ import "./styles/article.css";
 import "./styles/search.css";
 import "./styles/effects.css";
 import "./styles/writer.css";
+import "./styles/hypotheses.css";
 
 type SiteLayoutProps = Readonly<{
   children: ReactNode;

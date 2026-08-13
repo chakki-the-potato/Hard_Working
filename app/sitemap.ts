@@ -1,15 +1,22 @@
 import type { MetadataRoute } from "next";
 import { listPublishedContent } from "@/lib/content/public-queries";
 import { getSiteUrl } from "@/lib/site";
+import { listPublicHypotheses } from "@/lib/hypotheses/public-queries";
+
+export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = getSiteUrl();
-  const content = await listPublishedContent();
+  const [content, hypotheses] = await Promise.all([
+    listPublishedContent(),
+    listPublicHypotheses(),
+  ]);
   const staticPaths = [
     "/",
     "/about",
     "/ideas",
     "/ideas/works",
+    "/hypotheses",
     "/projects",
     "/search",
   ];
@@ -25,6 +32,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(item.updatedAt),
       changeFrequency: "monthly" as const,
       priority: item.kind === "post" ? 0.8 : 0.7,
+    })),
+    ...hypotheses.map((hypothesis) => ({
+      url: new URL(`/hypotheses/${hypothesis.slug}`, siteUrl).toString(),
+      lastModified: new Date(hypothesis.updatedAt),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
     })),
   ];
 }
