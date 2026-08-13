@@ -91,6 +91,36 @@ test("published idea appears in search and opens its canonical path", async ({
   await expect(page).toHaveURL(new RegExp(`${ideaPath}/?$`));
 });
 
+test("published project appears in search and opens its canonical path", async ({
+  page,
+  request,
+}) => {
+  const projectPath = "/projects/blog-draft-bot";
+  const response = await request.get("/api/search.json");
+  const items = (await response.json()) as readonly {
+    path?: string;
+    title: string;
+  }[];
+  const project = items.find((item) => item.path === projectPath);
+
+  expect(project).toEqual(
+    expect.objectContaining({
+      title: "Blog Draft Bot",
+    }),
+  );
+
+  await page.goto("/");
+  await page.locator("[data-cmdk-trigger]").first().click();
+  await page.locator("#qt-cmdk-input").fill(project?.title ?? "");
+
+  const result = page.locator(".qt-cmdk-item").first();
+  await expect(result).toContainText(project?.title ?? "");
+  await expect(result).toHaveAttribute("href", projectPath);
+
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(new RegExp(`${projectPath}/?$`));
+});
+
 test("404 search action opens the command palette", async ({ page }) => {
   await page.goto("/posts/missing-public-page");
   await page.locator(".qt-404-actions [data-cmdk-trigger]").click();

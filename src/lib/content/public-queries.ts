@@ -268,7 +268,12 @@ export async function listSearchIndex(): Promise<
   readonly SearchIndexItem[]
 > {
   return (await listPublishedContent())
-    .filter((item) => item.kind === "post" || item.kind === "idea")
+    .filter(
+      (item) =>
+        item.kind === "post" ||
+        item.kind === "idea" ||
+        item.kind === "project",
+    )
     .map((item) => ({
       id: item.path.replace(/^\/posts\//, ""),
       path: item.path,
