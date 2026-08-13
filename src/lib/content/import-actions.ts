@@ -4,6 +4,10 @@ import type { PostgrestError } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 import { requireAdminSession } from "@/lib/auth/require-admin";
 import { buildContentImportSnapshot } from "@/lib/content/content-snapshot";
+import {
+  CONTENT_IMPORT_PRODUCTION_LOCK_MESSAGE,
+  runContentImportWithPolicy,
+} from "@/lib/content/import-policy";
 import type {
   ContentImportActionState,
   ContentImportResult,
@@ -98,7 +102,22 @@ export async function runContentImportAction(
   }
 
   try {
-    const result = await executeImport(mode === "dry-run");
+    const execution = await runContentImportWithPolicy(
+      mode,
+      process.env.VERCEL_ENV,
+      () => executeImport(mode === "dry-run"),
+    );
+
+    if (execution.status === "blocked") {
+      return {
+        status: "error",
+        mode,
+        message: CONTENT_IMPORT_PRODUCTION_LOCK_MESSAGE,
+        result: null,
+      };
+    }
+
+    const result = execution.value;
 
     if (mode === "apply") {
       revalidatePath("/");

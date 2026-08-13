@@ -11,7 +11,11 @@ const INITIAL_STATE: ContentImportActionState = {
   result: null,
 };
 
-export function ContentImportForm() {
+type ContentImportFormProps = Readonly<{
+  allowApply: boolean;
+}>;
+
+export function ContentImportForm({ allowApply }: ContentImportFormProps) {
   const [state, formAction, isPending] = useActionState(
     runContentImportAction,
     INITIAL_STATE,
@@ -64,15 +68,17 @@ export function ContentImportForm() {
         >
           {isPending ? "검증 중" : "Dry-run"}
         </button>
-        <button
-          className="admin-button admin-button-primary"
-          disabled={isPending}
-          name="mode"
-          type="submit"
-          value="apply"
-        >
-          {isPending ? "처리 중" : "실제 가져오기"}
-        </button>
+        {allowApply ? (
+          <button
+            className="admin-button admin-button-primary"
+            disabled={isPending}
+            name="mode"
+            type="submit"
+            value="apply"
+          >
+            {isPending ? "처리 중" : "실제 가져오기"}
+          </button>
+        ) : null}
       </div>
     </form>
   );

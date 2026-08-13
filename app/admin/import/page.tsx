@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { requireAdminSession } from "@/lib/auth/require-admin";
 import { buildContentImportSnapshot } from "@/lib/content/content-snapshot";
+import { getContentImportControls } from "@/lib/content/import-policy";
 import { ContentImportForm } from "../_components/content-import-form";
 
 export const metadata: Metadata = {
@@ -12,6 +13,7 @@ export const dynamic = "force-dynamic";
 
 export default async function ContentImportPage() {
   await requireAdminSession();
+  const { allowApply } = getContentImportControls(process.env.VERCEL_ENV);
   const snapshot = await buildContentImportSnapshot();
   const counts = snapshot.items.reduce(
     (result, item) => ({
@@ -59,10 +61,11 @@ export default async function ContentImportPage() {
           </div>
         </dl>
         <p className="admin-import-warning">
-          먼저 dry-run으로 전체 트랜잭션과 개수를 검증합니다. 실제 가져오기는
-          별도 승인 후 실행합니다.
+          {allowApply
+            ? "먼저 dry-run으로 전체 트랜잭션과 개수를 검증합니다. 실제 가져오기는 별도 승인 후 실행합니다."
+            : "Production에서는 실제 가져오기가 잠겨 있으며 dry-run만 실행할 수 있습니다."}
         </p>
-        <ContentImportForm />
+        <ContentImportForm allowApply={allowApply} />
       </section>
     </main>
   );
