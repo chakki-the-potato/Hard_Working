@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { AdminEditAction } from "@/components/site/admin-edit-action";
 import { ArticleNavigation } from "@/components/site/article-navigation";
 import { MarkdownContent } from "@/components/site/markdown-content";
@@ -13,6 +14,7 @@ type ArticleViewProps = Readonly<{
   item: PublicContentItem;
   neighbors: PublicContentNeighbors;
   related: readonly PublicContentItem[];
+  beforeRelated?: ReactNode;
 }>;
 
 function formatDate(value: string): string {
@@ -35,6 +37,7 @@ export function ArticleView({
   item,
   neighbors,
   related,
+  beforeRelated,
 }: ArticleViewProps) {
   const parentPath =
     item.kind === "idea"
@@ -163,6 +166,7 @@ export function ArticleView({
             </dl>
           ) : null}
           <MarkdownContent markdown={item.bodyMarkdown} />
+          {beforeRelated}
           <section className="qt-post-related">
             <span className="qt-post-related-mono">// RELATED</span>
             {related.length > 0 ? (
