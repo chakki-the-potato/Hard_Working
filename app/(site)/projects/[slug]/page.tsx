@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { ArticleView } from "@/components/site/article-view";
 import {
   getContentNeighbors,
   getPublishedContentByPath,
   listPublishedPosts,
+  listPublicRedirects,
 } from "@/lib/content/public-queries";
 
 type ProjectPageProps = Readonly<{
@@ -28,9 +29,18 @@ export async function generateMetadata({
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
   const { slug } = await params;
-  const project = await getPublishedContentByPath(`/projects/${slug}`);
+  const requestPath = `/projects/${slug}`;
+  const project = await getPublishedContentByPath(requestPath);
 
   if (!project || project.kind !== "project") {
+    const redirect = (await listPublicRedirects()).find(
+      (item) => item.sourcePath === requestPath,
+    );
+
+    if (redirect) {
+      permanentRedirect(redirect.targetPath);
+    }
+
     notFound();
   }
 

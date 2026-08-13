@@ -129,7 +129,7 @@ export async function deletePostAction(
   revalidatePath("/admin");
   revalidatePath(post.path);
   redirect(
-    `/admin?result=${
+    `/?result=${
       failures.length > 0 ? "deleted-with-storage-warning" : "deleted"
     }`,
   );

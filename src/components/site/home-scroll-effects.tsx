@@ -49,6 +49,7 @@ export function HomeScrollEffects() {
     };
 
     updateClock();
+    updateBackground();
     const clockId = window.setInterval(updateClock, 30_000);
     window.addEventListener("scroll", handleScroll, { passive: true });
     motionQuery.addEventListener("change", handleMotionChange);

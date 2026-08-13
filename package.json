@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "test:content-editor": "node --test tests/content-editor-validation.test.mjs",
     "test:import-policy": "node --test tests/content-import-policy.test.mjs",
     "test:e2e": "playwright test",
     "test:e2e:parity": "playwright test tests/e2e/public-visual-smoke.spec.ts",
