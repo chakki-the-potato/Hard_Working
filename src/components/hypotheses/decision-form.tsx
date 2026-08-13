@@ -1,0 +1,14 @@
+"use client";
+
+import { useActionState } from "react";
+import { concludeHypothesisAction, correctHypothesisDecisionAction } from "@/lib/hypotheses/admin-actions";
+import type { HypothesisDecisionActionState } from "@/lib/hypotheses/admin-types";
+
+type DecisionFormProps = Readonly<{ hypothesisId: string; mode: "conclude" | "correct" }>;
+const decisionState = (hypothesisId: string): HypothesisDecisionActionState => ({ status: "idle", message: null, fieldErrors: {}, values: { hypothesisId, verdict: "inconclusive", reasoning: "", confidenceAfter: "", failureType: "", decidedAt: "" } });
+
+export function DecisionForm({ hypothesisId, mode }: DecisionFormProps) {
+  const action = mode === "conclude" ? concludeHypothesisAction : correctHypothesisDecisionAction;
+  const [state, formAction, isPending] = useActionState(action, decisionState(hypothesisId));
+  return <form action={formAction} className="hypothesis-compact-form"><input name="hypothesisId" type="hidden" value={state.values.hypothesisId} /><h2 className="hypothesis-form-title">{mode === "conclude" ? "가설 종료" : "판정 정정"}</h2>{state.message ? <p className="admin-notice" role="alert">{state.message}</p> : null}<div className="hypothesis-form-grid"><label className="admin-field"><span className="admin-field-label">판정</span><select className="admin-select" defaultValue={state.values.verdict} name="verdict"><option value="supported">지지됨</option><option value="rejected">기각됨</option><option value="inconclusive">판단 보류</option><option value="pivoted">피봇</option></select></label><label className="admin-field"><span className="admin-field-label">판정 시각</span><input className="admin-input" defaultValue={state.values.decidedAt} name="decidedAt" required type="datetime-local" /></label><label className="admin-field"><span className="admin-field-label">판정 후 확신도</span><input className="admin-input" defaultValue={state.values.confidenceAfter} max="100" min="0" name="confidenceAfter" type="number" /></label><label className="admin-field"><span className="admin-field-label">실패 유형</span><select className="admin-select" defaultValue={state.values.failureType} name="failureType"><option value="">선택 안 함</option><option value="hypothesis_error">가설 오류</option><option value="experiment_design">실험 설계 부족</option><option value="execution_incomplete">실행 미완료</option><option value="insufficient_data">데이터 부족</option><option value="external_condition">외부 조건</option></select></label><label className="admin-field"><span className="admin-field-label">판정 근거</span><textarea className="admin-textarea" defaultValue={state.values.reasoning} name="reasoning" required rows={4} /></label></div><button className="admin-button admin-button-primary" disabled={isPending} type="submit">{isPending ? "저장 중" : mode === "conclude" ? "가설 종료" : "판정 정정"}</button></form>;
+}
