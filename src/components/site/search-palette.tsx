@@ -207,7 +207,7 @@ export function SearchPalette() {
         const selected = availableResults[activeIndexRef.current];
         if (selected) {
           closePalette();
-          router.push(`/posts/${selected.id}`);
+          router.push(selected.path);
         }
       }
     };
@@ -274,8 +274,8 @@ export function SearchPalette() {
             results.map((item, index) => (
               <Link
                 className={`qt-cmdk-item${index === activeIndex ? " is-active" : ""}`}
-                href={`/posts/${item.id}`}
-                key={item.id}
+                href={item.path}
+                key={item.path}
                 onClick={closePalette}
               >
                 <span className="qt-cmdk-num">

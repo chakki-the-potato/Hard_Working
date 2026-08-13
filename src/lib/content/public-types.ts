@@ -65,6 +65,7 @@ export type PublicContentNeighbors = Readonly<{
 
 export type SearchIndexItem = Readonly<{
   id: string;
+  path: string;
   title: string;
   description: string;
   category: string;

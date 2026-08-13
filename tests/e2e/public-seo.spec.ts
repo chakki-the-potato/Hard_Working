@@ -30,7 +30,8 @@ test("home exposes the legacy metadata contract", async ({ page }) => {
 
 test("RSS and sitemap cover all current public output", async ({ request }) => {
   const searchResponse = await request.get("/api/search.json");
-  const posts = (await searchResponse.json()) as readonly unknown[];
+  const items = (await searchResponse.json()) as readonly { path: string }[];
+  const posts = items.filter((item) => item.path.startsWith("/posts/"));
   const rssResponse = await request.get("/rss.xml");
   const rss = await rssResponse.text();
   const sitemapResponse = await request.get("/sitemap.xml");
@@ -41,10 +42,8 @@ test("RSS and sitemap cover all current public output", async ({ request }) => {
   );
   expect(rss.match(/<item>/g)?.length ?? 0).toBe(posts.length);
   expect(sitemap).toContain("<loc>");
-  expect(sitemap).toContain(
-    "<loc>http://127.0.0.1:3100/ideas/works</loc>",
-  );
-  expect(sitemap).toContain("/projects");
+  expect(sitemap).toContain("/ideas/works</loc>");
+  expect(sitemap).toContain("/projects</loc>");
 });
 
 test("404 search action and legacy base redirect remain available", async ({

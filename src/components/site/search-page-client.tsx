@@ -80,8 +80,8 @@ export function SearchPageClient({
           {results.map((item) => (
             <Link
               className="qt-search-row"
-              href={`/posts/${item.id}`}
-              key={item.id}
+              href={item.path}
+              key={item.path}
             >
               <span>
                 <span className="qt-search-row-title">{item.title}</span>

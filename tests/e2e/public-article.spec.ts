@@ -5,10 +5,11 @@ test("article keeps legacy metadata, body, progress, and navigation", async ({
   request,
 }) => {
   const response = await request.get("/api/search.json");
-  const posts = (await response.json()) as readonly { id: string }[];
+  const items = (await response.json()) as readonly { path: string }[];
+  const posts = items.filter((item) => item.path.startsWith("/posts/"));
 
   expect(posts.length).toBeGreaterThan(0);
-  await page.goto(`/posts/${posts[0].id}`);
+  await page.goto(posts[0].path);
 
   await expect(page.locator(".qt-reading-progress")).toBeAttached();
   await expect(page.locator(".qt-post-crumb")).toBeVisible();
@@ -60,10 +61,11 @@ test("idea detail stays inside the legacy article frame", async ({ page }) => {
 
 test("article frame remains readable on mobile", async ({ page, request }) => {
   const response = await request.get("/api/search.json");
-  const posts = (await response.json()) as readonly { id: string }[];
+  const items = (await response.json()) as readonly { path: string }[];
+  const posts = items.filter((item) => item.path.startsWith("/posts/"));
 
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto(`/posts/${posts[0].id}`);
+  await page.goto(posts[0].path);
 
   await expect(page.locator(".qt-post-wrap")).toBeVisible();
   await expect(page.locator(".qt-post-title")).toBeVisible();

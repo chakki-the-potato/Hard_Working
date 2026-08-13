@@ -267,15 +267,18 @@ export async function getHomeViewData(): Promise<PublicHomeViewData> {
 export async function listSearchIndex(): Promise<
   readonly SearchIndexItem[]
 > {
-  return (await listPublishedPosts()).map((item) => ({
-    id: item.path.replace(/^\/posts\//, ""),
-    title: item.title,
-    description: item.description ?? item.summary ?? "",
-    category: item.category?.slug ?? "",
-    categoryLabel: item.category?.name ?? "",
-    tags: item.tags.map((tag) => tag.name),
-    pubDate: item.publishedAt,
-  }));
+  return (await listPublishedContent())
+    .filter((item) => item.kind === "post" || item.kind === "idea")
+    .map((item) => ({
+      id: item.path.replace(/^\/posts\//, ""),
+      path: item.path,
+      title: item.title,
+      description: item.description ?? item.summary ?? "",
+      category: item.category?.slug ?? "",
+      categoryLabel: item.category?.name ?? "",
+      tags: item.tags.map((tag) => tag.name),
+      pubDate: item.publishedAt,
+    }));
 }
 
 function formatGroupLabel(slug: string): string {

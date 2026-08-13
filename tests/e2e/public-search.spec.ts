@@ -7,6 +7,7 @@ test("command palette supports open, search, keyboard navigation, and close", as
   const response = await request.get("/api/search.json");
   const items = (await response.json()) as readonly {
     id: string;
+    path: string;
     title: string;
   }[];
 
@@ -38,7 +39,7 @@ test("command palette supports open, search, keyboard navigation, and close", as
   await page.keyboard.press("Meta+k");
   await expect(page.locator(".qt-cmdk-item").first()).toBeVisible();
   await page.keyboard.press("Enter");
-  await expect(page).toHaveURL(new RegExp(`/posts/${items[0].id}/?$`));
+  await expect(page).toHaveURL(new RegExp(`${items[0].path}/?$`));
 });
 
 test("search page filters immediately from the URL query", async ({
@@ -58,6 +59,36 @@ test("search page filters immediately from the URL query", async ({
 
   await page.locator("#search-input").fill("검색결과가절대없는문자열");
   await expect(page.locator("#search-empty")).toBeVisible();
+});
+
+test("published idea appears in search and opens its canonical path", async ({
+  page,
+  request,
+}) => {
+  const ideaPath = "/ideas/works/hypothesis-journal/overview";
+  const response = await request.get("/api/search.json");
+  const items = (await response.json()) as readonly {
+    path?: string;
+    title: string;
+  }[];
+  const idea = items.find((item) => item.path === ideaPath);
+
+  expect(idea).toEqual(
+    expect.objectContaining({
+      title: "활동과 프로젝트를 잇는 가설 검증 기록 시스템",
+    }),
+  );
+
+  await page.goto("/");
+  await page.locator("[data-cmdk-trigger]").first().click();
+  await page.locator("#qt-cmdk-input").fill(idea?.title ?? "");
+
+  const result = page.locator(".qt-cmdk-item").first();
+  await expect(result).toContainText(idea?.title ?? "");
+  await expect(result).toHaveAttribute("href", ideaPath);
+
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(new RegExp(`${ideaPath}/?$`));
 });
 
 test("404 search action opens the command palette", async ({ page }) => {

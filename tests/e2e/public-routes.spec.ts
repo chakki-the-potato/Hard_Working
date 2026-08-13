@@ -27,6 +27,7 @@ test("search endpoint keeps the legacy payload contract", async ({
         categoryLabel: expect.any(String),
         description: expect.any(String),
         id: expect.any(String),
+        path: expect.any(String),
         pubDate: expect.any(String),
         tags: expect.any(Array),
         title: expect.any(String),
