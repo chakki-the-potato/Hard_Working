@@ -7,6 +7,9 @@ screenshots/
 output/
 .playwright-mcp/
 .playwright-cli/
+.agents/
+.claude/worktrees/
+supabase/backups/
 
 # Local Claude settings
 .claude/settings.local.json
