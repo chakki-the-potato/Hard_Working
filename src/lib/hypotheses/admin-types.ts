@@ -208,6 +208,7 @@ export type HypothesisFormField =
 
 export type HypothesisActivityFormValues = Readonly<{
   hypothesisId: string;
+  activityId: string;
   relatedContentItemId: string;
   activityType: string;
   title: string;
@@ -218,6 +219,7 @@ export type HypothesisActivityFormValues = Readonly<{
 
 export type HypothesisActivityFormField =
   | "hypothesisId"
+  | "activityId"
   | "relatedContentItemId"
   | "activityType"
   | "title"
@@ -227,6 +229,7 @@ export type HypothesisActivityFormField =
 
 export type HypothesisEvidenceFormValues = Readonly<{
   hypothesisId: string;
+  evidenceId: string;
   activityId: string;
   evidenceType: string;
   summary: string;
@@ -237,6 +240,7 @@ export type HypothesisEvidenceFormValues = Readonly<{
 
 export type HypothesisEvidenceFormField =
   | "hypothesisId"
+  | "evidenceId"
   | "activityId"
   | "evidenceType"
   | "summary"

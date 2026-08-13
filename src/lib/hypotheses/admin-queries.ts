@@ -109,6 +109,29 @@ export async function runHypothesisAdminQueryWithRetry<T>(
   throw new Error(`Supabase hypothesis query failed: ${operationName}`, lastError ? { cause: lastError } : undefined);
 }
 
+async function runNullableHypothesisAdminQueryWithRetry<T>(
+  operation: () => PromiseLike<QueryResult<T>>,
+  operationName: string,
+): Promise<T | null> {
+  let lastError: PostgrestError | null = null;
+  for (let attempt = 1; attempt <= MAX_QUERY_ATTEMPTS; attempt += 1) {
+    const { data, error } = await operation();
+    if (!error) return data;
+    lastError = error;
+    if (attempt < MAX_QUERY_ATTEMPTS) {
+      console.warn("Supabase hypothesis query failed; retrying", {
+        operation: operationName,
+        attempt,
+        code: error.code,
+        details: error.details,
+        hint: error.hint,
+      });
+      await wait(INITIAL_RETRY_DELAY_MS * 2 ** (attempt - 1));
+    }
+  }
+  throw new Error(`Supabase hypothesis query failed: ${operationName}`, { cause: lastError });
+}
+
 function toCategoryOption(row: CategoryRow): CategoryOption {
   return { id: row.id, name: row.name, slug: row.slug };
 }
@@ -239,7 +262,7 @@ export async function getAdminHypothesisDetail(
   supabase: ServerSupabaseClient,
   hypothesisId: string,
 ): Promise<HypothesisDetail | null> {
-  const hypothesisResult = await runHypothesisAdminQueryWithRetry(
+  const hypothesisResult = await runNullableHypothesisAdminQueryWithRetry(
     () => supabase.from("hypotheses").select("id, slug, project_item_id, category_id, parent_hypothesis_id, parent_relation, statement, rationale, success_criteria, measurement_plan, status, visibility, public_summary, confidence_before, started_at, review_due_at, concluded_at, published_at, created_at, updated_at").eq("id", hypothesisId).maybeSingle().returns<HypothesisRow>(),
     "get admin hypothesis",
   );

@@ -174,15 +174,24 @@ export function parseCreateHypothesisFormData(
   formData: FormData,
 ): ParseResult<SaveHypothesisInput, HypothesisFormActionState> {
   const parsed = parseHypothesisFormData(formData, false);
-  if (!parsed.ok || parsed.input.hypothesisId !== null) {
-    return parsed.ok
-      ? {
-          ok: false,
-          state: hypothesisErrorState(parsed.input.values, {
-            hypothesisId: "새 가설에는 기존 가설 ID를 사용할 수 없습니다.",
-          }),
-        }
-      : parsed;
+  if (!parsed.ok) {
+    return parsed;
+  }
+  if (parsed.input.hypothesisId !== null) {
+    return {
+      ok: false,
+      state: hypothesisErrorState(parsed.input.values, {
+        hypothesisId: "새 가설에는 기존 가설 ID를 사용할 수 없습니다.",
+      }),
+    };
+  }
+  if (parsed.input.status === "concluded" || parsed.input.status === "abandoned") {
+    return {
+      ok: false,
+      state: hypothesisErrorState(parsed.input.values, {
+        status: "새 가설은 초안, 계획됨, 진행 중 상태로만 만들 수 있습니다.",
+      }),
+    };
   }
   return parsed;
 }
@@ -276,8 +285,22 @@ function parseHypothesisFormData(
 export function parseCreateHypothesisActivityFormData(
   formData: FormData,
 ): ParseResult<CreateActivityInput, HypothesisActivityActionState> {
+  return parseHypothesisActivityFormData(formData, false);
+}
+
+export function parseUpdateHypothesisActivityFormData(
+  formData: FormData,
+): ParseResult<CreateActivityInput, HypothesisActivityActionState> {
+  return parseHypothesisActivityFormData(formData, true);
+}
+
+function parseHypothesisActivityFormData(
+  formData: FormData,
+  requireActivityId: boolean,
+): ParseResult<CreateActivityInput, HypothesisActivityActionState> {
   const values: HypothesisActivityFormValues = {
     hypothesisId: getString(formData, "hypothesisId"),
+    activityId: getString(formData, "activityId"),
     relatedContentItemId: getString(formData, "relatedContentItemId"),
     activityType: getString(formData, "activityType"),
     title: getString(formData, "title"),
@@ -290,6 +313,7 @@ export function parseCreateHypothesisActivityFormData(
   const completedAt = values.completedAt ? parseTimestamp(values.completedAt) : null;
 
   if (!isUuid(values.hypothesisId)) fieldErrors.hypothesisId = "가설 정보를 확인할 수 없습니다.";
+  if (requireActivityId && !isUuid(values.activityId)) fieldErrors.activityId = "활동 정보를 확인할 수 없습니다.";
   if (values.relatedContentItemId && !isUuid(values.relatedContentItemId)) fieldErrors.relatedContentItemId = "연결 콘텐츠 정보를 확인할 수 없습니다.";
   if (!isOneOf(hypothesisActivityTypes, values.activityType)) fieldErrors.activityType = "지원하지 않는 활동 유형입니다.";
   if (!values.title) fieldErrors.title = "활동 제목을 입력해 주세요.";
@@ -304,8 +328,22 @@ export function parseCreateHypothesisActivityFormData(
 export function parseCreateHypothesisEvidenceFormData(
   formData: FormData,
 ): ParseResult<CreateEvidenceInput, HypothesisEvidenceActionState> {
+  return parseHypothesisEvidenceFormData(formData, false);
+}
+
+export function parseUpdateHypothesisEvidenceFormData(
+  formData: FormData,
+): ParseResult<CreateEvidenceInput, HypothesisEvidenceActionState> {
+  return parseHypothesisEvidenceFormData(formData, true);
+}
+
+function parseHypothesisEvidenceFormData(
+  formData: FormData,
+  requireEvidenceId: boolean,
+): ParseResult<CreateEvidenceInput, HypothesisEvidenceActionState> {
   const values: HypothesisEvidenceFormValues = {
     hypothesisId: getString(formData, "hypothesisId"),
+    evidenceId: getString(formData, "evidenceId"),
     activityId: getString(formData, "activityId"),
     evidenceType: getString(formData, "evidenceType"),
     summary: getString(formData, "summary"),
@@ -316,6 +354,7 @@ export function parseCreateHypothesisEvidenceFormData(
   const fieldErrors: Partial<Record<HypothesisEvidenceFormField, string>> = {};
   const observedAt = parseTimestamp(values.observedAt);
   if (!isUuid(values.hypothesisId)) fieldErrors.hypothesisId = "가설 정보를 확인할 수 없습니다.";
+  if (requireEvidenceId && !isUuid(values.evidenceId)) fieldErrors.evidenceId = "증거 정보를 확인할 수 없습니다.";
   if (!isUuid(values.activityId)) fieldErrors.activityId = "활동 정보를 확인할 수 없습니다.";
   if (!isOneOf(hypothesisEvidenceTypes, values.evidenceType)) fieldErrors.evidenceType = "지원하지 않는 증거 유형입니다.";
   if (!values.summary) fieldErrors.summary = "증거 요약을 입력해 주세요.";

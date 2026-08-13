@@ -17,6 +17,8 @@ import {
   parseCreateHypothesisEvidenceFormData,
   parseCreateHypothesisFormData,
   parseHypothesisPublicationIntentFormData,
+  parseUpdateHypothesisActivityFormData,
+  parseUpdateHypothesisEvidenceFormData,
   parseUpdateHypothesisFormData,
 } from "@/lib/hypotheses/admin-validation";
 
@@ -117,6 +119,30 @@ export async function createHypothesisActivityAction(
   redirect(hypothesisDetailPath(parsed.input.hypothesisId, "activity-created"));
 }
 
+export async function updateHypothesisActivityAction(
+  _previousState: HypothesisActivityActionState,
+  formData: FormData,
+): Promise<HypothesisActivityActionState> {
+  const parsed = parseUpdateHypothesisActivityFormData(formData);
+  if (!parsed.ok) return parsed.state;
+  const { supabase } = await requireAdminSession(`/admin/hypotheses/${parsed.input.hypothesisId}`);
+  const { error } = await supabase.rpc("update_hypothesis_activity", {
+    p_activity_id: parsed.input.values.activityId,
+    p_related_content_item_id: parsed.input.relatedContentItemId,
+    p_activity_type: parsed.input.activityType,
+    p_title: parsed.input.values.title,
+    p_description: parsed.input.values.description || null,
+    p_started_at: parsed.input.startedAt,
+    p_completed_at: parsed.input.completedAt,
+  });
+  if (error) {
+    console.error("Supabase hypothesis activity update failed", { operation: "update hypothesis activity", hypothesisId: parsed.input.hypothesisId, activityId: parsed.input.values.activityId, code: error.code, details: error.details, hint: error.hint });
+    return { status: "error", message: "활동을 저장하지 못했습니다. 다시 시도해 주세요.", fieldErrors: {}, values: parsed.input.values };
+  }
+  revalidateHypothesisPaths(parsed.input.hypothesisId);
+  redirect(hypothesisDetailPath(parsed.input.hypothesisId, "activity-updated"));
+}
+
 export async function createHypothesisEvidenceAction(
   _previousState: HypothesisEvidenceActionState,
   formData: FormData,
@@ -138,6 +164,29 @@ export async function createHypothesisEvidenceAction(
   }
   revalidateHypothesisPaths(parsed.input.values.hypothesisId);
   redirect(hypothesisDetailPath(parsed.input.values.hypothesisId, "evidence-created"));
+}
+
+export async function updateHypothesisEvidenceAction(
+  _previousState: HypothesisEvidenceActionState,
+  formData: FormData,
+): Promise<HypothesisEvidenceActionState> {
+  const parsed = parseUpdateHypothesisEvidenceFormData(formData);
+  if (!parsed.ok) return parsed.state;
+  const { supabase } = await requireAdminSession(`/admin/hypotheses/${parsed.input.values.hypothesisId}`);
+  const { error } = await supabase.rpc("update_hypothesis_evidence", {
+    p_evidence_id: parsed.input.values.evidenceId,
+    p_evidence_type: parsed.input.evidenceType,
+    p_summary: parsed.input.values.summary,
+    p_details_markdown: parsed.input.values.detailsMarkdown || null,
+    p_source_url: parsed.input.sourceUrl,
+    p_observed_at: parsed.input.observedAt,
+  });
+  if (error) {
+    console.error("Supabase hypothesis evidence update failed", { operation: "update hypothesis evidence", hypothesisId: parsed.input.values.hypothesisId, evidenceId: parsed.input.values.evidenceId, code: error.code, details: error.details, hint: error.hint });
+    return { status: "error", message: "증거를 저장하지 못했습니다. 다시 시도해 주세요.", fieldErrors: {}, values: parsed.input.values };
+  }
+  revalidateHypothesisPaths(parsed.input.values.hypothesisId);
+  redirect(hypothesisDetailPath(parsed.input.values.hypothesisId, "evidence-updated"));
 }
 
 async function saveHypothesisDecision(
