@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { isSaveContentRpcRow } from "../src/lib/content/content-editor-rpc.ts";
 import { parseContentEditorFormData } from "../src/lib/content/content-editor-validation.ts";
 
 const CATEGORY_ID = "10000000-0000-4000-8000-000000000001";
@@ -211,4 +212,27 @@ test("rejects invalid writer metadata", () => {
     !result.ok && result.state.message,
     "작성 화면 정보를 확인할 수 없습니다.",
   );
+});
+
+test("accepts only complete content RPC rows", () => {
+  const valid = {
+    item_id: CATEGORY_ID,
+    kind: "idea",
+    draft_version_id: PARENT_ID,
+    published_version_id: null,
+    canonical_path: "/ideas/works/unified-writer",
+  };
+
+  assert.equal(isSaveContentRpcRow(valid), true);
+
+  for (const invalid of [
+    null,
+    { ...valid, item_id: 1 },
+    { ...valid, kind: "note" },
+    { ...valid, draft_version_id: null },
+    { ...valid, published_version_id: 1 },
+    { ...valid, canonical_path: "ideas/works/unified-writer" },
+  ]) {
+    assert.equal(isSaveContentRpcRow(invalid), false);
+  }
 });
