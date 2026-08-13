@@ -22,9 +22,9 @@
 - 가설은 `content_items` 콘텐츠가 아닌 독립 도메인이므로 이 작성기에 포함하지 않는다.
 - `/admin/import`는 유지보수 URL로 남기고 일반 작성 UI에서는 노출하지 않는다.
 - 기존 `/admin/posts/*` 작성 URL은 통합 작성기로 redirect한다.
-- 기존 `/admin` 콘텐츠 관리 화면은 공개 홈으로 redirect한다.
+- `/admin`은 가설 관리 전용 작업 영역으로 유지하고 글·아이디어·프로젝트 관리 UI를 두지 않는다.
 
-이 문서는 `docs/superpowers/specs/2026-08-13-hypothesis-tracking-design.md`의 가설 도메인 설계를 변경하지 않는다. 다만 해당 문서 5.1의 `글 관리 | 가설 관리` 통합 관리자 작업 영역 중 글 관리 부분은 이 문서의 인라인 작성 흐름으로 대체한다. 향후 가설 관리자 화면은 `/admin/hypotheses/*`를 직접 사용하며, 콘텐츠 작성 진입점과 결합하지 않는다.
+이 문서는 `docs/superpowers/specs/2026-08-13-hypothesis-tracking-design.md`의 가설 도메인 설계를 변경하지 않는다. 다만 해당 문서 5.1의 `글 관리 | 가설 관리` 통합 관리자 작업 영역 중 글 관리 부분은 이 문서의 인라인 작성 흐름으로 대체한다. `/admin`과 `/admin/hypotheses/*`는 가설 관리에 사용하며 콘텐츠 작성 진입점과 결합하지 않는다.
 
 ## 3. 범위
 
@@ -38,14 +38,16 @@
 - 유형별 canonical path 생성과 308 redirect 보존.
 - 프로젝트 전용 메타데이터 저장.
 - 아이디어의 선택적 상위 아이디어 연결.
+- 상위 아이디어 경로 변경 시 모든 하위 경로와 redirect의 원자적 갱신.
 - 기존 글 작성 URL의 호환 redirect.
+- 기존 글 이미지 관리와 삭제 기능 보존.
 - 기존 글 저장 RPC를 공통 저장 RPC로 교체.
 - DB, Server Action, UI, E2E 검증.
 
 ### 포함하지 않는다
 
 - 가설 생성이나 수정.
-- 콘텐츠 삭제 UI 재설계.
+- 콘텐츠 삭제 기능의 범위 확장. 기존 글 삭제만 보존하고 아이디어·프로젝트 삭제는 추가하지 않는다.
 - 카테고리·태그 자체를 작성 모달에서 생성하는 기능.
 - 예약 발행, 자동 저장, 협업 편집, 변경 이력 비교.
 - Markdown 미리보기나 새로운 에디터 패키지 도입.
@@ -104,12 +106,11 @@
 ```text
 /admin/posts/new  → /write
 /admin/posts/[id] → /write/[id]
-/admin            → /
 ```
 
 redirect는 영구 redirect가 아닌 애플리케이션 호환 redirect로 시작한다. 브라우저와 외부 링크에서 기존 작성 경로가 더 이상 사용되지 않는 것이 확인된 뒤 영구화 여부를 별도로 결정한다.
 
-`/admin/import`와 `/admin/hypotheses/*`는 redirect 대상이 아니다.
+`/admin`, `/admin/import`, `/admin/hypotheses/*`는 redirect 대상이 아니다. `/admin`은 가설 관리 진입점이며 글·아이디어·프로젝트 목록이나 생성 버튼을 렌더링하지 않는다.
 
 ### 5.3 Canonical 콘텐츠 URL
 
@@ -119,6 +120,8 @@ redirect는 영구 redirect가 아닌 애플리케이션 호환 redirect로 시�
 - 프로젝트: `/projects/{slug}`.
 
 경로는 클라이언트 입력을 신뢰하지 않고 RPC에서 category와 parent item을 조회해 계산한다.
+
+상위 아이디어의 slug, category, parent가 바뀌면 모든 하위 아이디어의 path와 현재 draft·published category도 새 상위 값을 기준으로 같은 트랜잭션에서 갱신한다. archived version의 과거 category는 보존한다. 변경 전의 상위·하위 path에는 각각 새 항목을 가리키는 308 redirect를 남긴다. 하위 경로 하나라도 기존 content item 또는 다른 redirect와 충돌하면 전체 변경을 rollback한다.
 
 ## 6. 작성 필드
 
@@ -270,6 +273,7 @@ Server Action은 반환된 `kind`와 `canonical_path`를 사용해 revalidation�
 - 글·아이디어 category 규칙.
 - 아이디어 parent kind, 자기 참조, 순환 참조 거부.
 - 네 종류의 canonical path 계산.
+- 상위 아이디어 경로·category 변경 시 모든 하위 path, 현재 category, redirect의 원자적 갱신.
 - 경로 변경 시 308 redirect 생성.
 - redirect 충돌 시 전체 트랜잭션 롤백.
 - 프로젝트 version detail의 draft·published 복제.
