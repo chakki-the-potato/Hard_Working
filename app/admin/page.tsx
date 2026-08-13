@@ -42,6 +42,12 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
         <div className="admin-actions">
           <Link
             className="admin-button admin-button-secondary"
+            href="/admin/hypotheses"
+          >
+            가설 관리
+          </Link>
+          <Link
+            className="admin-button admin-button-secondary"
             href="/admin/import"
           >
             기존 콘텐츠 이전
