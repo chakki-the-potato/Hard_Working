@@ -313,4 +313,8 @@ export type HypothesisPublicationJson =
   | number
   | string
   | readonly HypothesisPublicationJson[]
-  | Readonly<Record<string, HypothesisPublicationJson>>;
+  | HypothesisPublicationObject;
+
+export interface HypothesisPublicationObject {
+  readonly [key: string]: HypothesisPublicationJson;
+}

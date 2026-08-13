@@ -43,9 +43,16 @@
 .hypothesis-form-context,
 .hypothesis-publication-copy,
 .hypothesis-empty,
-.hypothesis-timeline-copy {
+.hypothesis-timeline-copy,
+.hypothesis-lineage {
   margin: 0;
   color: var(--muted);
+}
+
+.hypothesis-lineage {
+  margin-top: 24px;
+  font-family: var(--font-mono);
+  font-size: 12px;
 }
 
 .hypothesis-form-title,
@@ -104,6 +111,38 @@
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.hypothesis-decision-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hypothesis-decision-item {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--border-hair);
+  border-radius: 8px;
+  background: var(--bg-alt);
+}
+
+.hypothesis-status-running,
+.hypothesis-status-concluded,
+.hypothesis-visibility-public {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+
+.hypothesis-status-draft,
+.hypothesis-status-planned,
+.hypothesis-status-abandoned,
+.hypothesis-visibility-private {
+  background: var(--bg-alt);
+  color: var(--muted);
 }
 
 .hypothesis-evidence-item,

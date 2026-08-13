@@ -55,7 +55,7 @@ export async function createHypothesisAction(
     p_tag_ids: parsed.input.tagIds,
   });
   if (error || typeof data !== "string") {
-    console.error("Supabase hypothesis creation failed", { operation: "create hypothesis", code: error?.code ?? "invalid_result", details: error?.details ?? null, hint: error?.hint ?? null });
+    console.error("Supabase hypothesis creation failed", { operation: "create hypothesis", code: error?.code ?? "invalid_result", message: error?.message ?? "Unexpected RPC result", details: error?.details ?? null, hint: error?.hint ?? null });
     return { status: "error", message: "가설을 저장하지 못했습니다. 다시 시도해 주세요.", fieldErrors: {}, values: parsed.input.values };
   }
   revalidateHypothesisPaths(data);
@@ -88,7 +88,7 @@ export async function updateHypothesisAction(
     p_tag_ids: parsed.input.tagIds,
   });
   if (error) {
-    console.error("Supabase hypothesis update failed", { operation: "update hypothesis", hypothesisId, code: error.code, details: error.details, hint: error.hint });
+    console.error("Supabase hypothesis update failed", { operation: "update hypothesis", hypothesisId, code: error.code, message: error.message, details: error.details, hint: error.hint });
     return { status: "error", message: "가설을 저장하지 못했습니다. 다시 시도해 주세요.", fieldErrors: {}, values: parsed.input.values };
   }
   revalidateHypothesisPaths(hypothesisId);
@@ -112,7 +112,7 @@ export async function createHypothesisActivityAction(
     p_completed_at: parsed.input.completedAt,
   });
   if (error) {
-    console.error("Supabase hypothesis activity creation failed", { operation: "create hypothesis activity", hypothesisId: parsed.input.hypothesisId, code: error.code, details: error.details, hint: error.hint });
+    console.error("Supabase hypothesis activity creation failed", { operation: "create hypothesis activity", hypothesisId: parsed.input.hypothesisId, code: error.code, message: error.message, details: error.details, hint: error.hint });
     return { status: "error", message: "활동을 저장하지 못했습니다. 다시 시도해 주세요.", fieldErrors: {}, values: parsed.input.values };
   }
   revalidateHypothesisPaths(parsed.input.hypothesisId);
@@ -136,7 +136,7 @@ export async function updateHypothesisActivityAction(
     p_completed_at: parsed.input.completedAt,
   });
   if (error) {
-    console.error("Supabase hypothesis activity update failed", { operation: "update hypothesis activity", hypothesisId: parsed.input.hypothesisId, activityId: parsed.input.values.activityId, code: error.code, details: error.details, hint: error.hint });
+    console.error("Supabase hypothesis activity update failed", { operation: "update hypothesis activity", hypothesisId: parsed.input.hypothesisId, activityId: parsed.input.values.activityId, code: error.code, message: error.message, details: error.details, hint: error.hint });
     return { status: "error", message: "활동을 저장하지 못했습니다. 다시 시도해 주세요.", fieldErrors: {}, values: parsed.input.values };
   }
   revalidateHypothesisPaths(parsed.input.hypothesisId);
@@ -159,7 +159,7 @@ export async function createHypothesisEvidenceAction(
     p_observed_at: parsed.input.observedAt,
   });
   if (error) {
-    console.error("Supabase hypothesis evidence creation failed", { operation: "create hypothesis evidence", activityId: parsed.input.activityId, code: error.code, details: error.details, hint: error.hint });
+    console.error("Supabase hypothesis evidence creation failed", { operation: "create hypothesis evidence", activityId: parsed.input.activityId, code: error.code, message: error.message, details: error.details, hint: error.hint });
     return { status: "error", message: "증거를 저장하지 못했습니다. 다시 시도해 주세요.", fieldErrors: {}, values: parsed.input.values };
   }
   revalidateHypothesisPaths(parsed.input.values.hypothesisId);
@@ -182,7 +182,7 @@ export async function updateHypothesisEvidenceAction(
     p_observed_at: parsed.input.observedAt,
   });
   if (error) {
-    console.error("Supabase hypothesis evidence update failed", { operation: "update hypothesis evidence", hypothesisId: parsed.input.values.hypothesisId, evidenceId: parsed.input.values.evidenceId, code: error.code, details: error.details, hint: error.hint });
+    console.error("Supabase hypothesis evidence update failed", { operation: "update hypothesis evidence", hypothesisId: parsed.input.values.hypothesisId, evidenceId: parsed.input.values.evidenceId, code: error.code, message: error.message, details: error.details, hint: error.hint });
     return { status: "error", message: "증거를 저장하지 못했습니다. 다시 시도해 주세요.", fieldErrors: {}, values: parsed.input.values };
   }
   revalidateHypothesisPaths(parsed.input.values.hypothesisId);
@@ -206,7 +206,7 @@ async function saveHypothesisDecision(
     p_decided_at: parsed.input.decidedAt,
   });
   if (error) {
-    console.error("Supabase hypothesis decision mutation failed", { operation: rpcName, hypothesisId: parsed.input.hypothesisId, code: error.code, details: error.details, hint: error.hint });
+    console.error("Supabase hypothesis decision mutation failed", { operation: rpcName, hypothesisId: parsed.input.hypothesisId, code: error.code, message: error.message, details: error.details, hint: error.hint });
     return { status: "error", message: "판정을 저장하지 못했습니다. 다시 시도해 주세요.", fieldErrors: {}, values: parsed.input.values };
   }
   revalidateHypothesisPaths(parsed.input.hypothesisId);
@@ -237,7 +237,7 @@ export async function changeHypothesisPublicationAction(
   const rpcName = parsed.input.intent === "publish" ? "publish_hypothesis" : parsed.input.intent === "publish_changes" ? "publish_hypothesis_changes" : "unpublish_hypothesis";
   const { error } = await supabase.rpc(rpcName, { p_hypothesis_id: parsed.input.hypothesisId });
   if (error) {
-    console.error("Supabase hypothesis publication mutation failed", { operation: rpcName, hypothesisId: parsed.input.hypothesisId, code: error.code, details: error.details, hint: error.hint });
+    console.error("Supabase hypothesis publication mutation failed", { operation: rpcName, hypothesisId: parsed.input.hypothesisId, code: error.code, message: error.message, details: error.details, hint: error.hint });
     return { status: "error", message: "공개 상태를 변경하지 못했습니다. 다시 시도해 주세요.", fieldErrors: {}, values: parsed.input.values };
   }
   revalidateHypothesisPaths(parsed.input.hypothesisId);

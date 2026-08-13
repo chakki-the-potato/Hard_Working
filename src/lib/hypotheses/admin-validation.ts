@@ -322,6 +322,7 @@ function parseHypothesisActivityFormData(
   if (startedAt && completedAt && completedAt < startedAt) fieldErrors.completedAt = "완료 시각은 시작 시각보다 빠를 수 없습니다.";
 
   if (hasFieldErrors(fieldErrors)) return { ok: false, state: { status: "error", message: "입력 내용을 확인해 주세요.", fieldErrors, values } };
+  if (!startedAt) throw new Error("Validated activity start timestamp is missing");
   return { ok: true, input: { values, hypothesisId: values.hypothesisId, relatedContentItemId: values.relatedContentItemId || null, activityType: values.activityType as HypothesisActivityType, startedAt, completedAt } };
 }
 
@@ -361,6 +362,7 @@ function parseHypothesisEvidenceFormData(
   if (values.sourceUrl && !/^https?:\/\//i.test(values.sourceUrl)) fieldErrors.sourceUrl = "http 또는 https URL을 입력해 주세요.";
   if (!observedAt) fieldErrors.observedAt = "관찰 시각을 올바르게 입력해 주세요.";
   if (hasFieldErrors(fieldErrors)) return { ok: false, state: { status: "error", message: "입력 내용을 확인해 주세요.", fieldErrors, values } };
+  if (!observedAt) throw new Error("Validated evidence observation timestamp is missing");
   return { ok: true, input: { values, activityId: values.activityId, evidenceType: values.evidenceType as HypothesisEvidenceType, sourceUrl: values.sourceUrl || null, observedAt } };
 }
 
@@ -385,6 +387,7 @@ function parseDecisionFormData(
   if (values.failureType && !isOneOf(hypothesisFailureTypes, values.failureType)) fieldErrors.failureType = "지원하지 않는 실패 유형입니다.";
   if (!decidedAt) fieldErrors.decidedAt = "판정 시각을 올바르게 입력해 주세요.";
   if (hasFieldErrors(fieldErrors)) return { ok: false, state: { status: "error", message: "입력 내용을 확인해 주세요.", fieldErrors, values } };
+  if (!decidedAt) throw new Error("Validated hypothesis decision timestamp is missing");
   return { ok: true, input: { values, hypothesisId: values.hypothesisId, verdict: values.verdict as HypothesisVerdict, confidenceAfter, failureType: values.failureType ? values.failureType as HypothesisFailureType : null, decidedAt } };
 }
 
