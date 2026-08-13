@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { PostWriter } from "@/components/writer/post-writer";
+import { ContentWriter } from "@/components/writer/content-writer";
 
 export const metadata: Metadata = {
-  title: "글 수정",
+  title: "콘텐츠 수정",
   robots: {
     index: false,
     follow: false,
@@ -23,5 +23,5 @@ export default async function EditWriterPage({
   searchParams,
 }: EditWriterPageProps) {
   const [{ id }, { result }] = await Promise.all([params, searchParams]);
-  return <PostWriter itemId={id} mode="page" result={result} />;
+  return <ContentWriter itemId={id} mode="page" result={result} />;
 }

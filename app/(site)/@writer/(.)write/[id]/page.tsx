@@ -1,4 +1,4 @@
-import { PostWriter } from "@/components/writer/post-writer";
+import { ContentWriter } from "@/components/writer/content-writer";
 
 type InterceptedEditWriterPageProps = Readonly<{
   params: Promise<{
@@ -14,5 +14,5 @@ export default async function InterceptedEditWriterPage({
   searchParams,
 }: InterceptedEditWriterPageProps) {
   const [{ id }, { result }] = await Promise.all([params, searchParams]);
-  return <PostWriter itemId={id} mode="modal" result={result} />;
+  return <ContentWriter itemId={id} mode="modal" result={result} />;
 }
