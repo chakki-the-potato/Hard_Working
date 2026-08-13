@@ -1,4 +1,4 @@
-const DEFAULT_RETURN_PATH = "/admin";
+const DEFAULT_RETURN_PATH = "/";
 
 export function getSafeReturnPath(
   value: FormDataEntryValue | string | null | undefined,

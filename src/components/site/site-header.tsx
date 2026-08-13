@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 import { usePathname } from "next/navigation";
 import { AdminWriteAction } from "@/components/site/admin-write-action";
 import { SITE_NAME, SITE_TITLE } from "@/lib/site";
@@ -100,7 +101,11 @@ export function SiteHeader() {
             소개
           </Link>
 
-          <AdminWriteAction />
+          <Suspense
+            fallback={<span aria-hidden="true" className="qt-subscribe" />}
+          >
+            <AdminWriteAction />
+          </Suspense>
         </div>
       </div>
     </header>

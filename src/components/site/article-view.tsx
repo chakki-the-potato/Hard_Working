@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdminEditAction } from "@/components/site/admin-edit-action";
 import { ArticleNavigation } from "@/components/site/article-navigation";
 import { MarkdownContent } from "@/components/site/markdown-content";
 import { PostListRow } from "@/components/site/post-list-row";
@@ -93,6 +94,7 @@ export function ArticleView({
             </span>
             <h1 className="qt-post-title">{item.title}</h1>
             <div className="qt-post-meta">
+              <AdminEditAction itemId={item.id} />
               {item.versionLabel ? (
                 <span className="qt-post-version">{item.versionLabel}</span>
               ) : null}

@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { ArticleView } from "@/components/site/article-view";
 import {
   getPublishedContentByPath,
   getContentNeighbors,
   listPublishedIdeas,
+  listPublicRedirects,
 } from "@/lib/content/public-queries";
 
 type IdeaPageProps = Readonly<{
@@ -28,9 +29,18 @@ export async function generateMetadata({
 
 export default async function IdeaPage({ params }: IdeaPageProps) {
   const { path } = await params;
-  const idea = await getPublishedContentByPath(`/ideas/${path.join("/")}`);
+  const requestPath = `/ideas/${path.join("/")}`;
+  const idea = await getPublishedContentByPath(requestPath);
 
   if (!idea || idea.kind !== "idea") {
+    const redirect = (await listPublicRedirects()).find(
+      (item) => item.sourcePath === requestPath,
+    );
+
+    if (redirect) {
+      permanentRedirect(redirect.targetPath);
+    }
+
     notFound();
   }
 

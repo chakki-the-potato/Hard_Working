@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { AmbientLogs } from "@/components/site/ambient-logs";
+import { AdminStatusProvider } from "@/components/site/admin-status-provider";
 import { BackgroundEffects } from "@/components/site/background-effects";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
@@ -11,13 +12,15 @@ type PublicShellProps = Readonly<{
 
 export function PublicShell({ children }: PublicShellProps) {
   return (
-    <div className="qt-public-shell">
-      <BackgroundEffects />
-      <AmbientLogs />
-      <SiteHeader />
-      <div className="qt-page">{children}</div>
-      <SiteFooter />
-      <SearchPalette />
-    </div>
+    <AdminStatusProvider>
+      <div className="qt-public-shell">
+        <BackgroundEffects />
+        <AmbientLogs />
+        <SiteHeader />
+        <div className="qt-page">{children}</div>
+        <SiteFooter />
+        <SearchPalette />
+      </div>
+    </AdminStatusProvider>
   );
 }

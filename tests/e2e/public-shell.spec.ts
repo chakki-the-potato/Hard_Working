@@ -49,7 +49,7 @@ test("authenticated visitors get the homepage write action", async ({
   await mockAdminStatus(page, true);
   await page.goto("/");
 
-  const writeAction = page.getByRole("link", { name: "글 작성" });
+  const writeAction = page.getByRole("link", { name: "콘텐츠 작성" });
 
   await expect(writeAction).toHaveText("작성");
   await expect(writeAction).toHaveAttribute("href", "/write");
