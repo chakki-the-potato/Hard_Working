@@ -3,6 +3,7 @@ import { ContentEditorForm } from "@/components/editor/content-editor-form";
 import "@/components/editor/editor.css";
 import { PostAssetManager } from "@/components/editor/post-asset-manager";
 import { PostDeleteForm } from "@/components/editor/post-delete-form";
+import { ContentDraftShelf } from "@/components/writer/content-draft-shelf";
 import {
   WriterOverlay,
   type WriterOverlayMode,
@@ -12,6 +13,7 @@ import { listPostAssets } from "@/lib/content/admin-asset-queries";
 import {
   getContentDraft,
   listContentEditorOptions,
+  listUnpublishedContentDrafts,
 } from "@/lib/content/content-editor-queries";
 import type { ContentKind } from "@/lib/content/content-editor-types";
 
@@ -45,10 +47,13 @@ export async function ContentWriter({
 
   const writerPath = itemId ? `/write/${itemId}` : "/write";
   const { supabase } = await requireAdminSession(writerPath);
-  const [options, draft, assets] = await Promise.all([
+  const [options, draft, assets, unpublishedDrafts] = await Promise.all([
     listContentEditorOptions(supabase),
     itemId ? getContentDraft(supabase, itemId) : Promise.resolve(null),
     itemId ? listPostAssets(supabase, itemId) : Promise.resolve([]),
+    itemId
+      ? Promise.resolve([])
+      : listUnpublishedContentDrafts(supabase),
   ]);
 
   if (itemId && !draft) {
@@ -78,6 +83,8 @@ export async function ContentWriter({
         initialValues={draft?.values ?? null}
         options={options}
       />
+
+      {itemId ? null : <ContentDraftShelf drafts={unpublishedDrafts} />}
 
       {itemId && draft && isPostDraft ? (
         <>
