@@ -1,4 +1,4 @@
-@media (max-width: 1024px) {
+@media (max-width: 1100px) {
   .qt-header {
     padding: 0 20px;
   }
@@ -15,6 +15,22 @@
   }
 
   .qt-search .qt-key {
+    display: none;
+  }
+
+  .qt-logo-version {
+    display: none;
+  }
+
+  .qt-nav {
+    gap: 0;
+  }
+
+  .qt-nav-link {
+    padding: 6px 8px;
+  }
+
+  .qt-divider {
     display: none;
   }
 }

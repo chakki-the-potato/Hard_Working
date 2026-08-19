@@ -173,6 +173,13 @@
   font-family: var(--font-mono);
 }
 
+.hypothesis-writer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+}
+
 @media (max-width: 420px) {
   .hypothesis-form-grid {
     grid-template-columns: 1fr;

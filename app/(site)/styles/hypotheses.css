@@ -1,34 +1,36 @@
-.qt-hypothesis-list-wrap,
 .qt-hypothesis-detail-wrap {
   max-width: var(--content-w);
   margin: 0 auto;
   padding: 32px 16px 64px;
 }
 
-.qt-hypothesis-list {
-  display: grid;
+.qt-hypothesis-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
   gap: 16px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
 }
 
-.qt-hypothesis-card {
-  display: block;
-  padding: 24px;
-  border: 1px solid var(--border);
-  background: var(--bg-elev);
-  color: inherit;
-  text-decoration: none;
-  transition: border-color 0.15s, transform 0.15s;
+.qt-hypothesis-shelf {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-strong);
 }
 
-.qt-hypothesis-card:hover {
-  border-color: var(--border-strong);
-  transform: translateY(-2px);
+.qt-hypothesis-private {
+  flex-shrink: 0;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: var(--bg-alt);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1;
 }
 
-.qt-hypothesis-card-meta,
 .qt-hypothesis-detail-meta,
 .qt-hypothesis-activity-meta,
 .qt-hypothesis-evidence-list section > div {
@@ -41,14 +43,6 @@
   letter-spacing: 0.06em;
 }
 
-.qt-hypothesis-card h2 {
-  margin: 16px 0 8px;
-  color: var(--ink);
-  font-size: 22px;
-  line-height: 1.35;
-}
-
-.qt-hypothesis-card p,
 .qt-project-hypotheses p,
 .qt-hypothesis-relations p {
   margin: 0;
@@ -56,7 +50,6 @@
   line-height: 1.7;
 }
 
-.qt-hypothesis-project,
 .qt-hypothesis-eyebrow,
 .qt-hypothesis-decision > span,
 .qt-hypothesis-section-head > span,
@@ -67,10 +60,6 @@
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.08em;
-}
-
-.qt-hypothesis-project {
-  margin-top: 16px;
 }
 
 .qt-hypothesis-empty {
@@ -101,6 +90,11 @@
   text-decoration: none;
 }
 
+.qt-hypothesis-detail-crumb-right {
+  display: flex;
+  gap: 16px;
+}
+
 .qt-hypothesis-detail-head {
   padding: 48px 0;
 }
@@ -109,9 +103,9 @@
   max-width: 920px;
   margin: 16px 0 24px;
   color: var(--ink);
-  font-size: clamp(36px, 6vw, 64px);
+  font-size: calc(42px * var(--h-scale));
   letter-spacing: -0.04em;
-  line-height: 1.08;
+  line-height: 1.12;
 }
 
 .qt-hypothesis-detail-meta a {
@@ -180,8 +174,8 @@
 
 .qt-hypothesis-decision {
   padding: 24px;
-  border: 1px solid var(--accent);
-  background: var(--accent-soft);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-alt);
 }
 
 .qt-hypothesis-decision > p {
@@ -310,7 +304,6 @@
 }
 
 @media (max-width: 720px) {
-  .qt-hypothesis-list-wrap,
   .qt-hypothesis-detail-wrap {
     padding-right: 16px;
     padding-left: 16px;
@@ -321,7 +314,7 @@
   }
 
   .qt-hypothesis-detail-head h1 {
-    font-size: 36px;
+    font-size: calc(28px * var(--h-scale));
   }
 
   .qt-hypothesis-public-summary {

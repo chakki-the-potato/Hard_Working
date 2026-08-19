@@ -6,6 +6,7 @@ import { PostListRow } from "@/components/site/post-list-row";
 import { SidebarWidgets } from "@/components/site/sidebar-widgets";
 import type { PublicContentItem } from "@/lib/content/public-types";
 import type { PublicContentStat } from "@/lib/content/public-types";
+import type { PublicHypothesis } from "@/lib/hypotheses/public-types";
 
 type HomeViewProps = Readonly<{
   posts: readonly PublicContentItem[];
@@ -16,7 +17,20 @@ type HomeViewProps = Readonly<{
   recentActivity: readonly PublicContentItem[];
   featuredCount: number;
   archiveCount: number;
+  hypotheses: readonly PublicHypothesis[];
 }>;
+
+function formatStripDate(value: string): string {
+  return new Intl.DateTimeFormat("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: "Asia/Seoul",
+  })
+    .format(new Date(value))
+    .replace(/\.\s*/g, ".")
+    .replace(/\.$/, "");
+}
 
 export function HomeView({
   posts,
@@ -27,10 +41,12 @@ export function HomeView({
   recentActivity,
   featuredCount,
   archiveCount,
+  hypotheses,
 }: HomeViewProps) {
   const featured = posts.slice(0, featuredCount);
   const archive = posts.slice(featuredCount, featuredCount + archiveCount);
   const recentIdeas = ideas.slice(0, 3);
+  const recentHypotheses = hypotheses.slice(0, 3);
   const archivePageCount = Math.max(
     1,
     Math.ceil(Math.max(0, posts.length - featuredCount) / archiveCount),
@@ -128,20 +144,46 @@ export function HomeView({
                     className="qt-strip-date"
                     dateTime={idea.publishedAt}
                   >
-                    {new Intl.DateTimeFormat("ko-KR", {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                      timeZone: "Asia/Seoul",
-                    })
-                      .format(new Date(idea.publishedAt))
-                      .replace(/\.\s*/g, ".")
-                      .replace(/\.$/, "")}
+                    {formatStripDate(idea.publishedAt)}
                   </time>
                 </Link>
               ))}
             </div>
           </section>
+
+          {recentHypotheses.length > 0 ? (
+            <section className="qt-strip">
+              <div className="qt-strip-head">
+                <h2 className="qt-strip-mono">// HYPOTHESES · VALIDATION</h2>
+                <Link className="qt-strip-more" href="/hypotheses">
+                  ALL →
+                </Link>
+              </div>
+              <div className="qt-strip-rail">
+                {recentHypotheses.map((hypothesis, index) => (
+                  <Link
+                    className="qt-strip-card"
+                    href={`/hypotheses/${hypothesis.slug}`}
+                    key={hypothesis.id}
+                  >
+                    <span className="qt-strip-num">
+                      № {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span className="qt-strip-cat">
+                      [{hypothesis.status.toUpperCase()}]
+                    </span>
+                    <h3 className="qt-strip-title">{hypothesis.statement}</h3>
+                    <time
+                      className="qt-strip-date"
+                      dateTime={hypothesis.publishedAt}
+                    >
+                      {formatStripDate(hypothesis.publishedAt)}
+                    </time>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          ) : null}
 
           <section className="qt-archive-wrap">
             <div className="qt-section-head qt-section-archive">

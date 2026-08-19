@@ -38,7 +38,38 @@ test("legacy post writer routes forward to the inline writer", async ({
   );
 });
 
-test("admin root remains the hypothesis workspace entry", async ({ page }) => {
+test("guest hypothesis writer access returns to the requested writer after login", async ({
+  page,
+}) => {
+  await page.goto("/write/hypothesis");
+
+  await expect(page).toHaveURL(/\/admin\/login\?next=%2Fwrite%2Fhypothesis$/);
+  await expect(page.locator('input[name="returnTo"]')).toHaveValue(
+    "/write/hypothesis",
+  );
+});
+
+test("legacy hypothesis admin routes forward to the inline writer", async ({
+  page,
+}) => {
+  await page.goto("/admin/hypotheses/new");
+  await expect(page).toHaveURL(/\/admin\/login\?next=%2Fwrite%2Fhypothesis$/);
+
+  await page.goto("/admin/hypotheses/10000000-0000-4000-8000-000000000001");
+  await expect(page).toHaveURL(
+    /\/admin\/login\?next=%2Fwrite%2Fhypothesis%2F10000000-0000-4000-8000-000000000001$/,
+  );
+});
+
+test("legacy hypothesis admin list forwards to the public list", async ({
+  page,
+}) => {
+  await page.goto("/admin/hypotheses");
+
+  await expect(page).toHaveURL(/\/hypotheses$/);
+});
+
+test("admin root requires an authenticated admin", async ({ page }) => {
   await page.goto("/admin");
 
   await expect(page).toHaveURL(/\/admin\/login\?next=%2Fadmin$/);

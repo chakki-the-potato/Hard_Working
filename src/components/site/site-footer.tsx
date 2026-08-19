@@ -95,6 +95,7 @@ export function SiteFooter() {
               <Link href="/posts/category/design">Design</Link>
               <Link href="/posts/category/works">Works</Link>
               <Link href="/ideas">Ideas</Link>
+              <Link href="/hypotheses">Hypotheses</Link>
             </div>
             <div className="qt-footer-col">
               <span className="qt-footer-label">META</span>

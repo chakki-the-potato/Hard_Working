@@ -21,15 +21,15 @@ import {
   parseUpdateHypothesisEvidenceFormData,
   parseUpdateHypothesisFormData,
 } from "@/lib/hypotheses/admin-validation";
+import {
+  getHypothesisWriterPath,
+  getHypothesisWriterResultPath,
+} from "@/lib/hypotheses/writer-path";
 
 function revalidateHypothesisPaths(hypothesisId: string): void {
-  revalidatePath("/admin");
-  revalidatePath("/admin/hypotheses");
-  revalidatePath(`/admin/hypotheses/${hypothesisId}`);
-}
-
-function hypothesisDetailPath(hypothesisId: string, result: string): string {
-  return `/admin/hypotheses/${hypothesisId}?result=${result}`;
+  revalidatePath("/");
+  revalidatePath("/hypotheses");
+  revalidatePath(getHypothesisWriterPath(hypothesisId));
 }
 
 export async function createHypothesisAction(
@@ -38,7 +38,7 @@ export async function createHypothesisAction(
 ): Promise<HypothesisFormActionState> {
   const parsed = parseCreateHypothesisFormData(formData);
   if (!parsed.ok) return parsed.state;
-  const { supabase } = await requireAdminSession("/admin/hypotheses/new");
+  const { supabase } = await requireAdminSession(getHypothesisWriterPath());
   const { data, error } = await supabase.rpc("create_hypothesis", {
     p_slug: parsed.input.values.slug,
     p_project_item_id: parsed.input.projectItemId,
@@ -59,7 +59,7 @@ export async function createHypothesisAction(
     return { status: "error", message: "가설을 저장하지 못했습니다. 다시 시도해 주세요.", fieldErrors: {}, values: parsed.input.values };
   }
   revalidateHypothesisPaths(data);
-  redirect(hypothesisDetailPath(data, "created"));
+  redirect(getHypothesisWriterResultPath(data, "created"));
 }
 
 export async function updateHypothesisAction(
@@ -70,7 +70,7 @@ export async function updateHypothesisAction(
   if (!parsed.ok) return parsed.state;
   const hypothesisId = parsed.input.hypothesisId;
   if (!hypothesisId) return { status: "error", message: "가설 정보를 확인할 수 없습니다.", fieldErrors: { hypothesisId: "가설 정보를 확인할 수 없습니다." }, values: parsed.input.values };
-  const { supabase } = await requireAdminSession(`/admin/hypotheses/${hypothesisId}`);
+  const { supabase } = await requireAdminSession(getHypothesisWriterPath(hypothesisId));
   const { error } = await supabase.rpc("update_hypothesis", {
     p_hypothesis_id: hypothesisId,
     p_slug: parsed.input.values.slug,
@@ -92,7 +92,7 @@ export async function updateHypothesisAction(
     return { status: "error", message: "가설을 저장하지 못했습니다. 다시 시도해 주세요.", fieldErrors: {}, values: parsed.input.values };
   }
   revalidateHypothesisPaths(hypothesisId);
-  redirect(hypothesisDetailPath(hypothesisId, "saved"));
+  redirect(getHypothesisWriterResultPath(hypothesisId, "saved"));
 }
 
 export async function createHypothesisActivityAction(
@@ -101,7 +101,7 @@ export async function createHypothesisActivityAction(
 ): Promise<HypothesisActivityActionState> {
   const parsed = parseCreateHypothesisActivityFormData(formData);
   if (!parsed.ok) return parsed.state;
-  const { supabase } = await requireAdminSession(`/admin/hypotheses/${parsed.input.hypothesisId}`);
+  const { supabase } = await requireAdminSession(getHypothesisWriterPath(parsed.input.hypothesisId));
   const { error } = await supabase.rpc("create_hypothesis_activity", {
     p_hypothesis_id: parsed.input.hypothesisId,
     p_related_content_item_id: parsed.input.relatedContentItemId,
@@ -116,7 +116,7 @@ export async function createHypothesisActivityAction(
     return { status: "error", message: "활동을 저장하지 못했습니다. 다시 시도해 주세요.", fieldErrors: {}, values: parsed.input.values };
   }
   revalidateHypothesisPaths(parsed.input.hypothesisId);
-  redirect(hypothesisDetailPath(parsed.input.hypothesisId, "activity-created"));
+  redirect(getHypothesisWriterResultPath(parsed.input.hypothesisId, "activity-created"));
 }
 
 export async function updateHypothesisActivityAction(
@@ -125,7 +125,7 @@ export async function updateHypothesisActivityAction(
 ): Promise<HypothesisActivityActionState> {
   const parsed = parseUpdateHypothesisActivityFormData(formData);
   if (!parsed.ok) return parsed.state;
-  const { supabase } = await requireAdminSession(`/admin/hypotheses/${parsed.input.hypothesisId}`);
+  const { supabase } = await requireAdminSession(getHypothesisWriterPath(parsed.input.hypothesisId));
   const { error } = await supabase.rpc("update_hypothesis_activity", {
     p_activity_id: parsed.input.values.activityId,
     p_related_content_item_id: parsed.input.relatedContentItemId,
@@ -140,7 +140,7 @@ export async function updateHypothesisActivityAction(
     return { status: "error", message: "활동을 저장하지 못했습니다. 다시 시도해 주세요.", fieldErrors: {}, values: parsed.input.values };
   }
   revalidateHypothesisPaths(parsed.input.hypothesisId);
-  redirect(hypothesisDetailPath(parsed.input.hypothesisId, "activity-updated"));
+  redirect(getHypothesisWriterResultPath(parsed.input.hypothesisId, "activity-updated"));
 }
 
 export async function createHypothesisEvidenceAction(
@@ -149,7 +149,7 @@ export async function createHypothesisEvidenceAction(
 ): Promise<HypothesisEvidenceActionState> {
   const parsed = parseCreateHypothesisEvidenceFormData(formData);
   if (!parsed.ok) return parsed.state;
-  const { supabase } = await requireAdminSession(`/admin/hypotheses/${parsed.input.values.hypothesisId}`);
+  const { supabase } = await requireAdminSession(getHypothesisWriterPath(parsed.input.values.hypothesisId));
   const { error } = await supabase.rpc("create_hypothesis_evidence", {
     p_activity_id: parsed.input.activityId,
     p_evidence_type: parsed.input.evidenceType,
@@ -163,7 +163,7 @@ export async function createHypothesisEvidenceAction(
     return { status: "error", message: "증거를 저장하지 못했습니다. 다시 시도해 주세요.", fieldErrors: {}, values: parsed.input.values };
   }
   revalidateHypothesisPaths(parsed.input.values.hypothesisId);
-  redirect(hypothesisDetailPath(parsed.input.values.hypothesisId, "evidence-created"));
+  redirect(getHypothesisWriterResultPath(parsed.input.values.hypothesisId, "evidence-created"));
 }
 
 export async function updateHypothesisEvidenceAction(
@@ -172,7 +172,7 @@ export async function updateHypothesisEvidenceAction(
 ): Promise<HypothesisEvidenceActionState> {
   const parsed = parseUpdateHypothesisEvidenceFormData(formData);
   if (!parsed.ok) return parsed.state;
-  const { supabase } = await requireAdminSession(`/admin/hypotheses/${parsed.input.values.hypothesisId}`);
+  const { supabase } = await requireAdminSession(getHypothesisWriterPath(parsed.input.values.hypothesisId));
   const { error } = await supabase.rpc("update_hypothesis_evidence", {
     p_evidence_id: parsed.input.values.evidenceId,
     p_evidence_type: parsed.input.evidenceType,
@@ -186,7 +186,7 @@ export async function updateHypothesisEvidenceAction(
     return { status: "error", message: "증거를 저장하지 못했습니다. 다시 시도해 주세요.", fieldErrors: {}, values: parsed.input.values };
   }
   revalidateHypothesisPaths(parsed.input.values.hypothesisId);
-  redirect(hypothesisDetailPath(parsed.input.values.hypothesisId, "evidence-updated"));
+  redirect(getHypothesisWriterResultPath(parsed.input.values.hypothesisId, "evidence-updated"));
 }
 
 async function saveHypothesisDecision(
@@ -196,7 +196,7 @@ async function saveHypothesisDecision(
 ): Promise<HypothesisDecisionActionState> {
   const parsed = parser(formData);
   if (!parsed.ok) return parsed.state;
-  const { supabase } = await requireAdminSession(`/admin/hypotheses/${parsed.input.hypothesisId}`);
+  const { supabase } = await requireAdminSession(getHypothesisWriterPath(parsed.input.hypothesisId));
   const { error } = await supabase.rpc(rpcName, {
     p_hypothesis_id: parsed.input.hypothesisId,
     p_verdict: parsed.input.verdict,
@@ -210,7 +210,7 @@ async function saveHypothesisDecision(
     return { status: "error", message: "판정을 저장하지 못했습니다. 다시 시도해 주세요.", fieldErrors: {}, values: parsed.input.values };
   }
   revalidateHypothesisPaths(parsed.input.hypothesisId);
-  redirect(hypothesisDetailPath(parsed.input.hypothesisId, rpcName === "conclude_hypothesis" ? "concluded" : "decision-corrected"));
+  redirect(getHypothesisWriterResultPath(parsed.input.hypothesisId, rpcName === "conclude_hypothesis" ? "concluded" : "decision-corrected"));
 }
 
 export async function concludeHypothesisAction(
@@ -233,7 +233,7 @@ export async function changeHypothesisPublicationAction(
 ): Promise<HypothesisPublicationActionState> {
   const parsed = parseHypothesisPublicationIntentFormData(formData);
   if (!parsed.ok) return parsed.state;
-  const { supabase } = await requireAdminSession(`/admin/hypotheses/${parsed.input.hypothesisId}`);
+  const { supabase } = await requireAdminSession(getHypothesisWriterPath(parsed.input.hypothesisId));
   const rpcName = parsed.input.intent === "publish" ? "publish_hypothesis" : parsed.input.intent === "publish_changes" ? "publish_hypothesis_changes" : "unpublish_hypothesis";
   const { error } = await supabase.rpc(rpcName, { p_hypothesis_id: parsed.input.hypothesisId });
   if (error) {
@@ -241,5 +241,5 @@ export async function changeHypothesisPublicationAction(
     return { status: "error", message: "공개 상태를 변경하지 못했습니다. 다시 시도해 주세요.", fieldErrors: {}, values: parsed.input.values };
   }
   revalidateHypothesisPaths(parsed.input.hypothesisId);
-  redirect(hypothesisDetailPath(parsed.input.hypothesisId, parsed.input.intent));
+  redirect(getHypothesisWriterResultPath(parsed.input.hypothesisId, parsed.input.intent));
 }
