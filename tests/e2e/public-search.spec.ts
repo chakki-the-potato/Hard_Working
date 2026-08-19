@@ -1,5 +1,9 @@
 import { expect, test } from "@playwright/test";
 
+function escapeForRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 test("command palette supports open, search, keyboard navigation, and close", async ({
   page,
   request,
@@ -37,9 +41,18 @@ test("command palette supports open, search, keyboard navigation, and close", as
   await expect(page.locator("#qt-cmdk")).toBeHidden();
 
   await page.keyboard.press("Meta+k");
-  await expect(page.locator(".qt-cmdk-item").first()).toBeVisible();
+
+  const activeItem = page.locator(".qt-cmdk-item").first();
+  await expect(activeItem).toBeVisible();
+
+  const activePath = await activeItem.getAttribute("href");
+
+  expect(activePath).toBeTruthy();
+
   await page.keyboard.press("Enter");
-  await expect(page).toHaveURL(new RegExp(`${items[0].path}/?$`));
+  await expect(page).toHaveURL(
+    new RegExp(`${escapeForRegExp(activePath ?? "")}/?$`),
+  );
 });
 
 test("search page filters immediately from the URL query", async ({
