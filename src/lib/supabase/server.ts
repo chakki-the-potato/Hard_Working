@@ -12,9 +12,17 @@ export async function createClient() {
         return cookieStore.getAll();
       },
       setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value, options }) => {
-          cookieStore.set(name, value, options);
-        });
+        try {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            cookieStore.set(name, value, options);
+          });
+        } catch (error: unknown) {
+          console.warn("Supabase session cookies were not persisted", {
+            operation: "set supabase session cookies",
+            reason: "a server component render cannot modify cookies",
+            message: error instanceof Error ? error.message : "Unknown error",
+          });
+        }
       },
     },
   });
