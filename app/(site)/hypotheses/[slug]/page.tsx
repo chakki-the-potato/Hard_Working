@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PublicHypothesisDetail } from "@/components/hypotheses/public-hypothesis-detail";
+import { getOptionalAdminSession } from "@/lib/auth/optional-admin";
 import { getPublicHypothesisBySlug } from "@/lib/hypotheses/public-queries";
+import { getHypothesisWriterPath } from "@/lib/hypotheses/writer-path";
 
 type HypothesisPageProps = Readonly<{
   params: Promise<{ slug: string }>;
@@ -26,11 +28,19 @@ export async function generateMetadata({
 
 export default async function HypothesisPage({ params }: HypothesisPageProps) {
   const { slug } = await params;
-  const hypothesis = await getPublicHypothesisBySlug(slug);
+  const [hypothesis, adminSession] = await Promise.all([
+    getPublicHypothesisBySlug(slug),
+    getOptionalAdminSession(),
+  ]);
 
   if (!hypothesis) {
     notFound();
   }
 
-  return <PublicHypothesisDetail hypothesis={hypothesis} />;
+  return (
+    <PublicHypothesisDetail
+      editHref={adminSession ? getHypothesisWriterPath(hypothesis.id) : null}
+      hypothesis={hypothesis}
+    />
+  );
 }

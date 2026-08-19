@@ -1,21 +1,14 @@
 import Link from "next/link";
 import type {
   PublicHypothesis,
-  PublicHypothesisStatus,
   PublicHypothesisVerdict,
 } from "@/lib/hypotheses/public-types";
+import { HYPOTHESIS_STATUS_LABELS } from "@/lib/hypotheses/status-labels";
 
 type PublicHypothesisDetailProps = Readonly<{
+  editHref: string | null;
   hypothesis: PublicHypothesis;
 }>;
-
-const STATUS_LABELS: Readonly<Record<PublicHypothesisStatus, string>> = {
-  draft: "DRAFT",
-  planned: "PLANNED",
-  running: "RUNNING",
-  concluded: "CONCLUDED",
-  abandoned: "ABANDONED",
-};
 
 const VERDICT_LABELS: Readonly<Record<PublicHypothesisVerdict, string>> = {
   supported: "지지됨",
@@ -34,13 +27,17 @@ function formatDate(value: string): string {
 }
 
 export function PublicHypothesisDetail({
+  editHref,
   hypothesis,
 }: PublicHypothesisDetailProps) {
   return (
     <main className="qt-hypothesis-detail-wrap">
       <nav className="qt-hypothesis-detail-crumb" aria-label="가설 탐색">
         <Link href="/hypotheses">← Hypotheses</Link>
-        <span>{STATUS_LABELS[hypothesis.status]}</span>
+        <span className="qt-hypothesis-detail-crumb-right">
+          <span>{HYPOTHESIS_STATUS_LABELS[hypothesis.status]}</span>
+          {editHref ? <Link href={editHref}>수정</Link> : null}
+        </span>
       </nav>
 
       <article className="qt-hypothesis-detail">
