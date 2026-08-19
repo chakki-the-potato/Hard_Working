@@ -82,6 +82,12 @@ test("admin creates, publishes, edits, and renames inline content", async ({
   await expect(page.getByLabel("제목")).toHaveValue(`E2E post ${admin.suffix}`);
 
   await page.goto("/write");
+  await expect(
+    page.locator(".writer-shelf-item", {
+      hasText: `E2E post ${admin.suffix}`,
+    }),
+  ).toBeVisible();
+
   await page.getByRole("button", { name: "아이디어", exact: true }).click();
   await fillCommonFields(page, {
     body: "E2E idea body",
@@ -98,6 +104,10 @@ test("admin creates, publishes, edits, and renames inline content", async ({
   await expect(page.getByLabel("제목")).toHaveValue(ideaTitle);
 
   await page.goto("/write");
+  await expect(
+    page.locator(".writer-shelf-item", { hasText: ideaTitle }),
+  ).toHaveCount(0);
+
   await page.getByRole("button", { name: "프로젝트", exact: true }).click();
   await fillCommonFields(page, {
     body: "E2E project body",

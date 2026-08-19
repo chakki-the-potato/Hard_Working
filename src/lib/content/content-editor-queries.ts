@@ -43,6 +43,21 @@ type PublishedVersionRow = Readonly<{
   published_at: string;
 }>;
 
+type DraftWithItemRow = Readonly<{
+  content_item_id: string;
+  title: string;
+  updated_at: string;
+  item: Readonly<{
+    id: string;
+    kind: ContentKind;
+    path: string;
+  }>;
+}>;
+
+type PublishedItemRow = Readonly<{
+  content_item_id: string;
+}>;
+
 type ProjectDetailRow = Readonly<{
   status: "active" | "paused" | "archived";
   sort_order: number;
@@ -62,6 +77,14 @@ export type ContentDraft = Readonly<{
   path: string;
   publishedAt: string | null;
   values: ContentEditorValues;
+}>;
+
+export type UnpublishedContentDraft = Readonly<{
+  itemId: string;
+  kind: ContentKind;
+  path: string;
+  title: string;
+  updatedAt: string;
 }>;
 
 export async function listContentEditorOptions(
@@ -242,4 +265,55 @@ export async function getContentDraft(
     publishedAt: publishedVersions[0]?.published_at ?? null,
     values,
   };
+}
+
+
+export async function listUnpublishedContentDrafts(
+  supabase: ServerSupabaseClient,
+): Promise<readonly UnpublishedContentDraft[]> {
+  const drafts = await runAdminQueryWithRetry(
+    () =>
+      supabase
+        .from("content_versions")
+        .select("content_item_id, title, updated_at, item:content_items!inner(id, kind, path)")
+        .eq("state", "draft")
+        .order("updated_at", { ascending: false })
+        .returns<DraftWithItemRow[]>(),
+    "list content editor drafts",
+  );
+
+  if (drafts.length === 0) {
+    return [];
+  }
+
+  const publishedVersions = await runAdminQueryWithRetry(
+    () =>
+      supabase
+        .from("content_versions")
+        .select("content_item_id")
+        .eq("state", "published")
+        .in(
+          "content_item_id",
+          drafts.map((draft) => draft.content_item_id),
+        )
+        .returns<PublishedItemRow[]>(),
+    "list published content versions",
+  );
+  const publishedItemIds = new Set(
+    publishedVersions.map((version) => version.content_item_id),
+  );
+
+  return drafts.flatMap((draft) =>
+    publishedItemIds.has(draft.content_item_id)
+      ? []
+      : [
+          {
+            itemId: draft.item.id,
+            kind: draft.item.kind,
+            path: draft.item.path,
+            title: draft.title,
+            updatedAt: draft.updated_at,
+          },
+        ],
+  );
 }
