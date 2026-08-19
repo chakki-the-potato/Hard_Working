@@ -13,6 +13,7 @@ const NAVIGATION = [
   { href: "/posts/category/thinking", label: "Thinking" },
   { href: "/posts/category/works", label: "Works" },
   { href: "/ideas", label: "Ideas" },
+  { href: "/hypotheses", label: "Hypotheses" },
 ] as const;
 
 export function SiteHeader() {

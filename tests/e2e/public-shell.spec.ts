@@ -20,6 +20,9 @@ test("public shell keeps the legacy desktop structure", async ({ page }) => {
   await expect(page.locator(".qt-header")).toBeVisible();
   await expect(page.locator(".qt-logo-name")).toHaveText("Hard_Working");
   await expect(page.locator(".qt-nav")).toBeVisible();
+  await expect(
+    page.locator(".qt-nav").getByRole("link", { name: "Hypotheses" }),
+  ).toHaveAttribute("href", "/hypotheses");
   await expect(page.locator(".qt-search")).toBeVisible();
   await expect(page.locator(".qt-page")).toBeVisible();
   await expect(page.locator(".qt-footer")).toBeVisible();
