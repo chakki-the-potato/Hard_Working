@@ -8,7 +8,7 @@ test("home keeps the legacy hero, content, ideas, and sidebar structure", async 
   await expect(page.locator(".qt-hero")).toBeVisible();
   await expect(page.locator(".qt-home-shell")).toBeVisible();
   await expect(page.locator(".qt-featured-wrap")).toBeVisible();
-  await expect(page.locator(".qt-strip")).toBeVisible();
+  await expect(page.locator(".qt-strip").first()).toBeVisible();
   await expect(page.locator(".qt-home-aside")).toBeVisible();
 
   await page.setViewportSize({ width: 390, height: 844 });
@@ -54,4 +54,16 @@ test("idea and project indexes keep their legacy list contracts", async ({
   await page.goto("/projects");
 
   await expect(page.locator(".qt-project-grid")).toBeVisible();
+});
+
+test("hypothesis index uses the shared list layout", async ({ page }) => {
+  await page.goto("/hypotheses");
+
+  await expect(page.locator(".qt-list-hero")).toBeVisible();
+  await expect(page.locator(".qt-list-body")).toBeVisible();
+  await expect(page.locator(".qt-list-thead")).toBeVisible();
+  await expect(page.locator(".qt-list-aside")).toBeVisible();
+  await expect(
+    page.locator(".qt-tag-chips").getByRole("link", { name: "RUNNING" }),
+  ).toHaveAttribute("href", "/hypotheses?status=running");
 });
